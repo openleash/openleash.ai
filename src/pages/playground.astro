@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="Policy Playground — OpenLeash"
+  description="Test your authorization policies against scenarios before deploying. See the full evaluation trace."
+  canonicalPath="/playground"
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <h1 class="page-title">
+        <span class="accent-prefix">›</span> Policy Playground
+      </h1>
+      <p class="page-desc">
+        Test authorization policies against scenarios locally. See the full evaluation trace
+        before deploying to production.
+      </p>
+    </header>
+
+    <section class="section fade-in fade-in-d1">
+      <h2 class="section-title">How it works</h2>
+      <p class="section-text">
+        The playground takes a scenario (an agent, an action, and context) and evaluates it
+        against your policy files. It shows every rule that matched, every condition that was
+        checked, and the final decision — all without making real API calls.
+      </p>
+
+      <div class="run-command">
+        <CodeBlock
+          title="Run the playground"
+          lines={[
+            { type: 'cmd', text: 'npx openleash playground --scenario spending-check', prompt: '$' },
+          ]}
+        />
+      </div>
+    </section>
+
+    <section class="section fade-in fade-in-d2">
+      <h2 class="section-title">Example: Spending limit check</h2>
+      <p class="section-text">
+        An agent attempts a $150 purchase. The policy allows up to $100 without approval.
+      </p>
+      <CodeBlock
+        title="playground output"
+        lines={[
+          { type: 'comment', text: '# Scenario: agent-shop-001 / purchase / $150' },
+          { type: 'output', text: '' },
+          { type: 'output', text: 'Evaluating policy: spending-limits.yaml' },
+          { type: 'output', text: '  ✓ agent matches: agent-shop-001' },
+          { type: 'output', text: '  ✓ action matches: purchase' },
+          { type: 'output', text: '  ✗ condition: context.cost <= 100  →  150 > 100' },
+          { type: 'output', text: '  → rule result: REQUIRE_APPROVAL' },
+          { type: 'output', text: '' },
+          { type: 'output', text: 'Final decision: require_approval' },
+          { type: 'output', text: 'Obligations: ["notify_owner", "log_attempt"]' },
+          { type: 'output', text: 'Proof token: (not issued — approval pending)' },
+        ]}
+      />
+    </section>
+
+    <section class="section fade-in fade-in-d3">
+      <h2 class="section-title">Example: Appointment booking (auto-approved)</h2>
+      <p class="section-text">
+        An agent books a haircut — a low-trust action that auto-approves.
+      </p>
+      <CodeBlock
+        title="playground output"
+        lines={[
+          { type: 'comment', text: '# Scenario: agent-booking-001 / book_appointment / haircut' },
+          { type: 'output', text: '' },
+          { type: 'output', text: 'Evaluating policy: appointments.yaml' },
+          { type: 'output', text: '  ✓ agent matches: agent-booking-001' },
+          { type: 'output', text: '  ✓ action matches: book_appointment' },
+          { type: 'output', text: '  ✓ condition: resource.trust_level == "low"' },
+          { type: 'output', text: '  → rule result: ALLOW' },
+          { type: 'output', text: '' },
+          { type: 'output', text: 'Final decision: allow' },
+          { type: 'output', text: 'Obligations: []' },
+          { type: 'output', text: 'Proof token: v4.public.eyJhZ2VudCI6ImFnZW50LWJvb2tp...' },
+        ]}
+      />
+    </section>
+
+    <section class="section fade-in fade-in-d4">
+      <h2 class="section-title">Example: Government submission (step-up)</h2>
+      <p class="section-text">
+        A regulated filing requires step-up authentication before proceeding.
+      </p>
+      <CodeBlock
+        title="playground output"
+        lines={[
+          { type: 'comment', text: '# Scenario: agent-gov-001 / submit_filing / tax-return' },
+          { type: 'output', text: '' },
+          { type: 'output', text: 'Evaluating policy: government.yaml' },
+          { type: 'output', text: '  ✓ agent matches: agent-gov-001' },
+          { type: 'output', text: '  ✓ action matches: submit_filing' },
+          { type: 'output', text: '  ✓ condition: resource.category == "regulated"' },
+          { type: 'output', text: '  → rule result: STEP_UP' },
+          { type: 'output', text: '' },
+          { type: 'output', text: 'Final decision: step_up' },
+          { type: 'output', text: 'Step-up method: "owner_mfa"' },
+          { type: 'output', text: 'Obligations: ["audit_log", "retain_30d"]' },
+          { type: 'output', text: 'Proof token: (not issued — step-up required first)' },
+        ]}
+      />
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">CLI commands</h2>
+      <CodeBlock
+        title="playground CLI"
+        lines={[
+          { type: 'comment', text: '# Run a specific scenario' },
+          { type: 'cmd', text: 'npx openleash playground --scenario <name>', prompt: '$' },
+          { type: 'code', text: '' },
+          { type: 'comment', text: '# Run all scenarios in a directory' },
+          { type: 'cmd', text: 'npx openleash playground --dir ./scenarios/', prompt: '$' },
+          { type: 'code', text: '' },
+          { type: 'comment', text: '# Verbose output with full policy trace' },
+          { type: 'cmd', text: 'npx openleash playground --scenario spending-check --verbose', prompt: '$' },
+        ]}
+      />
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .accent-prefix {
+    color: var(--green-bright);
+  }
+
+  .page-desc {
+    max-width: 560px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .section {
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .section-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 16px;
+    max-width: 600px;
+  }
+
+  .run-command {
+    margin-top: 16px;
+  }
+</style>

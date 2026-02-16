@@ -1,0 +1,106 @@
+---
+interface Props {
+  lines: Array<{
+    type: 'comment' | 'cmd' | 'code' | 'output';
+    text: string;
+    prompt?: string;
+  }>;
+  title?: string;
+}
+
+const { lines, title } = Astro.props;
+---
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-dot" style="background:#ff5f57"></span>
+    <span class="code-dot" style="background:#febc2e"></span>
+    <span class="code-dot" style="background:#28c840"></span>
+    {title && <span class="code-title">{title}</span>}
+  </div>
+  <div class="code-content">
+    {lines.map((line) => (
+      <div class={`code-line ${line.type}`}>
+        {line.prompt && <span class="code-prompt">{line.prompt}</span>}
+        <span set:html={line.text} />
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .code-block {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .code-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .code-title {
+    margin-left: 10px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-family: var(--font-body);
+  }
+
+  .code-content {
+    padding: 14px 18px;
+    overflow-x: auto;
+  }
+
+  .code-line {
+    white-space: pre;
+    display: flex;
+    gap: 8px;
+  }
+
+  .code-line.comment {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .code-line.output {
+    color: var(--text-secondary);
+  }
+
+  .code-prompt {
+    color: var(--green-bright);
+    user-select: none;
+  }
+
+  .code-line.cmd span:not(.code-prompt) {
+    color: var(--text-primary);
+  }
+
+  .code-line.code {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 640px) {
+    .code-block {
+      font-size: 0.75rem;
+    }
+
+    .code-content {
+      padding: 12px 14px;
+    }
+  }
+</style>

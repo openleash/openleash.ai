@@ -1,0 +1,117 @@
+---
+const links = [
+  { label: 'Docs', href: '/docs' },
+  { label: 'Playground', href: '/playground' },
+  { label: 'GitHub', href: 'https://github.com/openleash', external: true },
+  { label: 'OpenClaw', href: 'https://openclaw.ai', external: true },
+];
+---
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="/brand/openleash-mark.svg" alt="" width="28" height="28" />
+      <span class="nav-wordmark">OpenLeash</span>
+    </a>
+    <div class="nav-links">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class="nav-link"
+          {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+          {link.label}
+          {link.external && <span class="external-arrow" aria-hidden="true">↗</span>}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5, 10, 14, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .nav-inner {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-decoration: none;
+  }
+
+  .nav-logo:hover {
+    color: var(--green-bright);
+  }
+
+  .nav-logo img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .nav-wordmark {
+    font-family: var(--font-display);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .nav-link {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .nav-link:hover {
+    color: var(--green-bright);
+  }
+
+  .external-arrow {
+    font-size: 0.75rem;
+    opacity: 0.5;
+  }
+
+  @media (max-width: 640px) {
+    .nav-inner {
+      padding: 0 16px;
+    }
+
+    .nav-links {
+      gap: 16px;
+    }
+
+    .nav-link {
+      font-size: 0.8rem;
+    }
+
+    .nav-wordmark {
+      display: none;
+    }
+  }
+</style>

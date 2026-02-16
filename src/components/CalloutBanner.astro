@@ -1,0 +1,60 @@
+---
+interface Props {
+  text: string;
+  href: string;
+  linkText?: string;
+}
+
+const { text, href, linkText = 'Learn more' } = Astro.props;
+---
+
+<div class="callout">
+  <p class="callout-text">
+    {text}
+    <a href={href} class="callout-link">
+      {linkText} <span aria-hidden="true">→</span>
+    </a>
+  </p>
+</div>
+
+<style>
+  .callout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    max-width: fit-content;
+    margin: 0 auto;
+  }
+
+  .callout-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .callout-link {
+    color: var(--green-bright);
+    font-weight: 500;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  .callout-link:hover {
+    color: var(--amber-bright);
+  }
+
+  @media (max-width: 640px) {
+    .callout {
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+
+    .callout-text {
+      font-size: 0.8rem;
+    }
+  }
+</style>

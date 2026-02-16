@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://openleash.ai/sitemap-index.xml

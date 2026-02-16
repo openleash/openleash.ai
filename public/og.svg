@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#050a0e"/>
+  <text x="600" y="280" text-anchor="middle" font-family="system-ui, sans-serif" font-size="72" font-weight="700" fill="#e8f0f8">Open<tspan fill="#34d399">Leash</tspan></text>
+  <text x="600" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" fill="#8899aa">Local-first policy gate for AI agents</text>
+  <rect x="460" y="380" width="280" height="4" rx="2" fill="#34d399" opacity="0.5"/>
+</svg>

@@ -1,0 +1,250 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="OpenClaw Integration — OpenLeash"
+  description="Run openleash as a sidecar for OpenClaw. Authorize agent actions before tool execution."
+  canonicalPath="/openclaw"
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <h1 class="page-title">
+        <span class="accent-prefix">›</span> OpenClaw Integration
+      </h1>
+      <p class="page-desc">
+        Run openleash next to OpenClaw as a sidecar. Every tool execution passes through
+        openleash for policy evaluation before reaching the external world.
+      </p>
+    </header>
+
+    <!-- Architecture diagram -->
+    <section class="section fade-in fade-in-d1">
+      <h2 class="section-title">Architecture</h2>
+      <div class="diagram">
+        <pre class="diagram-ascii">{`
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│              │     │              │     │              │
+│   OpenClaw   │────▶│  openleash   │────▶│   External   │
+│   (agent)    │     │  (sidecar)   │     │   Service    │
+│              │◀────│              │◀────│              │
+└──────────────┘     └──────────────┘     └──────────────┘
+                          │
+                          │ policy files
+                          │ audit log
+                          │ proof tokens
+                          ▼
+                     ┌──────────┐
+                     │  ~/.open  │
+                     │  leash/   │
+                     └──────────┘
+`}</pre>
+      </div>
+      <p class="diagram-caption">
+        OpenClaw calls openleash before executing any tool.
+        openleash evaluates policies, logs the decision, and optionally issues a
+        PASETO proof token. The external service can verify the token independently.
+      </p>
+    </section>
+
+    <!-- Integration snippet -->
+    <section class="section fade-in fade-in-d2">
+      <h2 class="section-title">Integration point</h2>
+      <p class="section-text">
+        In your OpenClaw tool execution hook, call openleash before running the tool:
+      </p>
+      <CodeBlock
+        title="openclaw-hook.ts"
+        lines={[
+          { type: 'comment', text: '// Before executing a tool in OpenClaw' },
+          { type: 'code', text: 'async function beforeToolExecution(tool: Tool, context: Context) {' },
+          { type: 'code', text: '  const res = await fetch("http://localhost:3120/v1/authorize", {' },
+          { type: 'code', text: '    method: "POST",' },
+          { type: 'code', text: '    headers: { "Content-Type": "application/json" },' },
+          { type: 'code', text: '    body: JSON.stringify({' },
+          { type: 'code', text: '      agent_id: context.agentId,' },
+          { type: 'code', text: '      action: tool.name,' },
+          { type: 'code', text: '      resource: tool.target,' },
+          { type: 'code', text: '      context: tool.params' },
+          { type: 'code', text: '    })' },
+          { type: 'code', text: '  });' },
+          { type: 'code', text: '' },
+          { type: 'code', text: '  const { decision, proof_token } = await res.json();' },
+          { type: 'code', text: '' },
+          { type: 'code', text: '  if (decision !== "allow") {' },
+          { type: 'code', text: '    throw new Error(`Action denied: ${decision}`);' },
+          { type: 'code', text: '  }' },
+          { type: 'code', text: '' },
+          { type: 'comment', text: '  // Attach proof token to outgoing request' },
+          { type: 'code', text: '  return { ...context, proofToken: proof_token };' },
+          { type: 'code', text: '}' },
+        ]}
+      />
+    </section>
+
+    <!-- Setup -->
+    <section class="section fade-in fade-in-d3">
+      <h2 class="section-title">Setup</h2>
+      <CodeBlock
+        title="terminal"
+        lines={[
+          { type: 'comment', text: '# Install openleash alongside OpenClaw' },
+          { type: 'cmd', text: 'npm i -g openleash', prompt: '$' },
+          { type: 'code', text: '' },
+          { type: 'comment', text: '# Start openleash sidecar' },
+          { type: 'cmd', text: 'npx openleash start', prompt: '$' },
+          { type: 'output', text: '✓ openleash running on http://localhost:3120' },
+          { type: 'code', text: '' },
+          { type: 'comment', text: '# Run the setup wizard for OpenClaw integration' },
+          { type: 'cmd', text: 'npx openleash wizard --template openclaw', prompt: '$' },
+        ]}
+      />
+    </section>
+
+    <!-- Links -->
+    <section class="section fade-in fade-in-d4">
+      <h2 class="section-title">Resources</h2>
+      <div class="link-cards">
+        <a href="https://docs.openclaw.ai" target="_blank" rel="noopener noreferrer" class="link-card">
+          <strong>OpenClaw Docs</strong>
+          <span>docs.openclaw.ai ↗</span>
+        </a>
+        <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer" class="link-card">
+          <strong>OpenClaw Repo</strong>
+          <span>github.com/openclaw/openclaw ↗</span>
+        </a>
+        <a href="https://github.com/openleash/openleash" target="_blank" rel="noopener noreferrer" class="link-card">
+          <strong>openleash Repo</strong>
+          <span>github.com/openleash/openleash ↗</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .accent-prefix {
+    color: var(--green-bright);
+  }
+
+  .page-desc {
+    max-width: 560px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .section {
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  .section-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 16px;
+    max-width: 600px;
+  }
+
+  /* Diagram */
+  .diagram {
+    padding: 24px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    overflow-x: auto;
+    margin-bottom: 16px;
+  }
+
+  .diagram-ascii {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    white-space: pre;
+    margin: 0;
+  }
+
+  .diagram-caption {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* Link cards */
+  .link-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .link-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    text-decoration: none;
+    transition: all 0.25s var(--ease-out);
+  }
+
+  .link-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--green-bright);
+    box-shadow: 0 12px 40px rgba(52, 211, 153, 0.12);
+  }
+
+  .link-card strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+
+  .link-card span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .link-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .diagram-ascii {
+      font-size: 0.65rem;
+    }
+  }
+</style>

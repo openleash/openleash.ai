@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const assets = [
+  {
+    label: 'Full lockup (icon + wordmark)',
+    preview: '/brand/openleash-lockup.svg',
+    downloads: [
+      { label: 'SVG', href: '/brand/openleash-lockup.svg' },
+    ],
+  },
+  {
+    label: 'Icon only',
+    preview: '/brand/openleash-mark.svg',
+    downloads: [
+      { label: 'SVG', href: '/brand/openleash-mark.svg' },
+    ],
+  },
+  {
+    label: 'Monochrome',
+    preview: '/brand/openleash-mark-mono.svg',
+    downloads: [
+      { label: 'SVG', href: '/brand/openleash-mark-mono.svg' },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Brand Assets — OpenLeash"
+  description="OpenLeash logo variants and brand assets for download."
+  canonicalPath="/brand"
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <h1 class="page-title">
+        <span class="accent-prefix">›</span> Brand Assets
+      </h1>
+      <p class="page-desc">
+        Logo variants for use in integrations, blog posts, and presentations.
+        All assets are available under the project license.
+      </p>
+    </header>
+
+    <div class="assets-grid fade-in fade-in-d1">
+      {assets.map((asset) => (
+        <div class="asset-card">
+          <div class="asset-preview">
+            <img src={asset.preview} alt={asset.label} />
+          </div>
+          <div class="asset-info">
+            <h2 class="asset-label">{asset.label}</h2>
+            <div class="asset-downloads">
+              {asset.downloads.map((dl) => (
+                <a href={dl.href} download class="asset-dl-link">
+                  {dl.label} ↓
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <section class="usage-notes fade-in fade-in-d2">
+      <h2 class="section-title">Usage guidelines</h2>
+      <ul class="guidelines">
+        <li>Do not alter the logo proportions, colors, or orientation.</li>
+        <li>Use the monochrome variant on complex or busy backgrounds.</li>
+        <li>Maintain clear space around the logo equal to at least the icon height.</li>
+        <li>Do not use the logo to imply endorsement without permission.</li>
+      </ul>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .accent-prefix {
+    color: var(--green-bright);
+  }
+
+  .page-desc {
+    max-width: 560px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .assets-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+
+  .asset-card {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    transition: all 0.25s var(--ease-out);
+  }
+
+  .asset-card:hover {
+    border-color: var(--green-bright);
+    box-shadow: 0 8px 32px rgba(52, 211, 153, 0.1);
+  }
+
+  .asset-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    background: var(--bg-elevated);
+    min-height: 140px;
+  }
+
+  .asset-preview img {
+    max-height: 80px;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .asset-info {
+    padding: 16px 20px;
+  }
+
+  .asset-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .asset-downloads {
+    display: flex;
+    gap: 10px;
+  }
+
+  .asset-dl-link {
+    font-size: 0.8rem;
+    color: var(--green-bright);
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+    transition: all 0.2s var(--ease-out);
+  }
+
+  .asset-dl-link:hover {
+    border-color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    color: var(--green-bright);
+  }
+
+  /* Usage notes */
+  .usage-notes {
+    margin-bottom: 56px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  .guidelines {
+    list-style: none;
+    padding: 0;
+  }
+
+  .guidelines li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .guidelines li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--green-bright);
+  }
+
+  @media (max-width: 768px) {
+    .assets-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

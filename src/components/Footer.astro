@@ -1,0 +1,61 @@
+---
+const links = [
+  { label: 'GitHub', href: 'https://github.com/openleash' },
+  { label: 'Docs', href: '/docs' },
+  { label: 'Security', href: 'https://github.com/openleash/openleash/security' },
+  { label: 'OpenClaw', href: 'https://openclaw.ai' },
+];
+---
+
+<footer class="footer">
+  <nav class="footer-nav">
+    {links.map((link, i) => (
+      <>
+        <a href={link.href} class="footer-link">{link.label}</a>
+        {i < links.length - 1 && <span class="footer-sep" aria-hidden="true">·</span>}
+      </>
+    ))}
+  </nav>
+  <p class="footer-copy">© {new Date().getFullYear()} OpenLeash contributors. MIT License.</p>
+</footer>
+
+<style>
+  .footer {
+    margin-top: auto;
+    padding: 40px 24px 32px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .footer-link {
+    color: var(--green-bright);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .footer-link:hover {
+    color: var(--amber-bright);
+  }
+
+  .footer-sep {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  .footer-copy {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+</style>

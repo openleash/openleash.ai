@@ -1,0 +1,220 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const docLinks = [
+  {
+    title: 'Specification / Build Prompt',
+    description: 'The complete specification and build prompt for openleash.',
+    href: 'https://github.com/openleash/openleash/blob/main/README.md',
+  },
+  {
+    title: 'Protocol',
+    description: 'Authorization request/response protocol, endpoints, and data formats.',
+    href: 'https://github.com/openleash/openleash/blob/main/docs/protocol.md',
+  },
+  {
+    title: 'Policy Language',
+    description: 'How to write authorization policies: rules, conditions, obligations, and trust levels.',
+    href: 'https://github.com/openleash/openleash/blob/main/docs/policy-language.md',
+  },
+  {
+    title: 'OpenClaw Integration',
+    description: 'Run openleash as a sidecar for OpenClaw. Configuration and hook points.',
+    href: '/openclaw',
+    internal: true,
+  },
+];
+---
+
+<BaseLayout
+  title="Docs — OpenLeash"
+  description="Documentation for openleash: specification, protocol, policy language, and integration guides."
+  canonicalPath="/docs"
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <h1 class="page-title">
+        <span class="accent-prefix">›</span> Documentation
+      </h1>
+      <p class="page-desc">
+        openleash documentation is maintained alongside the source code.
+        Start here to find the right reference.
+      </p>
+    </header>
+
+    <div class="docs-grid fade-in fade-in-d1">
+      {docLinks.map((doc) => (
+        <a
+          href={doc.href}
+          class="doc-card"
+          {...(!doc.internal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+          <h2 class="doc-title">
+            {doc.title}
+            {!doc.internal && <span class="doc-external" aria-hidden="true">↗</span>}
+          </h2>
+          <p class="doc-desc">{doc.description}</p>
+        </a>
+      ))}
+    </div>
+
+    <section class="quickref fade-in fade-in-d2">
+      <h2 class="section-title">Quick reference</h2>
+      <div class="ref-grid">
+        <div class="ref-item">
+          <code class="ref-cmd">npx openleash start</code>
+          <span class="ref-label">Start the sidecar</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">npx openleash wizard</code>
+          <span class="ref-label">Setup wizard</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">npx openleash playground</code>
+          <span class="ref-label">Test policies locally</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">POST /v1/authorize</code>
+          <span class="ref-label">Request authorization</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">POST /v1/verify</code>
+          <span class="ref-label">Verify proof token</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">POST /v1/register</code>
+          <span class="ref-label">Register an agent</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .accent-prefix {
+    color: var(--green-bright);
+  }
+
+  .page-desc {
+    max-width: 560px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .doc-card {
+    padding: 24px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    text-decoration: none;
+    transition: all 0.25s var(--ease-out);
+    display: block;
+  }
+
+  .doc-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--green-bright);
+    box-shadow: 0 12px 40px rgba(52, 211, 153, 0.12);
+  }
+
+  .doc-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .doc-external {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  .doc-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Quick reference */
+  .quickref {
+    margin-bottom: 56px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+  }
+
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .ref-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+  }
+
+  .ref-cmd {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--green-bright);
+    white-space: nowrap;
+  }
+
+  .ref-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .docs-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ref-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

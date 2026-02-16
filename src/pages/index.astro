@@ -1,0 +1,576 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import StepCard from '../components/StepCard.astro';
+import CalloutBanner from '../components/CalloutBanner.astro';
+---
+
+<BaseLayout title="OpenLeash — Local-first policy gate for AI agents" canonicalPath="/">
+  <Nav />
+
+  <main class="container">
+    <!-- Hero -->
+    <header class="hero fade-in">
+      <div class="hero-icon">
+        <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="lobster-svg" aria-label="OpenLeash lobster logo">
+          <defs>
+            <linearGradient id="hero-lobster-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34d399"/>
+              <stop offset="100%" stop-color="#065f46"/>
+            </linearGradient>
+          </defs>
+          <!-- Body -->
+          <path d="M60 10 C32 10 18 30 18 48 C18 66 32 80 46 84 L46 88 L54 88 L54 84 C54 84 60 86 66 84 L66 88 L74 88 L74 84 C88 80 102 66 102 48 C102 30 88 10 60 10Z" fill="url(#hero-lobster-grad)" class="lobster-body"/>
+          <!-- Left Claw -->
+          <path d="M22 38 C8 34 2 43 6 52 C10 61 20 57 24 48 C27 42 24 38 22 38Z" fill="url(#hero-lobster-grad)" class="lobster-claw-l"/>
+          <!-- Right Claw -->
+          <path d="M98 38 C112 34 118 43 114 52 C110 61 100 57 96 48 C93 42 96 38 98 38Z" fill="url(#hero-lobster-grad)" class="lobster-claw-r"/>
+          <!-- Antennae -->
+          <path d="M46 15 Q36 5 31 8" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" class="lobster-antenna"/>
+          <path d="M74 15 Q84 5 89 8" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" class="lobster-antenna"/>
+          <!-- Eyes -->
+          <circle cx="45" cy="30" r="5.5" fill="#050a0e"/>
+          <circle cx="75" cy="30" r="5.5" fill="#050a0e"/>
+          <circle cx="46" cy="29" r="2" fill="#fbbf24" class="lobster-eye"/>
+          <circle cx="76" cy="29" r="2" fill="#fbbf24" class="lobster-eye"/>
+          <!-- Collar -->
+          <path d="M28 56 C42 64 78 64 92 56" stroke="#fbbf24" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <!-- Leash -->
+          <path d="M60 62 L60 98 Q58 106 50 108" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <ellipse cx="45" cy="109" rx="8" ry="4.5" fill="none" stroke="#fbbf24" stroke-width="3"/>
+        </svg>
+      </div>
+      <h1 class="hero-title">
+        Open<span class="hero-accent">Leash</span>
+      </h1>
+      <p class="hero-tagline">Local-first policy gate for agents.</p>
+      <p class="hero-desc">
+        A sidecar authorization service that agents must consult before performing risky actions.
+        Returns decisions and cryptographic proof tokens that counterparties can verify.
+      </p>
+      <div class="hero-actions fade-in fade-in-d1">
+        <a href="#quickstart" class="btn btn-primary">Get Started</a>
+        <a href="https://github.com/openleash" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub</a>
+      </div>
+    </header>
+
+    <div class="fade-in fade-in-d2" style="margin-top: 24px; margin-bottom: 56px;">
+      <CalloutBanner
+        text="Works as a sidecar for OpenClaw. Also works with any agent."
+        href="/openclaw"
+        linkText="Learn more"
+      />
+    </div>
+
+    <!-- Quickstart -->
+    <section id="quickstart" class="section fade-in fade-in-d3">
+      <h2 class="section-title">
+        <span class="accent-prefix">›</span> Quickstart
+      </h2>
+
+      <div class="quickstart-grid">
+        <CodeBlock
+          title="Install"
+          lines={[
+            { type: 'comment', text: '# Install openleash globally' },
+            { type: 'cmd', text: 'npm i -g openleash', prompt: '$' },
+          ]}
+        />
+        <CodeBlock
+          title="Start"
+          lines={[
+            { type: 'comment', text: '# Start the openleash sidecar' },
+            { type: 'cmd', text: 'npx openleash start', prompt: '$' },
+            { type: 'output', text: '✓ openleash running on http://localhost:3120' },
+          ]}
+        />
+        <CodeBlock
+          title="Setup wizard"
+          lines={[
+            { type: 'comment', text: '# Configure policies interactively' },
+            { type: 'cmd', text: 'npx openleash wizard', prompt: '$' },
+            { type: 'output', text: '? Select policy template › spending-limits' },
+          ]}
+        />
+      </div>
+
+      <div class="sdk-example">
+        <h3 class="subsection-title">SDK usage</h3>
+        <CodeBlock
+          title="authorize-and-verify.ts"
+          lines={[
+            { type: 'comment', text: '// Ask openleash before performing a risky action' },
+            { type: 'code', text: 'const res = await fetch("http://localhost:3120/v1/authorize", {' },
+            { type: 'code', text: '  method: "POST",' },
+            { type: 'code', text: '  headers: { "Content-Type": "application/json" },' },
+            { type: 'code', text: '  body: JSON.stringify({' },
+            { type: 'code', text: '    agent_id: "agent-booking-001",' },
+            { type: 'code', text: '    action: "book_appointment",' },
+            { type: 'code', text: '    resource: "haircut",' },
+            { type: 'code', text: '    context: { provider: "salon-xyz", cost: 45 }' },
+            { type: 'code', text: '  })' },
+            { type: 'code', text: '});' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'const { decision, proof_token } = await res.json();' },
+            { type: 'comment', text: '// decision: "allow" | "deny" | "require_approval" | "step_up"' },
+            { type: 'code', text: '' },
+            { type: 'comment', text: '// Counterparty verifies the proof token' },
+            { type: 'code', text: 'const verify = await fetch("http://localhost:3120/v1/verify", {' },
+            { type: 'code', text: '  method: "POST",' },
+            { type: 'code', text: '  body: JSON.stringify({ token: proof_token })' },
+            { type: 'code', text: '});' },
+            { type: 'code', text: 'const { valid, claims } = await verify.json();' },
+            { type: 'comment', text: '// valid: true, claims.action: "book_appointment"' },
+          ]}
+        />
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="accent-prefix">›</span> How it works
+      </h2>
+      <div class="steps-grid">
+        <StepCard
+          number={1}
+          title="Agent requests authorization"
+          description="Before performing a risky or external action, the agent sends a signed request to openleash describing the action and context."
+        />
+        <StepCard
+          number={2}
+          title="Policy engine decides"
+          description="openleash evaluates the request against file-based policies and returns allow, deny, require approval, or step-up — plus an optional PASETO proof token."
+        />
+        <StepCard
+          number={3}
+          title="Counterparty verifies"
+          description="The receiving service or agent verifies the proof token to confirm authorization was granted, by whom, and for which specific action."
+        />
+      </div>
+    </section>
+
+    <!-- Use cases -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="accent-prefix">›</span> Use cases
+      </h2>
+      <div class="features-grid">
+        <FeatureCard
+          icon="💳"
+          title="Purchases with limits"
+          description="Set spending caps per agent, per vendor, or per time window. Agents cannot exceed policy limits without step-up approval."
+        />
+        <FeatureCard
+          icon="📅"
+          title="Appointment booking"
+          description="Differentiate trust levels: a haircut booking might auto-approve while a medical appointment requires human confirmation."
+        />
+        <FeatureCard
+          icon="🏛️"
+          title="Government submissions"
+          description="Regulated filings and submissions can require step-up authentication, producing auditable proof tokens for compliance."
+        />
+        <FeatureCard
+          icon="📡"
+          title="Communication rules"
+          description="Enforce allowlists and denylists for API calls, emails, or messages. Agents only reach approved endpoints."
+        />
+      </div>
+    </section>
+
+    <!-- What you get (MVP) -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="accent-prefix">›</span> What you get
+      </h2>
+      <div class="mvp-grid">
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">📁</span>
+          <div>
+            <strong>File-based policies</strong>
+            <p>Define authorization rules in local config files. No database, no cloud dependency.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">📋</span>
+          <div>
+            <strong>Audit log</strong>
+            <p>Every authorization request and decision is logged locally for review and compliance.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🔑</span>
+          <div>
+            <strong>PASETO proof tokens</strong>
+            <p>Cryptographic tokens bound to specific actions. Verifiable by any counterparty without calling home.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🧪</span>
+          <div>
+            <strong>Policy playground</strong>
+            <p>Test policies against scenarios locally before deploying. See the evaluation trace step by step.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🤖</span>
+          <div>
+            <strong>Agent registration</strong>
+            <p>Register agent identities and capabilities. Policies can target specific agents or groups.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">⚡</span>
+          <div>
+            <strong>Deterministic decisions</strong>
+            <p>Same input, same output. No probabilistic logic. Policies evaluate to predictable results.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Community / OSS -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="accent-prefix">›</span> Community
+      </h2>
+      <div class="community-block">
+        <p class="community-text">
+          openleash is open source under the MIT license. We welcome contributions — whether that's
+          reporting issues, improving docs, adding policy templates, or building integrations.
+        </p>
+        <div class="community-links">
+          <a href="https://github.com/openleash" target="_blank" rel="noopener noreferrer" class="community-link">
+            GitHub ↗
+          </a>
+          <a href="https://github.com/openleash/openleash/issues" target="_blank" rel="noopener noreferrer" class="community-link">
+            Issues ↗
+          </a>
+          <a href="https://github.com/openleash/openleash/discussions" target="_blank" rel="noopener noreferrer" class="community-link">
+            Discussions ↗
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding-top: 40px;
+    margin-bottom: 20px;
+  }
+
+  .hero-icon {
+    margin-bottom: 20px;
+  }
+
+  .lobster-svg {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    display: block;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .lobster-body {
+    transform-origin: center;
+  }
+
+  .lobster-claw-l {
+    animation: clawSnapL 3s ease-in-out infinite;
+    transform-origin: 24px 48px;
+  }
+
+  .lobster-claw-r {
+    animation: clawSnapR 3s ease-in-out infinite;
+    transform-origin: 96px 48px;
+  }
+
+  .lobster-antenna {
+    animation: wiggle 2.5s ease-in-out infinite;
+    transform-origin: center top;
+  }
+
+  .lobster-eye {
+    animation: blink 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @keyframes clawSnapL {
+    0%, 100% { transform: rotate(0deg); }
+    40% { transform: rotate(-8deg); }
+    50% { transform: rotate(4deg); }
+    60% { transform: rotate(0deg); }
+  }
+
+  @keyframes clawSnapR {
+    0%, 100% { transform: rotate(0deg); }
+    40% { transform: rotate(8deg); }
+    50% { transform: rotate(-4deg); }
+    60% { transform: rotate(0deg); }
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(3deg); }
+    75% { transform: rotate(-3deg); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    48% { opacity: 1; }
+    50% { opacity: 0.1; }
+    52% { opacity: 1; }
+  }
+
+  .hero-title {
+    font-size: clamp(3rem, 10vw, 4.5rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #e8f0f8, #34d399, #fbbf24);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+
+  .hero-accent {
+    /* Gradient handles coloring via background-clip */
+  }
+
+  .hero-tagline {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .hero-desc {
+    max-width: 540px;
+    margin: 0 auto 28px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+    text-decoration: none;
+    transition: all 0.2s var(--ease-out);
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-bright));
+    color: #050a0e;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(52, 211, 153, 0.3);
+    color: #050a0e;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--green-bright);
+    color: var(--green-bright);
+    transform: translateY(-2px);
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 56px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+
+  .accent-prefix {
+    color: var(--green-bright);
+    margin-right: 4px;
+  }
+
+  .subsection-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    margin-top: 24px;
+  }
+
+  /* Quickstart */
+  .quickstart-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .sdk-example {
+    margin-top: 8px;
+  }
+
+  /* Steps */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  /* Features */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* MVP */
+  .mvp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .mvp-item {
+    display: flex;
+    gap: 14px;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    transition: all 0.25s var(--ease-out);
+  }
+
+  .mvp-item:hover {
+    border-color: var(--green-bright);
+  }
+
+  .mvp-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .mvp-item strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .mvp-item p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Community */
+  .community-block {
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    text-align: center;
+  }
+
+  .community-text {
+    max-width: 560px;
+    margin: 0 auto 20px;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .community-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .community-link {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--green-bright);
+    transition: all 0.2s var(--ease-out);
+  }
+
+  .community-link:hover {
+    border-color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    color: var(--green-bright);
+    transform: translateY(-2px);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .steps-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .mvp-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding-top: 24px;
+    }
+
+    .hero-desc {
+      font-size: 0.9rem;
+    }
+  }
+</style>

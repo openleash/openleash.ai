@@ -1,19 +1,34 @@
 {
-  "name": "openleash-ai",
-  "type": "module",
-  "version": "0.1.0",
-  "private": true,
-  "license": "Apache-2.0",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "lint": "astro check"
-  },
-  "dependencies": {
-    "astro": "^5.7.0",
-    "@astrojs/check": "^0.9.0",
-    "@astrojs/sitemap": "^3.2.0",
-    "typescript": "^5.7.0"
-  }
+	"name": "openleash-ai",
+	"type": "module",
+	"version": "0.1.0",
+	"private": true,
+	"license": "Apache-2.0",
+	"description": "Local-first authorization and proof service for AI agents. A policy gate that evaluates agent actions and issues verifiable PASETO proof tokens.",
+	"keywords": [
+		"openleash",
+		"ai-agents",
+		"authorization",
+		"policy-engine",
+		"proof-tokens",
+		"paseto",
+		"local-first",
+		"sidecar",
+		"openclaw",
+		"agent-security",
+		"verifiable-proofs",
+		"access-control"
+	],
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"lint": "astro check"
+	},
+	"dependencies": {
+		"astro": "^5.7.0",
+		"@astrojs/check": "^0.9.0",
+		"@astrojs/sitemap": "^3.2.0",
+		"typescript": "^5.7.0"
+	}
 }

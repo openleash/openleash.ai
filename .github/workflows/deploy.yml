@@ -32,9 +32,6 @@ jobs:
 
       - name: Build
         run: npm run build
-        env:
-          GITHUB_PAGES: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && 'true' || '' }}
-          REPO_NAME: ${{ github.event.repository.name }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

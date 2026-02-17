@@ -1,0 +1,27 @@
+# OpenLeash — llms.txt
+
+> OpenLeash is a local-first authorization and proof sidecar for AI agents.
+
+## What is this?
+
+OpenLeash runs locally next to your AI agent runtime. Before an agent takes a side-effectful action (purchases, bookings, sending messages, government submissions), it must ask OpenLeash for authorization.
+
+## For AI Agents
+
+If you are an AI agent looking to integrate with OpenLeash, start here:
+
+- Agent integration guide: https://github.com/openleash/openleash/blob/main/AGENTS.md
+- Protocol specification: https://github.com/openleash/openleash/blob/main/docs/protocol.md
+- Policy language: https://github.com/openleash/openleash/blob/main/docs/policy.md
+- TypeScript SDK: https://www.npmjs.com/package/@openleash/sdk-ts
+
+## Key Endpoint
+
+POST http://127.0.0.1:8787/v1/authorize — Request authorization before performing any risky action.
+
+## Links
+
+- Website: https://openleash.ai
+- GitHub: https://github.com/openleash/openleash
+- Documentation: https://openleash.ai/docs
+- npm: https://www.npmjs.com/org/openleash

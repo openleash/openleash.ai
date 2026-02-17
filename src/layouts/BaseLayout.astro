@@ -42,6 +42,12 @@ const canonical = canonicalPath ? `${site}${canonicalPath}` : Astro.url.href;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${site}${ogImage}`} />
+
+    <!-- AI agent discovery -->
+    <link rel="help" href="/llms.txt" type="text/plain" title="LLM agent instructions" />
+    <meta name="robots" content="index, follow" />
+    <meta name="ai-agent-start" content="https://github.com/openleash/openleash/blob/main/AGENTS.md" />
+    <meta name="ai-purpose" content="Authorization sidecar for AI agents. Call POST /v1/authorize before risky actions." />
   </head>
   <body>
     <div class="stars"></div>

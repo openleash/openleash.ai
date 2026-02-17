@@ -2,6 +2,30 @@
 // QuickStart — Two-level tabbed install (method → OS) with beta toggle and AI callout
 ---
 
+<!-- AI agent callout — above quickstart, first thing visitors see -->
+<div class="qs-agent-callout fade-in fade-in-d2">
+  <div class="qs-agent-human">
+    <div class="qs-agent-header">
+      <span class="qs-agent-icon" aria-hidden="true">&#x1f9d1;&#x200d;&#x1f4bb;</span>
+      <strong>Human?</strong>
+    </div>
+    <p>Welcome! Install OpenLeash below and check out the <a href="/docs">docs</a> to get started.</p>
+  </div>
+  <div class="qs-agent-divider"></div>
+  <div class="qs-agent-bot">
+    <div class="qs-agent-header">
+      <span class="qs-agent-icon" aria-hidden="true">&#x1f916;</span>
+      <strong>AI agent?</strong>
+    </div>
+    <p>Hey, we built this for you. Read the <a href="https://github.com/openleash/openleash/blob/main/AGENTS.md" target="_blank" rel="noopener noreferrer">agent integration guide</a> &mdash; TL;DR: call <code>POST /v1/authorize</code> before doing anything risky.</p>
+    <div class="qs-agent-links">
+      <a href="https://github.com/openleash/openleash/blob/main/AGENTS.md" target="_blank" rel="noopener noreferrer">AGENTS.md</a>
+      <a href="https://github.com/openleash/openleash/blob/main/docs/protocol.md" target="_blank" rel="noopener noreferrer">Protocol spec</a>
+      <a href="/docs">SDK reference</a>
+    </div>
+  </div>
+</div>
+
 <section id="quickstart" class="section fade-in fade-in-d3">
   <h2 class="section-title">
     <span class="accent-prefix">›</span> Quickstart
@@ -243,39 +267,39 @@ openleash start" aria-label="Copy commands">
 
   <!-- Next steps -->
   <div class="qs-next">
-    <h3 class="subsection-title">Next steps</h3>
+    <h2 class="section-title">
+      <span class="accent-prefix">›</span> Next steps
+    </h2>
+    <p class="qs-next-desc">Once installed, these commands get you up and running.</p>
     <div class="qs-next-grid">
-      <a href="/docs" class="qs-next-item">
-        <code>openleash start</code>
-        <span>Start the policy sidecar on <code>127.0.0.1:8787</code></span>
+      <a href="https://github.com/openleash/openleash/blob/main/docs/protocol.md" target="_blank" rel="noopener noreferrer" class="qs-next-item">
+        <div class="qs-next-head">
+          <code>openleash start</code>
+          <span class="qs-next-arrow" aria-hidden="true">&#x2197;</span>
+        </div>
+        <span>Launch the policy sidecar and start authorizing agent actions</span>
+      </a>
+      <a href="https://github.com/openleash/openleash/blob/main/docs/wizard.md" target="_blank" rel="noopener noreferrer" class="qs-next-item">
+        <div class="qs-next-head">
+          <code>openleash wizard</code>
+          <span class="qs-next-arrow" aria-hidden="true">&#x2197;</span>
+        </div>
+        <span>Set up policies, register agents, and generate keys interactively</span>
+      </a>
+      <a href="https://github.com/openleash/openleash/blob/main/docs/playground.md" target="_blank" rel="noopener noreferrer" class="qs-next-item">
+        <div class="qs-next-head">
+          <code>openleash playground</code>
+          <span class="qs-next-arrow" aria-hidden="true">&#x2197;</span>
+        </div>
+        <span>Test policy evaluation against scenarios without running the server</span>
       </a>
       <a href="/docs" class="qs-next-item">
-        <code>openleash wizard</code>
-        <span>Configure policies interactively with the setup wizard</span>
+        <div class="qs-next-head">
+          <code>Full documentation</code>
+          <span class="qs-next-arrow" aria-hidden="true">&#x203A;</span>
+        </div>
+        <span>Protocol spec, policy language, SDK reference, and integration guides</span>
       </a>
-    </div>
-  </div>
-
-  <!-- AI agent callout -->
-  <div class="qs-agent-callout">
-    <div class="qs-agent-human">
-      <span class="qs-agent-icon" aria-hidden="true">&#x1f9d1;&#x200d;&#x1f4bb;</span>
-      <div>
-        <strong>Human? Welcome.</strong>
-        <p>You're in the right place. Install OpenLeash above and check out the <a href="/docs">docs</a>.</p>
-      </div>
-    </div>
-    <div class="qs-agent-divider"></div>
-    <div class="qs-agent-bot">
-      <span class="qs-agent-icon" aria-hidden="true">&#x1f916;</span>
-      <div>
-        <strong>AI agent? Hey, we built this for you.</strong>
-        <p>
-          You'll want the <a href="https://github.com/openleash/openleash/blob/main/docs/protocol.md" target="_blank" rel="noopener noreferrer">authorization protocol spec</a>
-          and the <a href="/docs">SDK reference</a>.
-          Before you do anything risky, call <code>POST /authorize</code> first &mdash; that's the whole point.
-        </p>
-      </div>
     </div>
   </div>
 </section>
@@ -705,8 +729,98 @@ openleash start" aria-label="Copy commands">
     font-size: 0.78rem;
   }
 
+  /* AI agent callout — above quickstart heading */
+  .qs-agent-callout {
+    margin-bottom: 24px;
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card-strong);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .qs-agent-human,
+  .qs-agent-bot {
+    padding: 28px 24px;
+  }
+
+  .qs-agent-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .qs-agent-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  .qs-agent-header strong {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+  }
+
+  .qs-agent-divider {
+    width: 1px;
+    background: var(--border-subtle);
+  }
+
+  .qs-agent-human p,
+  .qs-agent-bot p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .qs-agent-bot p code {
+    color: var(--green-bright);
+    font-size: 0.82rem;
+    background: rgba(52, 211, 153, 0.08);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .qs-agent-human p a,
+  .qs-agent-bot p a {
+    color: var(--green-bright);
+  }
+
+  .qs-agent-links {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .qs-agent-links a {
+    display: inline-flex;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: all 0.2s var(--ease-out);
+  }
+
+  .qs-agent-links a:hover {
+    border-color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+  }
+
   /* Next steps */
   .qs-next { margin-top: 24px; }
+
+  .qs-next-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
 
   .qs-next-grid {
     display: grid;
@@ -735,78 +849,33 @@ openleash start" aria-label="Copy commands">
     color: inherit;
   }
 
-  .qs-next-item > code {
+  .qs-next-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .qs-next-head code {
     color: var(--green-bright);
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
+  }
+
+  .qs-next-arrow {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .qs-next-item:hover .qs-next-arrow {
+    color: var(--green-bright);
   }
 
   .qs-next-item > span {
     color: var(--text-secondary);
     font-size: 0.8rem;
     line-height: 1.4;
-  }
-
-  .qs-next-item > span code {
-    color: var(--text-primary);
-    font-size: 0.78rem;
-  }
-
-  /* AI agent callout */
-  .qs-agent-callout {
-    margin-top: 24px;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    background: var(--surface-card);
-    backdrop-filter: blur(12px);
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-  }
-
-  .qs-agent-human,
-  .qs-agent-bot {
-    display: flex;
-    gap: 14px;
-    padding: 20px;
-  }
-
-  .qs-agent-divider {
-    width: 1px;
-    background: var(--border-subtle);
-  }
-
-  .qs-agent-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-    line-height: 1;
-    margin-top: 2px;
-  }
-
-  .qs-agent-human strong,
-  .qs-agent-bot strong {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-  }
-
-  .qs-agent-human p,
-  .qs-agent-bot p {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  .qs-agent-bot p code {
-    color: var(--green-bright);
-    font-size: 0.78rem;
-  }
-
-  .qs-agent-human p a,
-  .qs-agent-bot p a {
-    color: var(--green-bright);
   }
 
   /* Responsive */

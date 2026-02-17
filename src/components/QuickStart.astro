@@ -1,0 +1,433 @@
+---
+// QuickStart — Tabbed install component with OS detection
+---
+
+<section id="quickstart" class="section fade-in fade-in-d3">
+  <h2 class="section-title">
+    <span class="accent-prefix">›</span> Quickstart
+  </h2>
+
+  <div class="qs-tabs">
+    <!-- Tab bar -->
+    <div class="qs-tab-bar" role="tablist" aria-label="Installation method">
+      <button
+        class="qs-tab active"
+        role="tab"
+        aria-selected="true"
+        aria-controls="panel-oneliner"
+        id="tab-oneliner"
+        tabindex="0"
+      >One-liner</button>
+      <button
+        class="qs-tab"
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-npm"
+        id="tab-npm"
+        tabindex="-1"
+      >npm</button>
+      <button
+        class="qs-tab"
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-source"
+        id="tab-source"
+        tabindex="-1"
+      >From source</button>
+    </div>
+
+    <!-- Panel: One-liner -->
+    <div class="qs-panel" role="tabpanel" id="panel-oneliner" aria-labelledby="tab-oneliner">
+      <div class="qs-code-block">
+        <div class="qs-code-header">
+          <span class="code-dot" style="background:#ff5f57"></span>
+          <span class="code-dot" style="background:#febc2e"></span>
+          <span class="code-dot" style="background:#28c840"></span>
+          <span class="qs-code-title">Terminal</span>
+          <button class="qs-copy" data-code="curl -fsSL https://openleash.ai/install.sh | bash" aria-label="Copy command">
+            <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+        <div class="qs-code-content">
+          <div class="code-line comment"><span># Install OpenLeash with one command</span></div>
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>curl -fsSL https://openleash.ai/install.sh | bash</span></div>
+        </div>
+      </div>
+      <p class="qs-note">Detects your OS, installs Node.js if needed, and sets up OpenLeash globally.</p>
+    </div>
+
+    <!-- Panel: npm -->
+    <div class="qs-panel hidden" role="tabpanel" id="panel-npm" aria-labelledby="tab-npm">
+      <div class="qs-code-block">
+        <div class="qs-code-header">
+          <span class="code-dot" style="background:#ff5f57"></span>
+          <span class="code-dot" style="background:#febc2e"></span>
+          <span class="code-dot" style="background:#28c840"></span>
+          <span class="qs-code-title">Terminal</span>
+          <button class="qs-copy" data-code="npm install -g openleash" aria-label="Copy command">
+            <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+        <div class="qs-code-content">
+          <div class="code-line comment"><span># Requires Node.js >= 18</span></div>
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>npm install -g openleash</span></div>
+        </div>
+      </div>
+      <p class="qs-note qs-note-windows hidden">On Windows, we recommend using <a href="https://learn.microsoft.com/en-us/windows/wsl/" target="_blank" rel="noopener noreferrer">WSL</a> for the best experience.</p>
+    </div>
+
+    <!-- Panel: From source -->
+    <div class="qs-panel hidden" role="tabpanel" id="panel-source" aria-labelledby="tab-source">
+      <div class="qs-code-block">
+        <div class="qs-code-header">
+          <span class="code-dot" style="background:#ff5f57"></span>
+          <span class="code-dot" style="background:#febc2e"></span>
+          <span class="code-dot" style="background:#28c840"></span>
+          <span class="qs-code-title">Terminal</span>
+          <button class="qs-copy" data-code="git clone https://github.com/openleash/openleash.git
+cd openleash
+npm install
+npm run build
+npm link" aria-label="Copy commands">
+            <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+        <div class="qs-code-content">
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>git clone https://github.com/openleash/openleash.git</span></div>
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>cd openleash</span></div>
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>npm install</span></div>
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>npm run build</span></div>
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>npm link</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next steps -->
+  <div class="qs-next">
+    <h3 class="subsection-title">Next steps</h3>
+    <div class="qs-next-grid">
+      <div class="qs-next-item">
+        <code>openleash start</code>
+        <span>Start the policy sidecar</span>
+      </div>
+      <div class="qs-next-item">
+        <code>openleash wizard</code>
+        <span>Configure policies interactively</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function init() {
+    const tabs = document.querySelectorAll('.qs-tab');
+    const panels = document.querySelectorAll('.qs-panel');
+    const copyButtons = document.querySelectorAll('.qs-copy');
+    const windowsNote = document.querySelector('.qs-note-windows');
+
+    // --- OS detection ---
+    const ua = navigator.userAgent;
+    const isWindows = /Win/.test(ua);
+    const isMac = /Mac/.test(ua);
+
+    if (isWindows) {
+      // Default to npm tab on Windows
+      switchTab('tab-npm');
+      if (windowsNote) windowsNote.classList.remove('hidden');
+    }
+    // macOS and Linux stay on one-liner (default)
+
+    // --- Tab switching ---
+    function switchTab(tabId: string) {
+      tabs.forEach(t => {
+        const isActive = t.id === tabId;
+        t.classList.toggle('active', isActive);
+        t.setAttribute('aria-selected', String(isActive));
+        t.setAttribute('tabindex', isActive ? '0' : '-1');
+      });
+      panels.forEach(p => {
+        const tabForPanel = p.getAttribute('aria-labelledby');
+        p.classList.toggle('hidden', tabForPanel !== tabId);
+      });
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => switchTab(tab.id));
+
+      // Keyboard navigation
+      tab.addEventListener('keydown', (e: KeyboardEvent) => {
+        const tabArr = Array.from(tabs);
+        const idx = tabArr.indexOf(tab);
+        let target: number | null = null;
+
+        if (e.key === 'ArrowRight') target = (idx + 1) % tabArr.length;
+        else if (e.key === 'ArrowLeft') target = (idx - 1 + tabArr.length) % tabArr.length;
+        else if (e.key === 'Home') target = 0;
+        else if (e.key === 'End') target = tabArr.length - 1;
+
+        if (target !== null) {
+          e.preventDefault();
+          const el = tabArr[target] as HTMLElement;
+          el.focus();
+          switchTab(el.id);
+        }
+      });
+    });
+
+    // --- Copy to clipboard ---
+    copyButtons.forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const code = btn.getAttribute('data-code');
+        if (!code) return;
+        try {
+          await navigator.clipboard.writeText(code);
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 2000);
+        } catch {
+          // Fallback for older browsers
+          const textarea = document.createElement('textarea');
+          textarea.value = code;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 2000);
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>
+
+<style>
+  /* Tab bar */
+  .qs-tabs {
+    position: relative;
+  }
+
+  .qs-tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 0;
+  }
+
+  .qs-tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+    position: relative;
+    bottom: -1px;
+  }
+
+  .qs-tab:hover {
+    color: var(--text-secondary);
+  }
+
+  .qs-tab.active {
+    color: var(--green-bright);
+    border-bottom-color: var(--green-bright);
+  }
+
+  /* Panels */
+  .qs-panel {
+    animation: fadeIn 0.15s ease-out;
+  }
+
+  .qs-panel.hidden {
+    display: none;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Code block — matches CodeBlock.astro but without top border-radius */
+  .qs-code-block {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-top: none;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .qs-code-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .code-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .qs-code-title {
+    margin-left: 10px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-family: var(--font-body);
+    flex: 1;
+  }
+
+  .qs-code-content {
+    padding: 14px 18px;
+    overflow-x: auto;
+  }
+
+  /* Lines — same as CodeBlock.astro */
+  .code-line {
+    white-space: pre;
+    display: flex;
+    gap: 8px;
+  }
+
+  .code-line.comment {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .code-line.cmd span:not(.code-prompt) {
+    color: var(--text-primary);
+  }
+
+  .code-prompt {
+    color: var(--green-bright);
+    user-select: none;
+  }
+
+  /* Copy button */
+  .qs-copy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+    flex-shrink: 0;
+  }
+
+  .qs-copy:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+  }
+
+  .qs-copy .qs-check-icon {
+    display: none;
+  }
+
+  .qs-copy.copied .qs-copy-icon {
+    display: none;
+  }
+
+  .qs-copy.copied .qs-check-icon {
+    display: block;
+    color: var(--green-bright);
+  }
+
+  /* Note */
+  .qs-note {
+    margin-top: 12px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .qs-note a {
+    color: var(--green-bright);
+  }
+
+  .qs-note.hidden {
+    display: none;
+  }
+
+  /* Next steps */
+  .qs-next {
+    margin-top: 24px;
+  }
+
+  .qs-next-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .qs-next-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    transition: border-color 0.2s var(--ease-out);
+  }
+
+  .qs-next-item:hover {
+    border-color: var(--green-bright);
+  }
+
+  .qs-next-item code {
+    color: var(--green-bright);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .qs-next-item span {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .qs-tab {
+      padding: 8px 14px;
+      font-size: 0.8rem;
+    }
+
+    .qs-code-block {
+      font-size: 0.75rem;
+    }
+
+    .qs-code-content {
+      padding: 12px 14px;
+    }
+
+    .qs-next-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

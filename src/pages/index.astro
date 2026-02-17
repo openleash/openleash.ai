@@ -6,6 +6,7 @@ import CodeBlock from '../components/CodeBlock.astro';
 import FeatureCard from '../components/FeatureCard.astro';
 import StepCard from '../components/StepCard.astro';
 import CalloutBanner from '../components/CalloutBanner.astro';
+import QuickStart from '../components/QuickStart.astro';
 ---
 
 <BaseLayout title="OpenLeash — Local-first policy gate for AI agents" canonicalPath="/">
@@ -69,37 +70,9 @@ import CalloutBanner from '../components/CalloutBanner.astro';
     </div>
 
     <!-- Quickstart -->
-    <section id="quickstart" class="section fade-in fade-in-d3">
-      <h2 class="section-title">
-        <span class="accent-prefix">›</span> Quickstart
-      </h2>
+    <QuickStart />
 
-      <div class="quickstart-grid">
-        <CodeBlock
-          title="Install"
-          lines={[
-            { type: 'comment', text: '# Install OpenLeash globally' },
-            { type: 'cmd', text: 'npm i -g openleash', prompt: '$' },
-          ]}
-        />
-        <CodeBlock
-          title="Start"
-          lines={[
-            { type: 'comment', text: '# Start the OpenLeash sidecar' },
-            { type: 'cmd', text: 'npx openleash start', prompt: '$' },
-            { type: 'output', text: '✓ OpenLeash running on http://127.0.0.1:8787' },
-          ]}
-        />
-        <CodeBlock
-          title="Setup wizard"
-          lines={[
-            { type: 'comment', text: '# Configure policies interactively' },
-            { type: 'cmd', text: 'npx openleash wizard', prompt: '$' },
-            { type: 'output', text: '? Select policy template › spending-limits' },
-          ]}
-        />
-      </div>
-
+    <section class="section fade-in fade-in-d3">
       <div class="sdk-example">
         <h3 class="subsection-title">SDK usage</h3>
         <CodeBlock
@@ -453,11 +426,6 @@ import CalloutBanner from '../components/CalloutBanner.astro';
   }
 
   /* Quickstart */
-  .quickstart-grid {
-    display: grid;
-    gap: 16px;
-  }
-
   .sdk-example {
     margin-top: 8px;
   }

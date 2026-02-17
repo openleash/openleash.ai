@@ -37,6 +37,7 @@
       <button class="qs-tab active" role="tab" aria-selected="true" aria-controls="method-oneliner" id="tab-oneliner" tabindex="0">One-liner</button>
       <button class="qs-tab" role="tab" aria-selected="false" aria-controls="method-npm" id="tab-npm" tabindex="-1">npm</button>
       <button class="qs-tab" role="tab" aria-selected="false" aria-controls="method-source" id="tab-source" tabindex="-1">From source</button>
+      <button class="qs-tab" role="tab" aria-selected="false" aria-controls="method-docker" id="tab-docker" tabindex="-1">Docker</button>
     </div>
 
     <!-- ═══════════ Method: One-liner ═══════════ -->
@@ -259,6 +260,55 @@ openleash start" aria-label="Copy commands">
           <div class="code-line output"><span>&#x2713; OpenLeash running on http://127.0.0.1:8787</span></div>
         </div>
       </div>
+    </div>
+
+    <!-- ═══════════ Method: Docker ═══════════ -->
+    <div class="qs-method hidden" role="tabpanel" id="method-docker" aria-labelledby="tab-docker">
+      <div class="qs-code-block">
+        <div class="qs-code-header">
+          <span class="code-dot" style="background:#ff5f57"></span>
+          <span class="code-dot" style="background:#febc2e"></span>
+          <span class="code-dot" style="background:#28c840"></span>
+          <span class="qs-code-title">Terminal</span>
+          <button class="qs-copy" data-code="docker run -d -p 8787:8787 \
+  -v openleash-data:/app/data \
+  ghcr.io/openleash/openleash" aria-label="Copy command">
+            <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+        <div class="qs-code-content">
+          <div class="code-line comment"><span># Quick start with default config</span></div>
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>docker run -d -p 8787:8787 \</span></div>
+          <div class="code-line cmd"><span class="code-prompt"> </span> <span>  -v openleash-data:/app/data \</span></div>
+          <div class="code-line cmd"><span class="code-prompt"> </span> <span>  ghcr.io/openleash/openleash</span></div>
+        </div>
+      </div>
+
+      <div class="qs-code-block" style="border-top: 1px solid var(--border-subtle);">
+        <div class="qs-code-header">
+          <span class="code-dot" style="background:#ff5f57"></span>
+          <span class="code-dot" style="background:#febc2e"></span>
+          <span class="code-dot" style="background:#28c840"></span>
+          <span class="qs-code-title">With custom config</span>
+          <button class="qs-copy" data-code="docker run -d -p 8787:8787 \
+  -v ./config.yaml:/app/config.yaml \
+  -v openleash-data:/app/data \
+  ghcr.io/openleash/openleash" aria-label="Copy command">
+            <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+        <div class="qs-code-content">
+          <div class="code-line comment"><span># Mount your own config.yaml</span></div>
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>docker run -d -p 8787:8787 \</span></div>
+          <div class="code-line cmd"><span class="code-prompt"> </span> <span>  -v ./config.yaml:/app/config.yaml \</span></div>
+          <div class="code-line cmd"><span class="code-prompt"> </span> <span>  -v openleash-data:/app/data \</span></div>
+          <div class="code-line cmd"><span class="code-prompt"> </span> <span>  ghcr.io/openleash/openleash</span></div>
+        </div>
+      </div>
+
+      <p class="qs-install-desc"><code>data/</code> stores policies, audit logs, and signing keys. <code>config.yaml</code> is optional &mdash; mount it to customize server settings.</p>
     </div>
 
     <!-- What gets installed -->

@@ -5,8 +5,8 @@ import Footer from '../components/Footer.astro';
 
 const docLinks = [
   {
-    title: 'Specification / Build Prompt',
-    description: 'The complete specification and build prompt for openleash.',
+    title: 'README & Quickstart',
+    description: 'Project overview, installation, SDK usage, CLI commands, and architecture.',
     href: 'https://github.com/openleash/openleash/blob/main/README.md',
   },
   {
@@ -82,11 +82,11 @@ const docLinks = [
           <span class="ref-label">Request authorization</span>
         </div>
         <div class="ref-item">
-          <code class="ref-cmd">POST /v1/verify</code>
+          <code class="ref-cmd">POST /v1/verify-proof</code>
           <span class="ref-label">Verify proof token</span>
         </div>
         <div class="ref-item">
-          <code class="ref-cmd">POST /v1/register</code>
+          <code class="ref-cmd">POST /v1/agents/register</code>
           <span class="ref-label">Register an agent</span>
         </div>
       </div>

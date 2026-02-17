@@ -40,8 +40,8 @@ import CodeBlock from '../components/CodeBlock.astro';
                           │ proof tokens
                           ▼
                      ┌──────────┐
-                     │  ~/.open  │
-                     │  leash/   │
+                     │  ./data/  │
+                     │           │
                      └──────────┘
 `}</pre>
       </div>
@@ -63,7 +63,7 @@ import CodeBlock from '../components/CodeBlock.astro';
         lines={[
           { type: 'comment', text: '// Before executing a tool in OpenClaw' },
           { type: 'code', text: 'async function beforeToolExecution(tool: Tool, context: Context) {' },
-          { type: 'code', text: '  const res = await fetch("http://localhost:3120/v1/authorize", {' },
+          { type: 'code', text: '  const res = await fetch("http://127.0.0.1:8787/v1/authorize", {' },
           { type: 'code', text: '    method: "POST",' },
           { type: 'code', text: '    headers: { "Content-Type": "application/json" },' },
           { type: 'code', text: '    body: JSON.stringify({' },
@@ -76,7 +76,7 @@ import CodeBlock from '../components/CodeBlock.astro';
           { type: 'code', text: '' },
           { type: 'code', text: '  const { decision, proof_token } = await res.json();' },
           { type: 'code', text: '' },
-          { type: 'code', text: '  if (decision !== "allow") {' },
+          { type: 'code', text: '  if (decision !== "ALLOW") {' },
           { type: 'code', text: '    throw new Error(`Action denied: ${decision}`);' },
           { type: 'code', text: '  }' },
           { type: 'code', text: '' },
@@ -98,10 +98,10 @@ import CodeBlock from '../components/CodeBlock.astro';
           { type: 'code', text: '' },
           { type: 'comment', text: '# Start openleash sidecar' },
           { type: 'cmd', text: 'npx openleash start', prompt: '$' },
-          { type: 'output', text: '✓ openleash running on http://localhost:3120' },
+          { type: 'output', text: '✓ openleash running on http://127.0.0.1:8787' },
           { type: 'code', text: '' },
-          { type: 'comment', text: '# Run the setup wizard for OpenClaw integration' },
-          { type: 'cmd', text: 'npx openleash wizard --template openclaw', prompt: '$' },
+          { type: 'comment', text: '# Run the interactive setup wizard' },
+          { type: 'cmd', text: 'npx openleash wizard', prompt: '$' },
         ]}
       />
     </section>

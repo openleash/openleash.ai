@@ -35,7 +35,7 @@ import CodeBlock from '../components/CodeBlock.astro';
         <CodeBlock
           title="Run the playground"
           lines={[
-            { type: 'cmd', text: 'npx openleash playground --scenario spending-check', prompt: '$' },
+            { type: 'cmd', text: 'npx openleash playground run spending-check', prompt: '$' },
           ]}
         />
       </div>
@@ -57,7 +57,7 @@ import CodeBlock from '../components/CodeBlock.astro';
           { type: 'output', text: '  ✗ condition: context.cost <= 100  →  150 > 100' },
           { type: 'output', text: '  → rule result: REQUIRE_APPROVAL' },
           { type: 'output', text: '' },
-          { type: 'output', text: 'Final decision: require_approval' },
+          { type: 'output', text: 'Final decision: REQUIRE_APPROVAL' },
           { type: 'output', text: 'Obligations: ["notify_owner", "log_attempt"]' },
           { type: 'output', text: 'Proof token: (not issued — approval pending)' },
         ]}
@@ -80,7 +80,7 @@ import CodeBlock from '../components/CodeBlock.astro';
           { type: 'output', text: '  ✓ condition: resource.trust_level == "low"' },
           { type: 'output', text: '  → rule result: ALLOW' },
           { type: 'output', text: '' },
-          { type: 'output', text: 'Final decision: allow' },
+          { type: 'output', text: 'Final decision: ALLOW' },
           { type: 'output', text: 'Obligations: []' },
           { type: 'output', text: 'Proof token: v4.public.eyJhZ2VudCI6ImFnZW50LWJvb2tp...' },
         ]}
@@ -101,9 +101,9 @@ import CodeBlock from '../components/CodeBlock.astro';
           { type: 'output', text: '  ✓ agent matches: agent-gov-001' },
           { type: 'output', text: '  ✓ action matches: submit_filing' },
           { type: 'output', text: '  ✓ condition: resource.category == "regulated"' },
-          { type: 'output', text: '  → rule result: STEP_UP' },
+          { type: 'output', text: '  → rule result: REQUIRE_STEP_UP' },
           { type: 'output', text: '' },
-          { type: 'output', text: 'Final decision: step_up' },
+          { type: 'output', text: 'Final decision: REQUIRE_STEP_UP' },
           { type: 'output', text: 'Step-up method: "owner_mfa"' },
           { type: 'output', text: 'Obligations: ["audit_log", "retain_30d"]' },
           { type: 'output', text: 'Proof token: (not issued — step-up required first)' },
@@ -116,14 +116,14 @@ import CodeBlock from '../components/CodeBlock.astro';
       <CodeBlock
         title="playground CLI"
         lines={[
+          { type: 'comment', text: '# List available scenarios' },
+          { type: 'cmd', text: 'npx openleash playground list', prompt: '$' },
+          { type: 'code', text: '' },
           { type: 'comment', text: '# Run a specific scenario' },
-          { type: 'cmd', text: 'npx openleash playground --scenario <name>', prompt: '$' },
+          { type: 'cmd', text: 'npx openleash playground run <name>', prompt: '$' },
           { type: 'code', text: '' },
-          { type: 'comment', text: '# Run all scenarios in a directory' },
-          { type: 'cmd', text: 'npx openleash playground --dir ./scenarios/', prompt: '$' },
-          { type: 'code', text: '' },
-          { type: 'comment', text: '# Verbose output with full policy trace' },
-          { type: 'cmd', text: 'npx openleash playground --scenario spending-check --verbose', prompt: '$' },
+          { type: 'comment', text: '# Run with a specific policy file' },
+          { type: 'cmd', text: 'npx openleash playground run spending-check --policy ./policies/limits.yaml', prompt: '$' },
         ]}
       />
     </section>

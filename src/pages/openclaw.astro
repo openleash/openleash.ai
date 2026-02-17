@@ -7,7 +7,7 @@ import CodeBlock from '../components/CodeBlock.astro';
 
 <BaseLayout
   title="OpenClaw Integration — OpenLeash"
-  description="Run openleash as a sidecar for OpenClaw. Authorize agent actions before tool execution."
+  description="Run OpenLeash as a sidecar for OpenClaw. Authorize agent actions before tool execution."
   canonicalPath="/openclaw"
 >
   <Nav />
@@ -18,8 +18,8 @@ import CodeBlock from '../components/CodeBlock.astro';
         <span class="accent-prefix">›</span> OpenClaw Integration
       </h1>
       <p class="page-desc">
-        Run openleash next to OpenClaw as a sidecar. Every tool execution passes through
-        openleash for policy evaluation before reaching the external world.
+        Run OpenLeash next to OpenClaw as a sidecar. Every tool execution passes through
+        OpenLeash for policy evaluation before reaching the external world.
       </p>
     </header>
 
@@ -30,7 +30,7 @@ import CodeBlock from '../components/CodeBlock.astro';
         <pre class="diagram-ascii">{`
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
 │              │     │              │     │              │
-│   OpenClaw   │────▶│  openleash   │────▶│   External   │
+│   OpenClaw   │────▶│  OpenLeash   │────▶│   External   │
 │   (agent)    │     │  (sidecar)   │     │   Service    │
 │              │◀────│              │◀────│              │
 └──────────────┘     └──────────────┘     └──────────────┘
@@ -46,8 +46,8 @@ import CodeBlock from '../components/CodeBlock.astro';
 `}</pre>
       </div>
       <p class="diagram-caption">
-        OpenClaw calls openleash before executing any tool.
-        openleash evaluates policies, logs the decision, and optionally issues a
+        OpenClaw calls OpenLeash before executing any tool.
+        OpenLeash evaluates policies, logs the decision, and optionally issues a
         PASETO proof token. The external service can verify the token independently.
       </p>
     </section>
@@ -56,7 +56,7 @@ import CodeBlock from '../components/CodeBlock.astro';
     <section class="section fade-in fade-in-d2">
       <h2 class="section-title">Integration point</h2>
       <p class="section-text">
-        In your OpenClaw tool execution hook, call openleash before running the tool:
+        In your OpenClaw tool execution hook, call OpenLeash before running the tool:
       </p>
       <CodeBlock
         title="openclaw-hook.ts"
@@ -93,12 +93,12 @@ import CodeBlock from '../components/CodeBlock.astro';
       <CodeBlock
         title="terminal"
         lines={[
-          { type: 'comment', text: '# Install openleash alongside OpenClaw' },
+          { type: 'comment', text: '# Install OpenLeash alongside OpenClaw' },
           { type: 'cmd', text: 'npm i -g openleash', prompt: '$' },
           { type: 'code', text: '' },
-          { type: 'comment', text: '# Start openleash sidecar' },
+          { type: 'comment', text: '# Start OpenLeash sidecar' },
           { type: 'cmd', text: 'npx openleash start', prompt: '$' },
-          { type: 'output', text: '✓ openleash running on http://127.0.0.1:8787' },
+          { type: 'output', text: '✓ OpenLeash running on http://127.0.0.1:8787' },
           { type: 'code', text: '' },
           { type: 'comment', text: '# Run the interactive setup wizard' },
           { type: 'cmd', text: 'npx openleash wizard', prompt: '$' },
@@ -119,7 +119,7 @@ import CodeBlock from '../components/CodeBlock.astro';
           <span>github.com/openclaw/openclaw ↗</span>
         </a>
         <a href="https://github.com/openleash/openleash" target="_blank" rel="noopener noreferrer" class="link-card">
-          <strong>openleash Repo</strong>
+          <strong>OpenLeash Repo</strong>
           <span>github.com/openleash/openleash ↗</span>
         </a>
       </div>

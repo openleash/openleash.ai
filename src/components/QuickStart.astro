@@ -1,5 +1,5 @@
 ---
-// QuickStart — Tabbed install component with OS detection
+// QuickStart — Two-level tabbed install (method → OS) with beta toggle and AI callout
 ---
 
 <section id="quickstart" class="section fade-in fade-in-d3">
@@ -7,79 +7,208 @@
     <span class="accent-prefix">›</span> Quickstart
   </h2>
 
-  <div class="qs-tabs">
-    <!-- Tab bar -->
+  <div class="qs-container">
+    <!-- Primary tabs: installation method -->
     <div class="qs-tab-bar" role="tablist" aria-label="Installation method">
-      <button
-        class="qs-tab active"
-        role="tab"
-        aria-selected="true"
-        aria-controls="panel-oneliner"
-        id="tab-oneliner"
-        tabindex="0"
-      >One-liner</button>
-      <button
-        class="qs-tab"
-        role="tab"
-        aria-selected="false"
-        aria-controls="panel-npm"
-        id="tab-npm"
-        tabindex="-1"
-      >npm</button>
-      <button
-        class="qs-tab"
-        role="tab"
-        aria-selected="false"
-        aria-controls="panel-source"
-        id="tab-source"
-        tabindex="-1"
-      >From source</button>
+      <button class="qs-tab active" role="tab" aria-selected="true" aria-controls="method-oneliner" id="tab-oneliner" tabindex="0">One-liner</button>
+      <button class="qs-tab" role="tab" aria-selected="false" aria-controls="method-npm" id="tab-npm" tabindex="-1">npm</button>
+      <button class="qs-tab" role="tab" aria-selected="false" aria-controls="method-source" id="tab-source" tabindex="-1">From source</button>
     </div>
 
-    <!-- Panel: One-liner -->
-    <div class="qs-panel" role="tabpanel" id="panel-oneliner" aria-labelledby="tab-oneliner">
-      <div class="qs-code-block">
-        <div class="qs-code-header">
-          <span class="code-dot" style="background:#ff5f57"></span>
-          <span class="code-dot" style="background:#febc2e"></span>
-          <span class="code-dot" style="background:#28c840"></span>
-          <span class="qs-code-title">Terminal</span>
-          <button class="qs-copy" data-code="curl -fsSL https://openleash.ai/install.sh | bash" aria-label="Copy command">
-            <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </button>
-        </div>
-        <div class="qs-code-content">
-          <div class="code-line comment"><span># Install OpenLeash with one command</span></div>
-          <div class="code-line cmd"><span class="code-prompt">$</span> <span>curl -fsSL https://openleash.ai/install.sh | bash</span></div>
+    <!-- ═══════════ Method: One-liner ═══════════ -->
+    <div class="qs-method" role="tabpanel" id="method-oneliner" aria-labelledby="tab-oneliner">
+      <!-- OS sub-tabs -->
+      <div class="qs-os-bar" role="tablist" aria-label="Operating system">
+        <button class="qs-os active" role="tab" aria-selected="true" aria-controls="oneliner-macos" id="os-oneliner-macos" tabindex="0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          macOS
+        </button>
+        <button class="qs-os" role="tab" aria-selected="false" aria-controls="oneliner-linux" id="os-oneliner-linux" tabindex="-1">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.368 1.884 1.564.585.151 1.22.107 1.77-.057.295-.074.585-.2.878-.344.329-.199.135-.515.249-.68.084-.058.328-.011.628-.197.248-.135.431-.344.452-.68.012-.2-.043-.397-.112-.602-.058-.199-.116-.395-.058-.6.116-.399.189-.797.189-1.199 0-.399-.116-.797-.315-1.133-.123-.199-.3-.398-.51-.542-.175-.4-.374-.804-.637-1.197-.333-.5-.762-.91-1.257-1.247-.137-.322-.068-.462.068-.664.394-.333.773-.676 1.153-1.01.375-.33.748-.676 1.09-1.01.665-.66 1.3-1.465 1.488-2.457.094-.493.097-.972.007-1.446-.076-.42-.23-.89-.378-1.3-.39-.79-1.01-1.552-1.77-2.115-.44-.337-.91-.6-1.395-.795-.37-.146-.72-.255-1.064-.324-.633-3.94-4.04-5.773-6.295-5.773z"/></svg>
+          Linux
+        </button>
+        <button class="qs-os" role="tab" aria-selected="false" aria-controls="oneliner-windows" id="os-oneliner-windows" tabindex="-1">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+          Windows
+        </button>
+      </div>
+
+      <!-- One-liner: macOS -->
+      <div class="qs-os-panel" id="oneliner-macos" aria-labelledby="os-oneliner-macos">
+        <div class="qs-code-block">
+          <div class="qs-code-header">
+            <span class="code-dot" style="background:#ff5f57"></span>
+            <span class="code-dot" style="background:#febc2e"></span>
+            <span class="code-dot" style="background:#28c840"></span>
+            <span class="qs-code-title">Terminal</span>
+            <label class="qs-beta-toggle"><input type="checkbox" class="qs-beta-check" /><span class="qs-beta-label">beta</span></label>
+            <button class="qs-copy" data-code="curl -fsSL https://openleash.ai/install.sh | bash" aria-label="Copy command">
+              <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+          <div class="qs-code-content">
+            <div class="code-line comment"><span># Installs Node.js via Homebrew if needed</span></div>
+            <div class="code-line cmd"><span class="code-prompt">$</span> <span class="qs-cmd-text" data-stable="curl -fsSL https://openleash.ai/install.sh | bash" data-beta="curl -fsSL https://openleash.ai/install.sh | bash -s -- --beta">curl -fsSL https://openleash.ai/install.sh | bash</span></div>
+          </div>
         </div>
       </div>
-      <p class="qs-note">Detects your OS, installs Node.js if needed, and sets up OpenLeash globally.</p>
-    </div>
 
-    <!-- Panel: npm -->
-    <div class="qs-panel hidden" role="tabpanel" id="panel-npm" aria-labelledby="tab-npm">
-      <div class="qs-code-block">
-        <div class="qs-code-header">
-          <span class="code-dot" style="background:#ff5f57"></span>
-          <span class="code-dot" style="background:#febc2e"></span>
-          <span class="code-dot" style="background:#28c840"></span>
-          <span class="qs-code-title">Terminal</span>
-          <button class="qs-copy" data-code="npm install -g openleash" aria-label="Copy command">
-            <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </button>
-        </div>
-        <div class="qs-code-content">
-          <div class="code-line comment"><span># Requires Node.js >= 18</span></div>
-          <div class="code-line cmd"><span class="code-prompt">$</span> <span>npm install -g openleash</span></div>
+      <!-- One-liner: Linux -->
+      <div class="qs-os-panel hidden" id="oneliner-linux" aria-labelledby="os-oneliner-linux">
+        <div class="qs-code-block">
+          <div class="qs-code-header">
+            <span class="code-dot" style="background:#ff5f57"></span>
+            <span class="code-dot" style="background:#febc2e"></span>
+            <span class="code-dot" style="background:#28c840"></span>
+            <span class="qs-code-title">Terminal</span>
+            <label class="qs-beta-toggle"><input type="checkbox" class="qs-beta-check" /><span class="qs-beta-label">beta</span></label>
+            <button class="qs-copy" data-code="curl -fsSL https://openleash.ai/install.sh | bash" aria-label="Copy command">
+              <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+          <div class="qs-code-content">
+            <div class="code-line comment"><span># Detects apt, dnf, pacman, or apk</span></div>
+            <div class="code-line cmd"><span class="code-prompt">$</span> <span class="qs-cmd-text" data-stable="curl -fsSL https://openleash.ai/install.sh | bash" data-beta="curl -fsSL https://openleash.ai/install.sh | bash -s -- --beta">curl -fsSL https://openleash.ai/install.sh | bash</span></div>
+          </div>
         </div>
       </div>
-      <p class="qs-note qs-note-windows hidden">On Windows, we recommend using <a href="https://learn.microsoft.com/en-us/windows/wsl/" target="_blank" rel="noopener noreferrer">WSL</a> for the best experience.</p>
+
+      <!-- One-liner: Windows -->
+      <div class="qs-os-panel hidden" id="oneliner-windows" aria-labelledby="os-oneliner-windows">
+        <!-- Shell picker -->
+        <div class="qs-shell-bar">
+          <button class="qs-shell active" data-shell="powershell" data-group="oneliner-win">PowerShell</button>
+          <button class="qs-shell" data-shell="wsl" data-group="oneliner-win">WSL</button>
+        </div>
+        <div class="qs-code-block qs-shell-panel" data-shell="powershell" data-group="oneliner-win">
+          <div class="qs-code-header">
+            <span class="code-dot" style="background:#ff5f57"></span>
+            <span class="code-dot" style="background:#febc2e"></span>
+            <span class="code-dot" style="background:#28c840"></span>
+            <span class="qs-code-title">PowerShell</span>
+            <label class="qs-beta-toggle"><input type="checkbox" class="qs-beta-check" /><span class="qs-beta-label">beta</span></label>
+            <button class="qs-copy" data-code="npm install -g openleash" aria-label="Copy command">
+              <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+          <div class="qs-code-content">
+            <div class="code-line comment"><span># Requires Node.js >= 18</span></div>
+            <div class="code-line cmd"><span class="code-prompt">></span> <span class="qs-cmd-text" data-stable="npm install -g openleash" data-beta="npm install -g openleash@beta">npm install -g openleash</span></div>
+          </div>
+        </div>
+        <div class="qs-code-block qs-shell-panel hidden" data-shell="wsl" data-group="oneliner-win">
+          <div class="qs-code-header">
+            <span class="code-dot" style="background:#ff5f57"></span>
+            <span class="code-dot" style="background:#febc2e"></span>
+            <span class="code-dot" style="background:#28c840"></span>
+            <span class="qs-code-title">WSL</span>
+            <label class="qs-beta-toggle"><input type="checkbox" class="qs-beta-check" /><span class="qs-beta-label">beta</span></label>
+            <button class="qs-copy" data-code="curl -fsSL https://openleash.ai/install.sh | bash" aria-label="Copy command">
+              <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+          <div class="qs-code-content">
+            <div class="code-line comment"><span># Full Linux experience inside Windows</span></div>
+            <div class="code-line cmd"><span class="code-prompt">$</span> <span class="qs-cmd-text" data-stable="curl -fsSL https://openleash.ai/install.sh | bash" data-beta="curl -fsSL https://openleash.ai/install.sh | bash -s -- --beta">curl -fsSL https://openleash.ai/install.sh | bash</span></div>
+          </div>
+        </div>
+        <p class="qs-install-desc">For the best experience, use <a href="https://learn.microsoft.com/en-us/windows/wsl/" target="_blank" rel="noopener noreferrer">WSL</a>.</p>
+      </div>
     </div>
 
-    <!-- Panel: From source -->
-    <div class="qs-panel hidden" role="tabpanel" id="panel-source" aria-labelledby="tab-source">
+    <!-- ═══════════ Method: npm ═══════════ -->
+    <div class="qs-method hidden" role="tabpanel" id="method-npm" aria-labelledby="tab-npm">
+      <!-- OS sub-tabs -->
+      <div class="qs-os-bar" role="tablist" aria-label="Operating system">
+        <button class="qs-os active" role="tab" aria-selected="true" aria-controls="npm-unix" id="os-npm-unix" tabindex="0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          macOS / Linux
+        </button>
+        <button class="qs-os" role="tab" aria-selected="false" aria-controls="npm-windows" id="os-npm-windows" tabindex="-1">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+          Windows
+        </button>
+      </div>
+
+      <!-- npm: macOS / Linux -->
+      <div class="qs-os-panel" id="npm-unix" aria-labelledby="os-npm-unix">
+        <div class="qs-code-block">
+          <div class="qs-code-header">
+            <span class="code-dot" style="background:#ff5f57"></span>
+            <span class="code-dot" style="background:#febc2e"></span>
+            <span class="code-dot" style="background:#28c840"></span>
+            <span class="qs-code-title">Terminal</span>
+            <label class="qs-beta-toggle"><input type="checkbox" class="qs-beta-check" /><span class="qs-beta-label">beta</span></label>
+            <button class="qs-copy" data-code="npm install -g openleash
+openleash start" aria-label="Copy commands">
+              <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+          <div class="qs-code-content">
+            <div class="code-line comment"><span># Requires Node.js >= 18</span></div>
+            <div class="code-line cmd"><span class="code-prompt">$</span> <span class="qs-cmd-text" data-stable="npm install -g openleash" data-beta="npm install -g openleash@beta">npm install -g openleash</span></div>
+            <div class="code-line cmd"><span class="code-prompt">$</span> <span>openleash start</span></div>
+            <div class="code-line output"><span>&#x2713; OpenLeash running on http://127.0.0.1:8787</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- npm: Windows -->
+      <div class="qs-os-panel hidden" id="npm-windows" aria-labelledby="os-npm-windows">
+        <div class="qs-shell-bar">
+          <button class="qs-shell active" data-shell="powershell" data-group="npm-win">PowerShell</button>
+          <button class="qs-shell" data-shell="cmd" data-group="npm-win">CMD</button>
+        </div>
+        <div class="qs-code-block qs-shell-panel" data-shell="powershell" data-group="npm-win">
+          <div class="qs-code-header">
+            <span class="code-dot" style="background:#ff5f57"></span>
+            <span class="code-dot" style="background:#febc2e"></span>
+            <span class="code-dot" style="background:#28c840"></span>
+            <span class="qs-code-title">PowerShell</span>
+            <label class="qs-beta-toggle"><input type="checkbox" class="qs-beta-check" /><span class="qs-beta-label">beta</span></label>
+            <button class="qs-copy" data-code="npm install -g openleash
+openleash start" aria-label="Copy commands">
+              <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+          <div class="qs-code-content">
+            <div class="code-line comment"><span># Requires Node.js >= 18</span></div>
+            <div class="code-line cmd"><span class="code-prompt">></span> <span class="qs-cmd-text" data-stable="npm install -g openleash" data-beta="npm install -g openleash@beta">npm install -g openleash</span></div>
+            <div class="code-line cmd"><span class="code-prompt">></span> <span>openleash start</span></div>
+            <div class="code-line output"><span>&#x2713; OpenLeash running on http://127.0.0.1:8787</span></div>
+          </div>
+        </div>
+        <div class="qs-code-block qs-shell-panel hidden" data-shell="cmd" data-group="npm-win">
+          <div class="qs-code-header">
+            <span class="code-dot" style="background:#ff5f57"></span>
+            <span class="code-dot" style="background:#febc2e"></span>
+            <span class="code-dot" style="background:#28c840"></span>
+            <span class="qs-code-title">Command Prompt</span>
+            <label class="qs-beta-toggle"><input type="checkbox" class="qs-beta-check" /><span class="qs-beta-label">beta</span></label>
+            <button class="qs-copy" data-code="npm install -g openleash
+openleash start" aria-label="Copy commands">
+              <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+          <div class="qs-code-content">
+            <div class="code-line comment"><span>:: Requires Node.js >= 18</span></div>
+            <div class="code-line cmd"><span class="code-prompt">C:\></span> <span class="qs-cmd-text" data-stable="npm install -g openleash" data-beta="npm install -g openleash@beta">npm install -g openleash</span></div>
+            <div class="code-line cmd"><span class="code-prompt">C:\></span> <span>openleash start</span></div>
+            <div class="code-line output"><span>&#x2713; OpenLeash running on http://127.0.0.1:8787</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ Method: From source ═══════════ -->
+    <div class="qs-method hidden" role="tabpanel" id="method-source" aria-labelledby="tab-source">
       <div class="qs-code-block">
         <div class="qs-code-header">
           <span class="code-dot" style="background:#ff5f57"></span>
@@ -90,7 +219,8 @@
 cd openleash
 npm install
 npm run build
-npm link" aria-label="Copy commands">
+npm link
+openleash start" aria-label="Copy commands">
             <svg class="qs-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             <svg class="qs-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </button>
@@ -101,22 +231,50 @@ npm link" aria-label="Copy commands">
           <div class="code-line cmd"><span class="code-prompt">$</span> <span>npm install</span></div>
           <div class="code-line cmd"><span class="code-prompt">$</span> <span>npm run build</span></div>
           <div class="code-line cmd"><span class="code-prompt">$</span> <span>npm link</span></div>
+          <div class="code-line cmd"><span class="code-prompt">$</span> <span>openleash start</span></div>
+          <div class="code-line output"><span>&#x2713; OpenLeash running on http://127.0.0.1:8787</span></div>
         </div>
       </div>
     </div>
+
+    <!-- What gets installed -->
+    <p class="qs-what">Installs the <code>openleash</code> CLI, local policy engine, audit logger, and proof-token signer. No cloud dependency &mdash; everything runs on your machine.</p>
   </div>
 
   <!-- Next steps -->
   <div class="qs-next">
     <h3 class="subsection-title">Next steps</h3>
     <div class="qs-next-grid">
-      <div class="qs-next-item">
+      <a href="/docs" class="qs-next-item">
         <code>openleash start</code>
-        <span>Start the policy sidecar</span>
-      </div>
-      <div class="qs-next-item">
+        <span>Start the policy sidecar on <code>127.0.0.1:8787</code></span>
+      </a>
+      <a href="/docs" class="qs-next-item">
         <code>openleash wizard</code>
-        <span>Configure policies interactively</span>
+        <span>Configure policies interactively with the setup wizard</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- AI agent callout -->
+  <div class="qs-agent-callout">
+    <div class="qs-agent-human">
+      <span class="qs-agent-icon" aria-hidden="true">&#x1f9d1;&#x200d;&#x1f4bb;</span>
+      <div>
+        <strong>Human? Welcome.</strong>
+        <p>You're in the right place. Install OpenLeash above and check out the <a href="/docs">docs</a>.</p>
+      </div>
+    </div>
+    <div class="qs-agent-divider"></div>
+    <div class="qs-agent-bot">
+      <span class="qs-agent-icon" aria-hidden="true">&#x1f916;</span>
+      <div>
+        <strong>AI agent? Hey, we built this for you.</strong>
+        <p>
+          You'll want the <a href="https://github.com/openleash/openleash/blob/main/docs/protocol.md" target="_blank" rel="noopener noreferrer">authorization protocol spec</a>
+          and the <a href="/docs">SDK reference</a>.
+          Before you do anything risky, call <code>POST /authorize</code> first &mdash; that's the whole point.
+        </p>
       </div>
     </div>
   </div>
@@ -124,84 +282,140 @@ npm link" aria-label="Copy commands">
 
 <script>
   function init() {
-    const tabs = document.querySelectorAll('.qs-tab');
-    const panels = document.querySelectorAll('.qs-panel');
-    const copyButtons = document.querySelectorAll('.qs-copy');
-    const windowsNote = document.querySelector('.qs-note-windows');
+    // --- Primary method tabs ---
+    const methodTabs = document.querySelectorAll<HTMLButtonElement>('.qs-tab');
+    const methodPanels = document.querySelectorAll<HTMLDivElement>('.qs-method');
 
-    // --- OS detection ---
-    const ua = navigator.userAgent;
-    const isWindows = /Win/.test(ua);
-    const isMac = /Mac/.test(ua);
-
-    if (isWindows) {
-      // Default to npm tab on Windows
-      switchTab('tab-npm');
-      if (windowsNote) windowsNote.classList.remove('hidden');
-    }
-    // macOS and Linux stay on one-liner (default)
-
-    // --- Tab switching ---
-    function switchTab(tabId: string) {
-      tabs.forEach(t => {
-        const isActive = t.id === tabId;
-        t.classList.toggle('active', isActive);
-        t.setAttribute('aria-selected', String(isActive));
-        t.setAttribute('tabindex', isActive ? '0' : '-1');
+    function switchMethod(tabId: string) {
+      methodTabs.forEach(t => {
+        const active = t.id === tabId;
+        t.classList.toggle('active', active);
+        t.setAttribute('aria-selected', String(active));
+        t.setAttribute('tabindex', active ? '0' : '-1');
       });
-      panels.forEach(p => {
-        const tabForPanel = p.getAttribute('aria-labelledby');
-        p.classList.toggle('hidden', tabForPanel !== tabId);
+      methodPanels.forEach(p => {
+        p.classList.toggle('hidden', p.getAttribute('aria-labelledby') !== tabId);
       });
     }
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => switchTab(tab.id));
-
-      // Keyboard navigation
+    methodTabs.forEach(tab => {
+      tab.addEventListener('click', () => switchMethod(tab.id));
       tab.addEventListener('keydown', (e: KeyboardEvent) => {
-        const tabArr = Array.from(tabs);
-        const idx = tabArr.indexOf(tab);
+        const arr = Array.from(methodTabs);
+        const idx = arr.indexOf(tab);
         let target: number | null = null;
-
-        if (e.key === 'ArrowRight') target = (idx + 1) % tabArr.length;
-        else if (e.key === 'ArrowLeft') target = (idx - 1 + tabArr.length) % tabArr.length;
+        if (e.key === 'ArrowRight') target = (idx + 1) % arr.length;
+        else if (e.key === 'ArrowLeft') target = (idx - 1 + arr.length) % arr.length;
         else if (e.key === 'Home') target = 0;
-        else if (e.key === 'End') target = tabArr.length - 1;
-
+        else if (e.key === 'End') target = arr.length - 1;
         if (target !== null) {
           e.preventDefault();
-          const el = tabArr[target] as HTMLElement;
-          el.focus();
-          switchTab(el.id);
+          arr[target]!.focus();
+          switchMethod(arr[target]!.id);
         }
+      });
+    });
+
+    // --- OS sub-tabs (scoped per method panel) ---
+    methodPanels.forEach(method => {
+      const osTabs = method.querySelectorAll<HTMLButtonElement>('.qs-os');
+      const osPanels = method.querySelectorAll<HTMLDivElement>('.qs-os-panel');
+      if (!osTabs.length) return;
+
+      function switchOS(tabId: string) {
+        osTabs.forEach(t => {
+          const active = t.id === tabId;
+          t.classList.toggle('active', active);
+          t.setAttribute('aria-selected', String(active));
+          t.setAttribute('tabindex', active ? '0' : '-1');
+        });
+        osPanels.forEach(p => {
+          p.classList.toggle('hidden', p.getAttribute('aria-labelledby') !== tabId);
+        });
+      }
+
+      osTabs.forEach(tab => {
+        tab.addEventListener('click', () => switchOS(tab.id));
+        tab.addEventListener('keydown', (e: KeyboardEvent) => {
+          const arr = Array.from(osTabs);
+          const idx = arr.indexOf(tab);
+          let target: number | null = null;
+          if (e.key === 'ArrowRight') target = (idx + 1) % arr.length;
+          else if (e.key === 'ArrowLeft') target = (idx - 1 + arr.length) % arr.length;
+          else if (e.key === 'Home') target = 0;
+          else if (e.key === 'End') target = arr.length - 1;
+          if (target !== null) {
+            e.preventDefault();
+            arr[target]!.focus();
+            switchOS(arr[target]!.id);
+          }
+        });
+      });
+
+      // OS auto-detection per method panel
+      const ua = navigator.userAgent;
+      if (/Win/.test(ua)) {
+        const winTab = Array.from(osTabs).find(t => t.id.includes('windows'));
+        if (winTab) switchOS(winTab.id);
+      } else if (/Linux/.test(ua) && !/Android/.test(ua)) {
+        const linTab = Array.from(osTabs).find(t => t.id.includes('linux'));
+        if (linTab) switchOS(linTab.id);
+      }
+    });
+
+    // --- Shell picker (scoped by data-group) ---
+    document.querySelectorAll<HTMLButtonElement>('.qs-shell').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.group!;
+        const shell = btn.dataset.shell!;
+        document.querySelectorAll<HTMLButtonElement>(`.qs-shell[data-group="${group}"]`).forEach(b =>
+          b.classList.toggle('active', b.dataset.shell === shell)
+        );
+        document.querySelectorAll<HTMLDivElement>(`.qs-shell-panel[data-group="${group}"]`).forEach(p =>
+          p.classList.toggle('hidden', p.dataset.shell !== shell)
+        );
+      });
+    });
+
+    // --- Beta toggle ---
+    document.querySelectorAll<HTMLInputElement>('.qs-beta-check').forEach(check => {
+      check.addEventListener('change', () => {
+        const block = check.closest('.qs-code-block');
+        if (!block) return;
+        const cmdSpan = block.querySelector<HTMLSpanElement>('.qs-cmd-text');
+        const copyBtn = block.querySelector<HTMLButtonElement>('.qs-copy');
+        if (!cmdSpan) return;
+        const cmd = check.checked ? cmdSpan.dataset.beta! : cmdSpan.dataset.stable!;
+        cmdSpan.textContent = cmd;
+        if (copyBtn) copyBtn.dataset.code = cmd;
       });
     });
 
     // --- Copy to clipboard ---
-    copyButtons.forEach(btn => {
+    document.querySelectorAll<HTMLButtonElement>('.qs-copy').forEach(btn => {
       btn.addEventListener('click', async () => {
-        const code = btn.getAttribute('data-code');
+        const code = btn.dataset.code;
         if (!code) return;
         try {
           await navigator.clipboard.writeText(code);
-          btn.classList.add('copied');
-          setTimeout(() => btn.classList.remove('copied'), 2000);
         } catch {
-          // Fallback for older browsers
-          const textarea = document.createElement('textarea');
-          textarea.value = code;
-          textarea.style.position = 'fixed';
-          textarea.style.opacity = '0';
-          document.body.appendChild(textarea);
-          textarea.select();
+          const ta = document.createElement('textarea');
+          ta.value = code;
+          ta.style.cssText = 'position:fixed;opacity:0';
+          document.body.appendChild(ta);
+          ta.select();
           document.execCommand('copy');
-          document.body.removeChild(textarea);
-          btn.classList.add('copied');
-          setTimeout(() => btn.classList.remove('copied'), 2000);
+          document.body.removeChild(ta);
         }
+        btn.classList.add('copied');
+        setTimeout(() => btn.classList.remove('copied'), 2000);
       });
     });
+
+    // --- Auto-select method tab for Windows visitors ---
+    if (/Win/.test(navigator.userAgent)) {
+      switchMethod('tab-npm');
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -212,63 +426,126 @@ npm link" aria-label="Copy commands">
 </script>
 
 <style>
-  /* Tab bar */
-  .qs-tabs {
-    position: relative;
+  /* Container */
+  .qs-container {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
   }
 
+  /* Primary method tabs */
   .qs-tab-bar {
     display: flex;
-    gap: 0;
     border-bottom: 1px solid var(--border-subtle);
-    margin-bottom: 0;
+    background: rgba(0, 0, 0, 0.15);
   }
 
   .qs-tab {
-    padding: 10px 20px;
+    padding: 12px 22px;
     background: transparent;
     border: none;
     border-bottom: 2px solid transparent;
     color: var(--text-muted);
     font-family: var(--font-body);
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s var(--ease-out);
     position: relative;
     bottom: -1px;
   }
 
-  .qs-tab:hover {
-    color: var(--text-secondary);
-  }
+  .qs-tab:hover { color: var(--text-secondary); }
 
   .qs-tab.active {
     color: var(--green-bright);
     border-bottom-color: var(--green-bright);
   }
 
-  /* Panels */
-  .qs-panel {
-    animation: fadeIn 0.15s ease-out;
-  }
-
-  .qs-panel.hidden {
-    display: none;
-  }
+  /* Method panels */
+  .qs-method { animation: fadeIn 0.15s ease-out; }
+  .qs-method.hidden { display: none; }
 
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
 
-  /* Code block — matches CodeBlock.astro but without top border-radius */
+  /* OS sub-tabs */
+  .qs-os-bar {
+    display: flex;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  .qs-os {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s var(--ease-out);
+    position: relative;
+    bottom: -1px;
+  }
+
+  .qs-os:hover { color: var(--text-secondary); }
+
+  .qs-os.active {
+    color: var(--amber-bright);
+    border-bottom-color: var(--amber-bright);
+  }
+
+  .qs-os svg { opacity: 0.6; }
+  .qs-os.active svg { opacity: 1; }
+
+  .qs-os-panel { animation: fadeIn 0.1s ease-out; }
+  .qs-os-panel.hidden { display: none; }
+
+  /* Shell picker (3rd level, Windows) */
+  .qs-shell-bar {
+    display: flex;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .qs-shell {
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s var(--ease-out);
+    position: relative;
+    bottom: -1px;
+  }
+
+  .qs-shell:hover { color: var(--text-secondary); }
+
+  .qs-shell.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--text-primary);
+  }
+
+  .qs-shell-panel.hidden { display: none; }
+
+  /* Code block */
   .qs-code-block {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-subtle);
-    border-top: none;
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
-    overflow: hidden;
     font-family: var(--font-mono);
     font-size: 0.85rem;
     line-height: 1.6;
@@ -302,7 +579,6 @@ npm link" aria-label="Copy commands">
     overflow-x: auto;
   }
 
-  /* Lines — same as CodeBlock.astro */
   .code-line {
     white-space: pre;
     display: flex;
@@ -314,6 +590,10 @@ npm link" aria-label="Copy commands">
     font-style: italic;
   }
 
+  .code-line.output {
+    color: var(--text-secondary);
+  }
+
   .code-line.cmd span:not(.code-prompt) {
     color: var(--text-primary);
   }
@@ -321,6 +601,58 @@ npm link" aria-label="Copy commands">
   .code-prompt {
     color: var(--green-bright);
     user-select: none;
+  }
+
+  /* Beta toggle */
+  .qs-beta-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    margin-right: 4px;
+  }
+
+  .qs-beta-check {
+    appearance: none;
+    width: 28px;
+    height: 16px;
+    border-radius: 8px;
+    background: var(--border-subtle);
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s var(--ease-out);
+  }
+
+  .qs-beta-check::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: all 0.2s var(--ease-out);
+  }
+
+  .qs-beta-check:checked { background: var(--amber-mid); }
+
+  .qs-beta-check:checked::after {
+    left: 14px;
+    background: var(--bg-deep);
+  }
+
+  .qs-beta-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+
+  .qs-beta-check:checked ~ .qs-beta-label {
+    color: var(--amber-bright);
   }
 
   /* Copy button */
@@ -344,38 +676,37 @@ npm link" aria-label="Copy commands">
     border-color: var(--text-muted);
   }
 
-  .qs-copy .qs-check-icon {
-    display: none;
-  }
+  .qs-copy .qs-check-icon { display: none; }
+  .qs-copy.copied .qs-copy-icon { display: none; }
+  .qs-copy.copied .qs-check-icon { display: block; color: var(--green-bright); }
 
-  .qs-copy.copied .qs-copy-icon {
-    display: none;
-  }
-
-  .qs-copy.copied .qs-check-icon {
-    display: block;
-    color: var(--green-bright);
-  }
-
-  /* Note */
-  .qs-note {
-    margin-top: 12px;
-    font-size: 0.8rem;
+  /* Install description */
+  .qs-install-desc {
+    padding: 10px 18px 0;
+    font-size: 0.78rem;
     color: var(--text-muted);
+    line-height: 1.5;
   }
 
-  .qs-note a {
+  .qs-install-desc a { color: var(--green-bright); }
+
+  /* "What gets installed" footer */
+  .qs-what {
+    padding: 14px 18px 16px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 12px;
+  }
+
+  .qs-what code {
     color: var(--green-bright);
-  }
-
-  .qs-note.hidden {
-    display: none;
+    font-size: 0.78rem;
   }
 
   /* Next steps */
-  .qs-next {
-    margin-top: 24px;
-  }
+  .qs-next { margin-top: 24px; }
 
   .qs-next-grid {
     display: grid;
@@ -386,48 +717,124 @@ npm link" aria-label="Copy commands">
   .qs-next-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 14px 16px;
+    gap: 6px;
+    padding: 16px 18px;
     border-radius: var(--radius-md);
     border: 1px solid var(--border-subtle);
     background: var(--surface-card);
     backdrop-filter: blur(12px);
-    transition: border-color 0.2s var(--ease-out);
+    transition: all 0.2s var(--ease-out);
+    text-decoration: none;
+    color: inherit;
   }
 
   .qs-next-item:hover {
     border-color: var(--green-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(52, 211, 153, 0.1);
+    color: inherit;
   }
 
-  .qs-next-item code {
+  .qs-next-item > code {
     color: var(--green-bright);
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
   }
 
-  .qs-next-item span {
+  .qs-next-item > span {
     color: var(--text-secondary);
     font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .qs-next-item > span code {
+    color: var(--text-primary);
+    font-size: 0.78rem;
+  }
+
+  /* AI agent callout */
+  .qs-agent-callout {
+    margin-top: 24px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .qs-agent-human,
+  .qs-agent-bot {
+    display: flex;
+    gap: 14px;
+    padding: 20px;
+  }
+
+  .qs-agent-divider {
+    width: 1px;
+    background: var(--border-subtle);
+  }
+
+  .qs-agent-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .qs-agent-human strong,
+  .qs-agent-bot strong {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .qs-agent-human p,
+  .qs-agent-bot p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .qs-agent-bot p code {
+    color: var(--green-bright);
+    font-size: 0.78rem;
+  }
+
+  .qs-agent-human p a,
+  .qs-agent-bot p a {
+    color: var(--green-bright);
   }
 
   /* Responsive */
+  @media (max-width: 768px) {
+    .qs-agent-callout { grid-template-columns: 1fr; }
+    .qs-agent-divider { width: auto; height: 1px; }
+  }
+
   @media (max-width: 640px) {
     .qs-tab {
-      padding: 8px 14px;
+      padding: 10px 14px;
       font-size: 0.8rem;
     }
 
-    .qs-code-block {
-      font-size: 0.75rem;
+    .qs-os {
+      padding: 6px 10px;
+      font-size: 0.72rem;
     }
 
-    .qs-code-content {
-      padding: 12px 14px;
-    }
+    .qs-os svg { width: 11px; height: 11px; }
 
-    .qs-next-grid {
-      grid-template-columns: 1fr;
+    .qs-code-block { font-size: 0.75rem; }
+    .qs-code-content { padding: 12px 14px; }
+    .qs-next-grid { grid-template-columns: 1fr; }
+
+    .qs-shell {
+      padding: 5px 8px;
+      font-size: 0.65rem;
     }
   }
 </style>

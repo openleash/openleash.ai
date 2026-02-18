@@ -513,8 +513,13 @@ openleash start" aria-label="Copy commands">
   .qs-tab-bar {
     display: flex;
     overflow-x: auto;
+    scrollbar-width: none;
     border-bottom: 1px solid var(--border-subtle);
     background: rgba(0, 0, 0, 0.15);
+  }
+
+  .qs-tab-bar::-webkit-scrollbar {
+    display: none;
   }
 
   .qs-tab {

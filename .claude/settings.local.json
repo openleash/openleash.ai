@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(wc:*)",
+      "Bash(unset:*)",
+      "Bash(export:*)",
+      "Bash(. \"$NVM_DIR/nvm.sh\")",
+      "Bash(nvm use:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

@@ -512,6 +512,7 @@ openleash start" aria-label="Copy commands">
   /* Primary method tabs */
   .qs-tab-bar {
     display: flex;
+    overflow-x: auto;
     border-bottom: 1px solid var(--border-subtle);
     background: rgba(0, 0, 0, 0.15);
   }
@@ -932,6 +933,7 @@ openleash start" aria-label="Copy commands">
   @media (max-width: 768px) {
     .qs-agent-callout { grid-template-columns: 1fr; }
     .qs-agent-divider { width: auto; height: 1px; }
+    .qs-next-grid { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 640px) {
@@ -949,7 +951,8 @@ openleash start" aria-label="Copy commands">
 
     .qs-code-block { font-size: 0.75rem; }
     .qs-code-content { padding: 12px 14px; }
-    .qs-next-grid { grid-template-columns: 1fr; }
+    .code-dot { display: none; }
+    .qs-code-title { margin-left: 0; }
 
     .qs-shell {
       padding: 5px 8px;

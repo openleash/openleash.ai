@@ -19,6 +19,19 @@ If you are an AI agent looking to integrate with OpenLeash, start here:
 
 POST http://127.0.0.1:8787/v1/authorize — Request authorization before performing any risky action.
 
+## CLI Commands
+
+- `openleash start` — Launch the policy sidecar server
+- `openleash init --owner-name <name> --agent-id <id> --output-env <path> --policy-profile <conservative|balanced|autonomous>` — Non-interactive setup (creates owner, agent keypair, policy, outputs env vars)
+- `openleash wizard` — Interactive setup wizard
+- `openleash policy list` — List all policies
+- `openleash policy show <id>` — Show policy YAML
+- `openleash policy upsert --file <path> --owner <id> [--policy-id <id>]` — Create or update a policy (--policy-id updates in place)
+- `openleash policy validate --file <path>` — Validate a policy file
+- `openleash policy delete --policy-id <id>` — Delete a policy and its bindings
+- `openleash policy unbind --policy-id <id> [--owner <id>]` — Remove policy bindings
+- `openleash playground list|run` — Test policy evaluation against scenarios
+
 ## Links
 
 - Website: https://openleash.ai

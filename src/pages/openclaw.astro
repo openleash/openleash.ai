@@ -93,17 +93,28 @@ import CodeBlock from '../components/CodeBlock.astro';
       <CodeBlock
         title="terminal"
         lines={[
-          { type: 'comment', text: '# Install OpenLeash alongside OpenClaw' },
+          { type: 'comment', text: '# Install OpenLeash and the TypeScript SDK' },
           { type: 'cmd', text: 'npm i -g openleash', prompt: '$' },
+          { type: 'cmd', text: 'npm install @openleash/sdk-ts', prompt: '$' },
           { type: 'code', text: '' },
           { type: 'comment', text: '# Start OpenLeash sidecar' },
           { type: 'cmd', text: 'npx openleash start', prompt: '$' },
           { type: 'output', text: '✓ OpenLeash running on http://127.0.0.1:8787' },
           { type: 'code', text: '' },
-          { type: 'comment', text: '# Run the interactive setup wizard' },
+          { type: 'comment', text: '# Non-interactive setup (generates owner, agent keypair, and policy)' },
+          { type: 'cmd', text: 'npx openleash init --owner-name "Alice" --agent-id my-agent --output-env agent.env', prompt: '$' },
+          { type: 'code', text: '' },
+          { type: 'comment', text: '# Or use the interactive wizard instead' },
           { type: 'cmd', text: 'npx openleash wizard', prompt: '$' },
         ]}
       />
+      <p class="section-text" style="margin-top: 16px;">
+        The <code>init</code> command writes all required environment variables
+        (<code>OPENLEASH_URL</code>, <code>OPENLEASH_AGENT_ID</code>,
+        <code>OPENLEASH_AGENT_PRIVATE_KEY_B64</code>, <code>OWNER_PRINCIPAL_ID</code>)
+        to the file specified by <code>--output-env</code>.
+        Source this file in your agent runtime.
+      </p>
     </section>
 
     <!-- Links -->

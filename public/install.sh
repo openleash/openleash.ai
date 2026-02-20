@@ -7,16 +7,17 @@ set -euo pipefail
 # ──────────────────────────────────────────────────────
 
 # --- Color helpers ---
-GREEN='\033[38;5;78m'    # #34d399
-GOLD='\033[38;5;220m'    # #fbbf24
-DIM='\033[2m'
-BOLD='\033[1m'
-RESET='\033[0m'
+GREEN=$'\033[38;5;78m'    # #34d399
+GOLD=$'\033[38;5;220m'    # #fbbf24
+RED=$'\033[31m'
+DIM=$'\033[2m'
+BOLD=$'\033[1m'
+RESET=$'\033[0m'
 
 # --- Output helpers ---
 info()    { printf "${GREEN}▸${RESET} %s\n" "$*"; }
 warn()    { printf "${GOLD}▸${RESET} %s\n" "$*"; }
-error()   { printf "\033[31m✗${RESET} %s\n" "$*" >&2; }
+error()   { printf "$RED✗${RESET} %s\n" "$*" >&2; }
 success() { printf "${GREEN}✓${RESET} %s\n" "$*"; }
 
 # --- Cleanup ---
@@ -145,7 +146,7 @@ case "$OS" in
     ;;
   MINGW*|MSYS*|CYGWIN*)
     error "Windows is not supported by this installer."
-    error "Please use: npm install -g openleash"
+    error "Please use: npm install -g @openleash/cli"
     exit 1
     ;;
   *)
@@ -281,7 +282,7 @@ animate_lobster &
 ANIM_PID=$!
 
 # Install OpenLeash globally
-npm install -g openleash 2>&1 | tail -n 5
+npm install -g @openleash/cli 2>&1 | tail -n 5
 
 # Stop animation
 if [ -n "$ANIM_PID" ] && kill -0 "$ANIM_PID" 2>/dev/null; then
@@ -305,7 +306,7 @@ if ! command -v openleash >/dev/null 2>&1; then
     warn "openleash installed but not on PATH"
     warn "Add to your shell profile:  export PATH=\"${NPM_BIN}:\$PATH\""
   else
-    error "Installation may have failed. Try: npm install -g openleash"
+    error "Installation may have failed. Try: npm install -g @openleash/cli"
     exit 1
   fi
 fi

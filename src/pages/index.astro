@@ -4,7 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import CodeBlock from '../components/CodeBlock.astro';
 import FeatureCard from '../components/FeatureCard.astro';
-import StepCard from '../components/StepCard.astro';
+import TransactionFlow from '../components/TransactionFlow.astro';
 import CalloutBanner from '../components/CalloutBanner.astro';
 import QuickStart from '../components/QuickStart.astro';
 ---
@@ -117,23 +117,10 @@ import QuickStart from '../components/QuickStart.astro';
       <h2 class="section-title">
         <span class="accent-prefix">›</span> How it works
       </h2>
-      <div class="steps-grid">
-        <StepCard
-          number={1}
-          title="Agent requests authorization"
-          description="Before performing a risky or external action, the agent sends a signed request to OpenLeash describing the action and context."
-        />
-        <StepCard
-          number={2}
-          title="Policy engine decides"
-          description="OpenLeash evaluates the request against file-based policies and returns allow, deny, require approval, or step-up — plus an optional PASETO proof token."
-        />
-        <StepCard
-          number={3}
-          title="Counterparty verifies"
-          description="The receiving service or agent verifies the proof token to confirm authorization was granted, by whom, and for which specific action."
-        />
-      </div>
+      <p class="section-intro">
+        Alice's agent purchases headphones from StoreCo's agent. Both sides use OpenLeash to authorize actions and exchange cryptographic proofs.
+      </p>
+      <TransactionFlow />
     </section>
 
     <!-- Use cases -->
@@ -430,11 +417,11 @@ import QuickStart from '../components/QuickStart.astro';
     margin-top: 8px;
   }
 
-  /* Steps */
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+  .section-intro {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.6;
   }
 
   /* Features */
@@ -530,10 +517,6 @@ import QuickStart from '../components/QuickStart.astro';
 
   /* Responsive */
   @media (max-width: 768px) {
-    .steps-grid {
-      grid-template-columns: 1fr;
-    }
-
     .features-grid {
       grid-template-columns: 1fr;
     }

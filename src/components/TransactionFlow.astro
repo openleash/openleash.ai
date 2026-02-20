@@ -1,0 +1,376 @@
+---
+interface Message {
+  from: number;
+  to: number;
+  label: string;
+  phase: 'auth' | 'tx' | 'confirm';
+}
+
+const entities = [
+  { name: 'Alice', role: 'Owner' },
+  { name: "Alice's Agent", role: 'Buyer' },
+  { name: 'OpenLeash', role: 'Policy Gate' },
+  { name: 'StoreCo Agent', role: 'Seller' },
+  { name: 'StoreCo', role: 'Organization' },
+];
+
+const cols = [10, 30, 50, 70, 90];
+
+const messages: Message[] = [
+  { from: 0, to: 1, label: '"Buy headphones from StoreCo"', phase: 'auth' },
+  { from: 1, to: 2, label: 'authorize(purchase, $85)', phase: 'auth' },
+  { from: 2, to: 1, label: 'ALLOW + proof token', phase: 'auth' },
+  { from: 1, to: 3, label: 'Purchase request + proof', phase: 'tx' },
+  { from: 3, to: 2, label: 'verify + authorize(sell)', phase: 'tx' },
+  { from: 2, to: 3, label: 'ALLOW + seller proof', phase: 'tx' },
+  { from: 3, to: 1, label: 'Confirmed + seller proof', phase: 'confirm' },
+  { from: 1, to: 0, label: 'Done — proofs attached', phase: 'confirm' },
+];
+
+type Phase = 'auth' | 'tx' | 'confirm';
+
+const phases: { id: Phase; label: string }[] = [
+  { id: 'auth', label: 'Authorization' },
+  { id: 'tx', label: 'Transaction' },
+  { id: 'confirm', label: 'Confirmation' },
+];
+
+const messagesByPhase = phases.map(p => ({
+  ...p,
+  messages: messages.filter(m => m.phase === p.id),
+}));
+
+function arrowProps(msg: Message) {
+  const fromPct = cols[msg.from];
+  const toPct = cols[msg.to];
+  return {
+    left: Math.min(fromPct, toPct),
+    width: Math.abs(toPct - fromPct),
+    dir: toPct > fromPct ? 'right' : 'left',
+  };
+}
+
+let stepNum = 0;
+---
+
+<div class="tx-flow">
+  <!-- Desktop: sequence diagram -->
+  <div class="tx-seq" role="img" aria-label="Sequence diagram showing a purchase transaction flow between Alice, her AI agent, OpenLeash, StoreCo's agent, and StoreCo">
+    <div class="tx-entities">
+      {entities.map((e, i) => (
+        <div class={`tx-entity ${i === 2 ? 'tx-entity--center' : ''}`}>
+          <div class="tx-entity-dot" />
+          <div class="tx-entity-name">{e.name}</div>
+          <div class="tx-entity-role">{e.role}</div>
+        </div>
+      ))}
+    </div>
+
+    <div class="tx-body">
+      {messagesByPhase.map(phase => (
+        <>
+          <div class={`tx-divider tx-divider--${phase.id}`}>
+            <span>{phase.label}</span>
+          </div>
+          {phase.messages.map(msg => {
+            const { left, width, dir } = arrowProps(msg);
+            return (
+              <div class="tx-row">
+                <div
+                  class={`tx-arrow tx-arrow--${dir} tx-arrow--${msg.phase}`}
+                  style={`left: ${left}%; width: ${width}%;`}
+                >
+                  <span class="tx-arrow-label">{msg.label}</span>
+                  <div class="tx-arrow-line" />
+                </div>
+              </div>
+            );
+          })}
+        </>
+      ))}
+    </div>
+  </div>
+
+  <!-- Mobile: vertical timeline -->
+  <ol class="tx-timeline">
+    {messagesByPhase.map(phase => (
+      <>
+        <li class={`tx-tl-phase tx-tl-phase--${phase.id}`}>{phase.label}</li>
+        {phase.messages.map(msg => (
+          <li class={`tx-tl-step tx-tl-step--${msg.phase}`}>
+            <div class="tx-tl-actors">
+              {entities[msg.from].name} → {entities[msg.to].name}
+            </div>
+            <div class="tx-tl-msg">{msg.label}</div>
+          </li>
+        ))}
+      </>
+    ))}
+  </ol>
+
+  <p class="tx-caption">
+    Both agents independently authorize through OpenLeash. Cryptographic proof tokens flow with every request, creating a verifiable chain of authorization.
+  </p>
+</div>
+
+<style>
+  .tx-flow {
+    position: relative;
+  }
+
+  /* ---- Entity headers ---- */
+  .tx-entities {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    text-align: center;
+  }
+
+  .tx-entity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding-bottom: 12px;
+  }
+
+  .tx-entity-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(136, 153, 170, 0.3);
+    border: 1px solid rgba(136, 153, 170, 0.2);
+  }
+
+  .tx-entity--center .tx-entity-dot {
+    background: var(--green-bright);
+    border-color: transparent;
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+  }
+
+  .tx-entity-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .tx-entity-role {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ---- Body with lifelines ---- */
+  .tx-body {
+    position: relative;
+    padding: 0 0 8px;
+    background-image:
+      repeating-linear-gradient(180deg, rgba(136,153,170,0.1) 0 5px, transparent 5px 10px),
+      repeating-linear-gradient(180deg, rgba(136,153,170,0.1) 0 5px, transparent 5px 10px),
+      repeating-linear-gradient(180deg, rgba(52,211,153,0.2) 0 5px, transparent 5px 10px),
+      repeating-linear-gradient(180deg, rgba(136,153,170,0.1) 0 5px, transparent 5px 10px),
+      repeating-linear-gradient(180deg, rgba(136,153,170,0.1) 0 5px, transparent 5px 10px);
+    background-size: 1px auto, 1px auto, 1px auto, 1px auto, 1px auto;
+    background-position: 10% 0, 30% 0, 50% 0, 70% 0, 90% 0;
+    background-repeat: repeat-y;
+  }
+
+  /* ---- Phase dividers ---- */
+  .tx-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0 6px;
+  }
+
+  .tx-divider::before,
+  .tx-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle);
+  }
+
+  .tx-divider span {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+  }
+
+  .tx-divider--auth span,
+  .tx-divider--confirm span {
+    color: rgba(52, 211, 153, 0.55);
+  }
+
+  .tx-divider--tx span {
+    color: rgba(251, 191, 36, 0.55);
+  }
+
+  /* ---- Message rows ---- */
+  .tx-row {
+    position: relative;
+    height: 48px;
+  }
+
+  .tx-arrow {
+    position: absolute;
+    bottom: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    overflow: visible;
+  }
+
+  .tx-arrow-label {
+    font-size: 0.72rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: var(--text-secondary);
+  }
+
+  /* ---- Arrow line ---- */
+  .tx-arrow-line {
+    width: 100%;
+    height: 2px;
+    position: relative;
+  }
+
+  .tx-arrow--auth .tx-arrow-line,
+  .tx-arrow--confirm .tx-arrow-line {
+    background: var(--green-bright);
+  }
+
+  .tx-arrow--tx .tx-arrow-line {
+    background: var(--amber-bright);
+  }
+
+  /* ---- Arrowheads ---- */
+  .tx-arrow-line::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .tx-arrow--right .tx-arrow-line::after {
+    right: -1px;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+  }
+
+  .tx-arrow--left .tx-arrow-line::after {
+    left: -1px;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+  }
+
+  .tx-arrow--right.tx-arrow--auth .tx-arrow-line::after,
+  .tx-arrow--right.tx-arrow--confirm .tx-arrow-line::after {
+    border-left: 6px solid var(--green-bright);
+  }
+
+  .tx-arrow--left.tx-arrow--auth .tx-arrow-line::after,
+  .tx-arrow--left.tx-arrow--confirm .tx-arrow-line::after {
+    border-right: 6px solid var(--green-bright);
+  }
+
+  .tx-arrow--right.tx-arrow--tx .tx-arrow-line::after {
+    border-left: 6px solid var(--amber-bright);
+  }
+
+  .tx-arrow--left.tx-arrow--tx .tx-arrow-line::after {
+    border-right: 6px solid var(--amber-bright);
+  }
+
+  /* ---- Caption ---- */
+  .tx-caption {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 20px;
+    line-height: 1.6;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ---- Mobile: timeline ---- */
+  .tx-timeline {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tx-tl-phase {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    padding: 14px 0 6px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 4px;
+  }
+
+  .tx-tl-phase--auth,
+  .tx-tl-phase--confirm {
+    color: var(--green-mid);
+    border-color: rgba(52, 211, 153, 0.2);
+  }
+
+  .tx-tl-phase--tx {
+    color: var(--amber-mid);
+    border-color: rgba(251, 191, 36, 0.2);
+  }
+
+  .tx-tl-step {
+    padding: 8px 0 8px 16px;
+    position: relative;
+  }
+
+  .tx-tl-step::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 0;
+    width: 2px;
+    border-radius: 1px;
+  }
+
+  .tx-tl-step--auth::before,
+  .tx-tl-step--confirm::before {
+    background: var(--green-dark);
+  }
+
+  .tx-tl-step--tx::before {
+    background: var(--amber-dark);
+  }
+
+  .tx-tl-actors {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .tx-tl-msg {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 768px) {
+    .tx-seq {
+      display: none;
+    }
+
+    .tx-timeline {
+      display: block;
+    }
+  }
+</style>

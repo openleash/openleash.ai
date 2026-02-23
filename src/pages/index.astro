@@ -52,6 +52,11 @@ import QuickStart from '../components/QuickStart.astro';
         A sidecar authorization service that agents must consult before performing risky actions.
         Returns decisions and cryptographic proof tokens that counterparties can verify.
       </p>
+      <div class="hero-version fade-in fade-in-d1" id="hero-version" style="display:none">
+        <a id="version-link" href="https://github.com/openleash/openleash/releases/latest" target="_blank" rel="noopener noreferrer" class="version-badge">
+          <span id="version-tag"></span>
+        </a>
+      </div>
       <div class="hero-actions fade-in fade-in-d1">
         <a href="#quickstart" class="btn btn-primary">Get Started</a>
         <a href="https://github.com/openleash/openleash" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
@@ -338,6 +343,34 @@ import QuickStart from '../components/QuickStart.astro';
     line-height: 1.7;
   }
 
+  .hero-version {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .version-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--green-mid);
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: all 0.2s var(--ease-out);
+  }
+
+  .version-badge:hover {
+    background: rgba(52, 211, 153, 0.1);
+    border-color: var(--green-bright);
+    transform: translateY(-1px);
+    color: var(--green-bright);
+  }
+
   .hero-actions {
     display: flex;
     align-items: center;
@@ -536,3 +569,19 @@ import QuickStart from '../components/QuickStart.astro';
     }
   }
 </style>
+
+<script>
+  fetch('https://api.github.com/repos/openleash/openleash/releases/latest')
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(data => {
+      const el = document.getElementById('hero-version');
+      const tag = document.getElementById('version-tag');
+      const link = document.getElementById('version-link');
+      if (el && tag && link && data.tag_name) {
+        tag.textContent = data.tag_name;
+        link.href = data.html_url;
+        el.style.display = '';
+      }
+    })
+    .catch(() => {});
+</script>

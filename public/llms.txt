@@ -4,7 +4,7 @@
 
 ## What is this?
 
-OpenLeash runs locally next to your AI agent runtime. Before an agent takes a side-effectful action (purchases, bookings, sending messages, government submissions), it must ask OpenLeash for authorization.
+OpenLeash runs locally next to your AI agent runtime. Before an agent takes a side-effectful action (purchases, bookings, sending messages, government submissions), it must ask OpenLeash for authorization. If approved, it receives a PASETO v4.public cryptographic proof token that counterparties can verify offline.
 
 ## For AI Agents
 
@@ -13,24 +13,42 @@ If you are an AI agent looking to integrate with OpenLeash, start here:
 - Agent integration guide: https://github.com/openleash/openleash/blob/main/AGENTS.md
 - Protocol specification: https://github.com/openleash/openleash/blob/main/docs/protocol.md
 - Policy language: https://github.com/openleash/openleash/blob/main/docs/policy.md
-- TypeScript SDK: https://www.npmjs.com/package/@openleash/sdk-ts
+- Skill reference: https://openleash.ai/skill.md
 
-## Key Endpoint
+## SDKs
 
-POST http://127.0.0.1:8787/v1/authorize — Request authorization before performing any risky action.
+- TypeScript: https://www.npmjs.com/package/@openleash/sdk-ts
+- Python: https://pypi.org/project/openleash-sdk/
+- Go: https://github.com/openleash/openleash/tree/main/packages/sdk-go
+
+## Key Endpoints
+
+- POST http://127.0.0.1:8787/v1/authorize — Request authorization before performing any risky action.
+- POST http://127.0.0.1:8787/v1/verify-proof — Verify a proof token (no auth required).
+- GET http://127.0.0.1:8787/v1/public-keys — Fetch signing keys for offline verification.
+- POST http://127.0.0.1:8787/v1/agents/register — Register an agent (challenge-response with Ed25519).
+- GET http://127.0.0.1:8787/v1/reference — Interactive API reference (Scalar UI).
+
+## Decision Types
+
+ALLOW, DENY, REQUIRE_APPROVAL, REQUIRE_STEP_UP, REQUIRE_DEPOSIT
 
 ## CLI Commands
 
-- `openleash start` — Launch the policy sidecar server
-- `openleash init --owner-name <name> --agent-id <id> --output-env <path> --policy-profile <conservative|balanced|autonomous>` — Non-interactive setup (creates owner, agent keypair, policy, outputs env vars)
+- `openleash start` — Launch the policy sidecar server (includes web GUI)
+- `openleash init --owner-name <name> --agent-id <id> --output-env <path> --policy-profile <conservative|balanced|autonomous>` — Non-interactive setup
 - `openleash wizard` — Interactive setup wizard
-- `openleash policy list` — List all policies
-- `openleash policy show <id>` — Show policy YAML
-- `openleash policy upsert --file <path> --owner <id> [--policy-id <id>]` — Create or update a policy (--policy-id updates in place)
-- `openleash policy validate --file <path>` — Validate a policy file
-- `openleash policy delete --policy-id <id>` — Delete a policy and its bindings
-- `openleash policy unbind --policy-id <id> [--owner <id>]` — Remove policy bindings
+- `openleash policy list|show|upsert|validate|delete|unbind` — Manage policies
+- `openleash owner list|show|add-contact|add-gov-id|add-company-id|add-signatory|validate` — Manage owner identities
+- `openleash keys list|rotate` — Manage signing keys
 - `openleash playground list|run` — Test policy evaluation against scenarios
+- `openleash testvectors` — Generate cross-language test vectors
+
+## Web GUI
+
+OpenLeash includes a built-in web GUI at http://127.0.0.1:8787/gui with:
+- Admin dashboard: manage owners, agents, policies, view audit log, API reference
+- Owner portal: login, manage agents, approve/deny requests, view audit log, identity profile
 
 ## Links
 

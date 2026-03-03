@@ -136,6 +136,70 @@ async function registerAgent(params: {
   status: string;
   created_at: string;
 }>;
+// Create an approval request (for REQUIRE_APPROVAL decisions)
+async function createApprovalRequest(params: {
+  openleashUrl: string;
+  agentId: string;
+  privateKeyB64: string;
+  decisionId: string;
+  action: ActionRequest;
+  justification?: string;
+  context?: object;
+}): Promise<{ approval_request_id: string; status: string; expires_at: string }>;
+
+// Check approval request status
+async function getApprovalRequest(params: {
+  openleashUrl: string;
+  agentId: string;
+  privateKeyB64: string;
+  approvalRequestId: string;
+}): Promise<{ approval_request_id: string; status: string; approval_token?: string }>;
+
+// Poll until approval request is resolved (default 5 min timeout)
+async function pollApprovalRequest(params: {
+  openleashUrl: string;
+  agentId: string;
+  privateKeyB64: string;
+  approvalRequestId: string;
+  intervalMs?: number;
+  timeoutMs?: number;
+}): Promise<{ approval_request_id: string; status: string; approval_token?: string }>;
+```
+
+## Python SDK (`openleash-sdk`)
+
+```bash
+pip install openleash-sdk
+```
+
+All functions are async. Import from `openleash`:
+
+```python
+from openleash import (
+    generate_ed25519_keypair,
+    authorize,
+    verify_proof_online,
+    verify_proof_offline,
+    sign_request,
+    registration_challenge,
+    register_agent,
+)
+```
+
+Functions mirror the TypeScript SDK with snake_case naming.
+
+## Go SDK
+
+```bash
+go get github.com/openleash/openleash/packages/sdk-go
+```
+
+```go
+import openleash "github.com/openleash/openleash/packages/sdk-go"
+
+keypair, _ := openleash.GenerateEd25519Keypair()
+result, _ := openleash.Authorize(url, agentID, privateKeyB64, action)
+verified, _ := openleash.VerifyProofOffline(token, publicKeys)
 ```
 
 ## API Endpoints
@@ -249,6 +313,50 @@ Response:
 
 **`GET /v1/health`** — Server health check.
 
+**`GET /v1/reference`** — Interactive OpenAPI reference (Scalar UI).
+
+### Approval Workflow (Agent-authenticated)
+
+**`POST /v1/agent/approval-requests`** — Create an approval request when decision is `REQUIRE_APPROVAL`.
+
+**`GET /v1/agent/approval-requests/{id}`** — Poll approval request status. Returns `approval_token` when approved.
+
+**`GET /v1/agent/self`** — Get the agent's own registration details.
+
+### Owner Endpoints (PASETO session token)
+
+**`POST /v1/owner/login`** — Login with passphrase, returns session token.
+
+**`POST /v1/owner/logout`** — Invalidate session.
+
+**`GET /v1/owner/profile`** — Get owner profile + identity data.
+
+**`GET /v1/owner/agents`** — List agents under owner.
+
+**`GET /v1/owner/policies`** — List owner's policies.
+
+**`GET /v1/owner/approval-requests`** — List pending/resolved approval requests.
+
+**`POST /v1/owner/approval-requests/{id}/approve`** — Approve a request.
+
+**`POST /v1/owner/approval-requests/{id}/deny`** — Deny a request.
+
+**`GET /v1/owner/audit`** — Query owner-scoped audit log.
+
+### Admin Endpoints (Bearer token / localhost)
+
+**`GET /v1/admin/owners`** — List all owners.
+
+**`POST /v1/admin/owners`** — Create owner.
+
+**`GET /v1/admin/agents`** — List all agents.
+
+**`GET /v1/admin/policies`** — List all policies.
+
+**`GET /v1/admin/audit`** — Full audit log.
+
+**`GET /v1/admin/config`** — View server configuration.
+
 ## Request Signing
 
 All agent-authenticated endpoints require Ed25519 request signing via these headers:
@@ -344,5 +452,7 @@ Common codes: `INVALID_ACTION_REQUEST` (400), `INVALID_SIGNATURE` (401), `AGENT_
 - Website: https://openleash.ai
 - GitHub: https://github.com/openleash/openleash
 - Documentation: https://openleash.ai/docs
-- npm: https://www.npmjs.com/package/@openleash/sdk-ts
+- TypeScript SDK (npm): https://www.npmjs.com/package/@openleash/sdk-ts
+- Python SDK (PyPI): https://pypi.org/project/openleash-sdk/
+- Go SDK: https://github.com/openleash/openleash/tree/main/packages/sdk-go
 - llms.txt: https://openleash.ai/llms.txt

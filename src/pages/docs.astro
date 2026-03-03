@@ -25,6 +25,16 @@ const docLinks = [
     href: '/openclaw',
     internal: true,
   },
+  {
+    title: 'Releasing',
+    description: 'How to publish new versions: npm packages, Docker images, and GitHub releases.',
+    href: 'https://github.com/openleash/openleash/blob/main/docs/releasing.md',
+  },
+  {
+    title: 'Agent Integration Guide',
+    description: 'Step-by-step guide for AI agents: registration, authorization, and proof verification.',
+    href: 'https://github.com/openleash/openleash/blob/main/AGENTS.md',
+  },
 ];
 ---
 
@@ -63,11 +73,11 @@ const docLinks = [
     </div>
 
     <section class="quickref fade-in fade-in-d2">
-      <h2 class="section-title">Quick reference</h2>
+      <h2 class="section-title">CLI commands</h2>
       <div class="ref-grid">
         <div class="ref-item">
           <code class="ref-cmd">npx openleash start</code>
-          <span class="ref-label">Start the sidecar</span>
+          <span class="ref-label">Start the sidecar (with GUI)</span>
         </div>
         <div class="ref-item">
           <code class="ref-cmd">npx openleash init</code>
@@ -82,20 +92,112 @@ const docLinks = [
           <span class="ref-label">list | show | upsert | validate | delete | unbind</span>
         </div>
         <div class="ref-item">
+          <code class="ref-cmd">npx openleash owner &lt;cmd&gt;</code>
+          <span class="ref-label">list | show | add-contact | add-gov-id | add-company-id | validate</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">npx openleash keys &lt;cmd&gt;</code>
+          <span class="ref-label">list | rotate</span>
+        </div>
+        <div class="ref-item">
           <code class="ref-cmd">npx openleash playground</code>
           <span class="ref-label">Test policies locally</span>
         </div>
         <div class="ref-item">
-          <code class="ref-cmd">POST /v1/authorize</code>
-          <span class="ref-label">Request authorization</span>
+          <code class="ref-cmd">npx openleash testvectors</code>
+          <span class="ref-label">Generate cross-language test vectors</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="quickref fade-in fade-in-d3">
+      <h2 class="section-title">API endpoints</h2>
+
+      <h3 class="ref-group-title">Public (no auth)</h3>
+      <div class="ref-grid">
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/health</code>
+          <span class="ref-label">Server health check</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/public-keys</code>
+          <span class="ref-label">Fetch signing keys for offline verification</span>
         </div>
         <div class="ref-item">
           <code class="ref-cmd">POST /v1/verify-proof</code>
-          <span class="ref-label">Verify proof token</span>
+          <span class="ref-label">Verify a proof token online</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/reference</code>
+          <span class="ref-label">OpenAPI reference (Scalar UI)</span>
+        </div>
+      </div>
+
+      <h3 class="ref-group-title">Agent (Ed25519 signed)</h3>
+      <div class="ref-grid">
+        <div class="ref-item">
+          <code class="ref-cmd">POST /v1/authorize</code>
+          <span class="ref-label">Request authorization + proof token</span>
         </div>
         <div class="ref-item">
           <code class="ref-cmd">POST /v1/agents/register</code>
-          <span class="ref-label">Register an agent</span>
+          <span class="ref-label">Register agent with challenge proof</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/agent/self</code>
+          <span class="ref-label">Agent's own registration details</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">POST /v1/agent/approval-requests</code>
+          <span class="ref-label">Create approval request</span>
+        </div>
+      </div>
+
+      <h3 class="ref-group-title">Owner (PASETO session)</h3>
+      <div class="ref-grid">
+        <div class="ref-item">
+          <code class="ref-cmd">POST /v1/owner/login</code>
+          <span class="ref-label">Login with passphrase</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/owner/agents</code>
+          <span class="ref-label">List agents under owner</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/owner/policies</code>
+          <span class="ref-label">List owner's policies</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/owner/approval-requests</code>
+          <span class="ref-label">Pending + resolved approval requests</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">POST .../approve</code>
+          <span class="ref-label">Approve a request (issues approval token)</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/owner/audit</code>
+          <span class="ref-label">Owner-scoped audit log</span>
+        </div>
+      </div>
+
+      <h3 class="ref-group-title">Admin (Bearer token / localhost)</h3>
+      <div class="ref-grid">
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/admin/owners</code>
+          <span class="ref-label">List all owners</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/admin/agents</code>
+          <span class="ref-label">List all agents</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/admin/policies</code>
+          <span class="ref-label">List all policies</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/admin/audit</code>
+          <span class="ref-label">Full audit log</span>
         </div>
       </div>
     </section>
@@ -130,7 +232,7 @@ const docLinks = [
 
   .docs-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-bottom: 48px;
   }
@@ -216,9 +318,23 @@ const docLinks = [
     color: var(--text-muted);
   }
 
+  .ref-group-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 20px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .ref-group-title:first-of-type {
+    margin-top: 0;
+  }
+
   @media (max-width: 768px) {
     .docs-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .ref-grid {

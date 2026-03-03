@@ -102,7 +102,7 @@ import QuickStart from '../components/QuickStart.astro';
             { type: 'code', text: '});' },
             { type: 'code', text: '' },
             { type: 'code', text: 'const { decision, proof_token } = result;' },
-            { type: 'comment', text: '// decision: "ALLOW" | "DENY" | "REQUIRE_APPROVAL" | "REQUIRE_STEP_UP"' },
+            { type: 'comment', text: '// decision: "ALLOW" | "DENY" | "REQUIRE_APPROVAL" | "REQUIRE_STEP_UP" | "REQUIRE_DEPOSIT"' },
             { type: 'code', text: '' },
             { type: 'comment', text: '// Counterparty verifies the proof token offline' },
             { type: 'code', text: 'import { verifyProofOffline } from "@openleash/sdk-ts";' },
@@ -157,7 +157,7 @@ import QuickStart from '../components/QuickStart.astro';
       </div>
     </section>
 
-    <!-- What you get (MVP) -->
+    <!-- What you get -->
     <section class="section">
       <h2 class="section-title">
         <span class="accent-prefix">›</span> What you get
@@ -167,14 +167,7 @@ import QuickStart from '../components/QuickStart.astro';
           <span class="mvp-icon" aria-hidden="true">📁</span>
           <div>
             <strong>File-based policies</strong>
-            <p>Define authorization rules in local config files. No database, no cloud dependency.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">📋</span>
-          <div>
-            <strong>Audit log</strong>
-            <p>Every authorization request and decision is logged locally for review and compliance.</p>
+            <p>Define authorization rules in YAML. Expressions, constraints, obligations. No database, no cloud dependency.</p>
           </div>
         </div>
         <div class="mvp-item">
@@ -182,6 +175,34 @@ import QuickStart from '../components/QuickStart.astro';
           <div>
             <strong>PASETO proof tokens</strong>
             <p>Cryptographic tokens bound to specific actions. Verifiable by any counterparty without calling home.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">✅</span>
+          <div>
+            <strong>Approval workflow</strong>
+            <p>Human-in-the-loop for high-risk actions. Agents request approval, owners approve or deny via the portal.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🖥️</span>
+          <div>
+            <strong>Web GUI</strong>
+            <p>Admin dashboard and owner portal built in. Manage agents, policies, approvals, and audit logs from the browser.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🪪</span>
+          <div>
+            <strong>Identity management</strong>
+            <p>Track owner identities: contact info, government IDs, company registration. EU-format validation built in.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">📋</span>
+          <div>
+            <strong>Audit log</strong>
+            <p>Append-only JSONL log of every authorization, decision, approval, and key event. Queryable via API.</p>
           </div>
         </div>
         <div class="mvp-item">
@@ -195,7 +216,14 @@ import QuickStart from '../components/QuickStart.astro';
           <span class="mvp-icon" aria-hidden="true">🤖</span>
           <div>
             <strong>Agent registration</strong>
-            <p>Register agent identities and capabilities. Policies can target specific agents or groups.</p>
+            <p>Challenge-response registration with Ed25519 keys. Policies can target specific agents or owners.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">📦</span>
+          <div>
+            <strong>Multi-language SDKs</strong>
+            <p>TypeScript, Python, and Go SDKs. Authorize, sign requests, and verify proofs in your language of choice.</p>
           </div>
         </div>
         <div class="mvp-item">

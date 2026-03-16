@@ -1,0 +1,84 @@
+---
+interface BreadcrumbItem {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+const site = Astro.site?.origin ?? 'https://openleash.ai';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.label,
+    item: `${site}${item.href}`,
+  })),
+};
+---
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol class="breadcrumb-list">
+    {items.map((item, index) => (
+      <li class="breadcrumb-item">
+        {index < items.length - 1 ? (
+          <>
+            <a href={item.href} class="breadcrumb-link">{item.label}</a>
+            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+          </>
+        ) : (
+          <span class="breadcrumb-current" aria-current="page">{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<style>
+  .breadcrumb {
+    margin-bottom: 16px;
+  }
+
+  .breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .breadcrumb-link {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .breadcrumb-link:hover {
+    color: var(--amber-bright);
+  }
+
+  .breadcrumb-sep {
+    color: var(--text-muted);
+  }
+
+  .breadcrumb-current {
+    color: var(--text-secondary);
+  }
+</style>

@@ -1,20 +1,42 @@
 ---
+import JsonLd from '../components/JsonLd.astro';
+
 interface Props {
   title: string;
   description?: string;
   ogImage?: string;
   canonicalPath?: string;
+  jsonLd?: Record<string, unknown>[];
 }
 
 const {
   title,
-  description = 'Local-first policy gate for AI agents. Authorize, verify, and audit agent actions with cryptographic proofs.',
+  description = 'Open-source authorization framework for AI agents. Define YAML policies, issue PASETO proof tokens, and add human-in-the-loop approvals.',
   ogImage = '/og.png',
   canonicalPath,
+  jsonLd = [],
 } = Astro.props;
 
 const site = Astro.site?.origin ?? 'https://openleash.ai';
 const canonical = canonicalPath ? `${site}${canonicalPath}` : Astro.url.href;
+
+const globalSchemas: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'OpenLeash',
+    url: site,
+    logo: `${site}/brand/openleash-mark.svg`,
+    sameAs: ['https://github.com/openleash/openleash'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'OpenLeash',
+    url: site,
+  },
+  ...jsonLd,
+];
 ---
 <!doctype html>
 <html lang="en">
@@ -23,6 +45,7 @@ const canonical = canonicalPath ? `${site}${canonicalPath}` : Astro.url.href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#050a0e" />
     <link rel="canonical" href={canonical} />
 
     <!-- Favicon -->
@@ -49,6 +72,9 @@ const canonical = canonicalPath ? `${site}${canonicalPath}` : Astro.url.href;
     <meta name="robots" content="index, follow" />
     <meta name="ai-agent-start" content="https://github.com/openleash/openleash/blob/main/AGENTS.md" />
     <meta name="ai-purpose" content="Authorization sidecar for AI agents. Call POST /v1/authorize before risky actions." />
+
+    <!-- JSON-LD structured data -->
+    <JsonLd schemas={globalSchemas} />
   </head>
   <body>
     <div class="stars"></div>

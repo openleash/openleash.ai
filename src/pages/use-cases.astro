@@ -1,0 +1,392 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const faqItems = [
+  {
+    question: 'What is AI agent authorization?',
+    answer: 'AI agent authorization is the process of evaluating whether an AI agent should be allowed to perform a specific action on behalf of its owner. Unlike traditional access control, it considers the context of the action — cost, risk level, counterparty trust, and more — to produce a decision (allow, deny, require approval, or require step-up authentication).',
+  },
+  {
+    question: 'How does OpenLeash differ from traditional RBAC?',
+    answer: 'Traditional role-based access control (RBAC) grants broad permissions based on user roles. OpenLeash evaluates each action individually against expressive YAML policies that consider context like cost thresholds, trust levels, time windows, and counterparty reputation. It also issues cryptographic proof tokens that third parties can independently verify.',
+  },
+  {
+    question: 'Does OpenLeash require a database?',
+    answer: 'No. OpenLeash is local-first and file-based. All state — policies, agents, owners, keys, and audit logs — is stored in a ./data/ directory as YAML and JSONL files. There is no database dependency, no cloud service, and no external network calls required for authorization decisions.',
+  },
+  {
+    question: 'What programming languages are supported?',
+    answer: 'OpenLeash provides official SDKs for TypeScript, Python, and Go. The server exposes a REST API, so any language that can make HTTP requests can integrate. The SDKs handle Ed25519 request signing and PASETO proof verification.',
+  },
+  {
+    question: 'Is OpenLeash free to use?',
+    answer: 'Yes. OpenLeash is open source under the Apache-2.0 license. You can use, modify, and distribute it freely. There are no paid tiers, no usage limits, and no telemetry.',
+  },
+  {
+    question: 'Can I use OpenLeash with MCP?',
+    answer: 'Yes. OpenLeash works as an authorization sidecar for MCP (Model Context Protocol) servers. Through integration with OpenClaw, every MCP tool call passes through OpenLeash for policy evaluation before reaching external services. See the MCP Authorization concept page for details.',
+  },
+  {
+    question: 'How do proof tokens work?',
+    answer: 'When OpenLeash allows an action, it issues a PASETO v4.public token signed with an Ed25519 key. The token contains claims about the action, agent, and decision. Any counterparty can verify the token offline using the public key — no callback to OpenLeash is required. This provides cryptographic proof that the agent was authorized.',
+  },
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title="AI Agent Authorization Use Cases — OpenLeash"
+  description="Explore how OpenLeash handles AI agent spending controls, MCP tool authorization, human-in-the-loop approvals, audit compliance, multi-agent orchestration, and counterparty verification."
+  canonicalPath="/use-cases"
+  jsonLd={[faqJsonLd]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <h1 class="page-title">
+        <span class="accent-prefix">></span> AI Agent Authorization Use Cases
+      </h1>
+      <p class="page-desc">
+        Real-world scenarios where policy-based authorization keeps AI agents safe,
+        accountable, and verifiable.
+      </p>
+    </header>
+
+    <!-- Use case sections -->
+    <section class="use-case fade-in fade-in-d1">
+      <h2 class="use-case-title">AI Agent Spending Controls</h2>
+      <p>
+        When AI agents make purchases or transfer funds, spending controls prevent runaway costs.
+        OpenLeash policies can set per-transaction limits, daily spending caps, or vendor-specific
+        thresholds. When an agent attempts a purchase that exceeds the policy limit, the decision
+        escalates to <code>REQUIRE_APPROVAL</code> — the owner is notified and must approve before
+        the action proceeds.
+      </p>
+      <p>
+        Spending controls work across any payment context: e-commerce purchases, SaaS subscriptions,
+        API usage with metered billing, or cryptocurrency transfers. Policies can combine cost
+        thresholds with trust levels, so a $10 purchase from a known vendor auto-approves while the
+        same amount from an unknown vendor requires confirmation.
+      </p>
+    </section>
+
+    <section class="use-case fade-in fade-in-d1">
+      <h2 class="use-case-title">MCP Tool Authorization</h2>
+      <p>
+        The Model Context Protocol (MCP) gives AI agents access to external tools — databases, APIs,
+        file systems, and more. But MCP has no built-in governance layer. Any tool the server exposes
+        is available to the agent without restriction.
+      </p>
+      <p>
+        OpenLeash fills this gap. Running as a sidecar (via <a href="/openclaw">OpenClaw integration</a>),
+        it intercepts every MCP tool call and evaluates it against your policies. You can allow
+        read-only database queries while blocking writes, permit API calls to approved domains while
+        denying others, or require human approval for file system operations.
+      </p>
+      <p>
+        Learn more about how this works in the <a href="/concepts/mcp-authorization">MCP Authorization</a> concept page.
+      </p>
+    </section>
+
+    <section class="use-case fade-in fade-in-d2">
+      <h2 class="use-case-title">Human-in-the-Loop Approvals</h2>
+      <p>
+        For high-stakes actions, automated policies are not enough. OpenLeash supports human-in-the-loop
+        approval workflows where agents pause and wait for explicit owner authorization. The owner
+        receives a notification (via the web portal or <a href="/docs">webhooks</a>), reviews the
+        action details, and approves or denies.
+      </p>
+      <p>
+        Approval requests include full context: what the agent wants to do, the cost, the counterparty,
+        and why the policy flagged it. Once approved, OpenLeash issues a time-limited approval token
+        that the agent uses to complete the action. Denials are logged and the agent is informed
+        immediately.
+      </p>
+    </section>
+
+    <section class="use-case fade-in fade-in-d2">
+      <h2 class="use-case-title">Audit & Compliance</h2>
+      <p>
+        Every authorization decision, approval, and key event is recorded in an append-only JSONL
+        audit log. The log captures the full evaluation trace: which policies matched, which conditions
+        were checked, what the decision was, and whether a proof token was issued. This provides a
+        complete, tamper-evident record for compliance and forensic analysis.
+      </p>
+      <p>
+        For regulated industries — finance, healthcare, government — the audit log satisfies
+        requirements for action traceability and access logging. The log is queryable via the
+        REST API and visible in the admin dashboard.
+      </p>
+    </section>
+
+    <section class="use-case fade-in fade-in-d3">
+      <h2 class="use-case-title">Multi-Agent Orchestration</h2>
+      <p>
+        When multiple AI agents collaborate on a task, each agent needs its own identity, keys, and
+        policy scope. OpenLeash supports multi-agent setups where each agent registers independently,
+        has its own Ed25519 keypair, and is subject to agent-specific policies.
+      </p>
+      <p>
+        An orchestrator agent can coordinate work across specialist agents — one for research,
+        one for purchasing, one for communication — while each operates under its own authorization
+        constraints. Policies can target individual agents, groups of agents, or all agents under
+        a specific owner.
+      </p>
+    </section>
+
+    <section class="use-case fade-in fade-in-d3">
+      <h2 class="use-case-title">Counterparty Verification</h2>
+      <p>
+        When an AI agent interacts with an external service, the service needs to verify that the
+        agent was actually authorized by its owner. OpenLeash proof tokens solve this: the agent
+        presents a PASETO v4.public token that the counterparty verifies offline using the owner's
+        public key.
+      </p>
+      <p>
+        This is especially valuable for B2B agent interactions, marketplace transactions, and
+        regulatory submissions where the receiving party needs cryptographic proof of authorization.
+        No callback to OpenLeash is required — verification is fully offline and instant.
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section fade-in fade-in-d4">
+      <h2 class="section-title">
+        <span class="accent-prefix">></span> Frequently Asked Questions
+      </h2>
+      <div class="faq-list">
+        {faqItems.map((item) => (
+          <details class="faq-item">
+            <summary class="faq-question">{item.question}</summary>
+            <p class="faq-answer">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Cross links -->
+    <section class="cross-links fade-in fade-in-d4">
+      <h2 class="section-title">
+        <span class="accent-prefix">></span> Learn More
+      </h2>
+      <div class="link-grid">
+        <a href="/concepts/ai-agent-authorization" class="link-card">
+          <strong>What is AI Agent Authorization?</strong>
+          <span>Deep dive into the concepts behind policy-based agent governance.</span>
+        </a>
+        <a href="/concepts/mcp-authorization" class="link-card">
+          <strong>MCP Authorization</strong>
+          <span>How OpenLeash adds governance to Model Context Protocol tool calls.</span>
+        </a>
+        <a href="/docs" class="link-card">
+          <strong>Documentation</strong>
+          <span>Policy language, SDK guides, CLI reference, and REST API endpoints.</span>
+        </a>
+        <a href="/playground" class="link-card">
+          <strong>Policy Playground</strong>
+          <span>Test authorization policies against scenarios before deploying.</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .accent-prefix {
+    color: var(--green-bright);
+  }
+
+  .page-desc {
+    max-width: 560px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .use-case {
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .use-case-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .use-case p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .use-case a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .use-case a:hover {
+    color: var(--amber-bright);
+  }
+
+  .use-case code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* FAQ */
+  .faq-section {
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .faq-item {
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    transition: border-color 0.25s var(--ease-out);
+  }
+
+  .faq-item[open] {
+    border-color: var(--green-mid);
+  }
+
+  .faq-question {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question::before {
+    content: '>';
+    color: var(--green-bright);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    transition: transform 0.2s var(--ease-out);
+  }
+
+  .faq-item[open] .faq-question::before {
+    transform: rotate(90deg);
+  }
+
+  .faq-answer {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-top: 12px;
+    padding-left: 20px;
+  }
+
+  /* Cross links */
+  .cross-links {
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .link-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .link-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    text-decoration: none;
+    transition: all 0.25s var(--ease-out);
+  }
+
+  .link-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--green-bright);
+    box-shadow: 0 12px 40px rgba(52, 211, 153, 0.12);
+  }
+
+  .link-card strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+
+  .link-card span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .link-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

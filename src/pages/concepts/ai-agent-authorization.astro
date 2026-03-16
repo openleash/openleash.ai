@@ -1,0 +1,274 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="What is AI Agent Authorization? — OpenLeash"
+  description="AI agent authorization explained: why autonomous agents need policy-based governance, how cryptographic proof tokens work, and how OpenLeash implements human-in-the-loop controls."
+  canonicalPath="/concepts/ai-agent-authorization"
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'AI Agent Authorization', href: '/concepts/ai-agent-authorization' },
+      ]} />
+      <h1 class="page-title">What is AI Agent Authorization?</h1>
+      <p class="page-desc">
+        A comprehensive guide to policy-based authorization for autonomous AI agents — why it matters, how it works, and how OpenLeash implements it.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>The Rise of Autonomous AI Agents</h2>
+        <p>
+          AI agents are no longer limited to answering questions. Modern agents book appointments, make purchases,
+          send emails, file documents, call APIs, and interact with external services on behalf of their owners.
+          As agents gain access to more tools and higher-stakes actions, the question shifts from
+          <em>"can the agent do this?"</em> to <em>"should the agent do this?"</em>
+        </p>
+        <p>
+          Traditional access control systems — role-based (RBAC), attribute-based (ABAC), or simple API key
+          scoping — were designed for human users operating within well-defined application boundaries. They
+          grant broad permissions upfront and assume the user exercises judgment about when to use them.
+          AI agents don't have that judgment. They execute tool calls based on model outputs, which means
+          every action needs independent evaluation.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Why AI Agents Need Authorization</h2>
+        <p>
+          Without authorization controls, an AI agent with access to a payment API could spend unlimited funds.
+          An agent with file system access could overwrite critical data. An agent with email access could send
+          messages to anyone. The risk is not that agents are malicious — it's that they lack the contextual
+          judgment to know when an action is appropriate.
+        </p>
+        <p>
+          AI agent authorization addresses this by evaluating every action against a set of policies before
+          it executes. The evaluation considers:
+        </p>
+        <ul>
+          <li><strong>What</strong> the agent wants to do (action type, target resource)</li>
+          <li><strong>How much</strong> it costs or what the risk level is</li>
+          <li><strong>Who</strong> the counterparty is and their trust level</li>
+          <li><strong>When</strong> and <strong>where</strong> the action is being attempted</li>
+          <li><strong>Whether</strong> the owner has pre-approved this category of action</li>
+        </ul>
+        <p>
+          The result is a decision: allow the action, deny it, require human approval, or require
+          additional authentication (step-up).
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>The Policy-Based Approach</h2>
+        <p>
+          Policy-based authorization expresses rules as declarative documents rather than hardcoded logic.
+          In OpenLeash, policies are YAML files that define conditions, constraints, and obligations for
+          specific action types.
+        </p>
+        <p>
+          A policy might say: <em>"Allow purchases under $50 from trusted vendors. Require approval for
+          purchases between $50 and $500. Deny purchases over $500."</em> Another policy could say:
+          <em>"Allow appointment bookings during business hours. Require step-up authentication for
+          medical appointments."</em>
+        </p>
+        <p>
+          Policies compose naturally. Multiple policies can apply to the same action, and the authorization
+          engine evaluates all of them to produce a final decision. This makes it easy to layer
+          organization-wide rules with agent-specific constraints without modifying application code.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Cryptographic Proof Tokens</h2>
+        <p>
+          Authorization decisions are only useful if they can be verified. When OpenLeash allows an action,
+          it issues a PASETO v4.public proof token — a cryptographically signed document that contains
+          the action details, the decision, and a timestamp. This token serves as proof that the agent
+          was authorized by its owner at the time of the action.
+        </p>
+        <p>
+          Counterparties (the services receiving the agent's requests) can verify the token independently
+          using the owner's public key. No callback to OpenLeash is required. This offline verification
+          model means proof tokens work even when the authorization server is unreachable, and they
+          don't create a centralized dependency.
+        </p>
+        <p>
+          PASETO (Platform-Agnostic Security Tokens) was chosen over JWT for its stronger security
+          defaults: no algorithm negotiation, no "none" algorithm vulnerability, and mandatory
+          authenticated encryption for local tokens.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Human-in-the-Loop Controls</h2>
+        <p>
+          Not every action should be automated. High-stakes decisions — large purchases, regulated filings,
+          sensitive communications — benefit from human oversight. OpenLeash supports this through approval
+          workflows where the agent pauses execution and waits for explicit owner authorization.
+        </p>
+        <p>
+          The approval flow works as follows: the agent requests authorization, the policy evaluates to
+          <code>REQUIRE_APPROVAL</code>, OpenLeash creates an approval request, the owner is notified
+          (via the web portal, webhooks, or polling), and the owner approves or denies. If approved,
+          OpenLeash issues a time-limited approval token that the agent uses to complete the action.
+        </p>
+        <p>
+          This pattern keeps humans in control of high-risk decisions while allowing routine actions to
+          proceed automatically. The threshold between "auto-approve" and "require approval" is fully
+          configurable through policies.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>How OpenLeash Implements It</h2>
+        <p>
+          OpenLeash is a local-first authorization sidecar — it runs alongside your agent as a lightweight
+          HTTP server. The agent calls <code>POST /v1/authorize</code> before performing any risky action.
+          OpenLeash evaluates the request against all applicable policies and returns a decision with an
+          optional proof token.
+        </p>
+        <p>
+          Key implementation details:
+        </p>
+        <ul>
+          <li><strong>File-based state</strong> — policies, agents, owners, and keys are stored as files. No database required.</li>
+          <li><strong>Ed25519 request signing</strong> — agents authenticate requests using Ed25519 keypairs, ensuring only registered agents can request authorization.</li>
+          <li><strong>Deterministic evaluation</strong> — same input always produces the same output. No probabilistic logic, no model calls.</li>
+          <li><strong>Append-only audit log</strong> — every decision is recorded in a JSONL log for compliance and debugging.</li>
+          <li><strong>Multi-language SDKs</strong> — TypeScript, Python, and Go SDKs handle signing, authorization, and proof verification.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>The Authorization Lifecycle</h2>
+        <p>
+          A typical authorization flow follows these steps:
+        </p>
+        <ol>
+          <li><strong>Agent registration</strong> — the agent receives an invite, registers with an Ed25519 public key, and is bound to an owner.</li>
+          <li><strong>Policy definition</strong> — the owner writes YAML policies that define allowed actions, constraints, and escalation rules.</li>
+          <li><strong>Authorization request</strong> — the agent sends an action request to OpenLeash before executing.</li>
+          <li><strong>Policy evaluation</strong> — OpenLeash evaluates the request against all matching policies.</li>
+          <li><strong>Decision + proof</strong> — the engine returns a decision (ALLOW, DENY, REQUIRE_APPROVAL, REQUIRE_STEP_UP, or REQUIRE_DEPOSIT) and, if allowed, a signed proof token.</li>
+          <li><strong>Action execution</strong> — the agent proceeds (or waits for approval) and presents the proof token to the counterparty.</li>
+          <li><strong>Counterparty verification</strong> — the receiving service verifies the proof token offline using the public key.</li>
+        </ol>
+      </section>
+
+      <section class="content-section">
+        <h2>When to Use AI Agent Authorization</h2>
+        <p>
+          AI agent authorization is valuable whenever an agent performs actions with real-world consequences:
+          spending money, accessing sensitive data, communicating with external parties, or modifying system state.
+          If you're building an agent that interacts with the world beyond simple text generation, authorization
+          controls help ensure it acts within boundaries you define.
+        </p>
+        <p>
+          Explore specific scenarios on the <a href="/use-cases">use cases page</a>, or dive into the
+          <a href="/docs">documentation</a> to start implementing.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

@@ -39,8 +39,8 @@ const docLinks = [
 ---
 
 <BaseLayout
-  title="Docs — OpenLeash"
-  description="Documentation for OpenLeash: specification, protocol, policy language, and integration guides."
+  title="Documentation — OpenLeash AI Agent Authorization"
+  description="OpenLeash docs: policy language reference, authorization protocol, SDK guides, CLI commands, and REST API endpoints for AI agent authorization."
   canonicalPath="/docs"
 >
   <Nav />
@@ -71,6 +71,20 @@ const docLinks = [
         </a>
       ))}
     </div>
+
+    <section class="concepts-section fade-in fade-in-d1">
+      <h2 class="section-title">Concepts</h2>
+      <div class="concepts-grid">
+        <a href="/concepts/ai-agent-authorization" class="doc-card">
+          <h2 class="doc-title">What is AI Agent Authorization?</h2>
+          <p class="doc-desc">Learn why AI agents need authorization, how policy-based governance works, and how cryptographic proofs enable trust.</p>
+        </a>
+        <a href="/concepts/mcp-authorization" class="doc-card">
+          <h2 class="doc-title">MCP Authorization & Tool Governance</h2>
+          <p class="doc-desc">Understand the governance gap in MCP, how OpenLeash acts as an authorization sidecar, and how to set up policy-based tool control.</p>
+        </a>
+      </div>
+    </section>
 
     <section class="quickref fade-in fade-in-d2">
       <h2 class="section-title">CLI commands</h2>
@@ -340,9 +354,23 @@ const docLinks = [
     margin-top: 0;
   }
 
+  .concepts-section {
+    margin-bottom: 48px;
+  }
+
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
   @media (max-width: 768px) {
     .docs-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+
+    .concepts-grid {
+      grid-template-columns: 1fr;
     }
 
     .ref-grid {

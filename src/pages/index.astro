@@ -9,7 +9,25 @@ import CalloutBanner from '../components/CalloutBanner.astro';
 import QuickStart from '../components/QuickStart.astro';
 ---
 
-<BaseLayout title="OpenLeash — Authorization guardrails for AI agents" canonicalPath="/">
+<BaseLayout
+  title="OpenLeash — Open-Source Authorization for AI Agents"
+  description="Open-source authorization framework for AI agents. Define YAML policies, issue PASETO proof tokens, and add human-in-the-loop approvals. SDKs for TypeScript, Python, and Go."
+  canonicalPath="/"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'OpenLeash',
+    applicationCategory: 'SecurityApplication',
+    operatingSystem: 'Linux, macOS, Windows, Docker',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description: 'Open-source authorization framework for AI agents. Define YAML policies, issue PASETO proof tokens, and add human-in-the-loop approvals.',
+    license: 'https://www.apache.org/licenses/LICENSE-2.0',
+    url: 'https://openleash.ai',
+    downloadUrl: 'https://www.npmjs.com/package/@openleash/cli',
+    softwareVersion: '0.5.0',
+    programmingLanguage: ['TypeScript', 'Python', 'Go'],
+  }]}
+>
   <Nav />
 
   <main class="container">
@@ -120,7 +138,7 @@ import QuickStart from '../components/QuickStart.astro';
     <!-- How it works -->
     <section class="section">
       <h2 class="section-title">
-        <span class="accent-prefix">›</span> How it works
+        <span class="accent-prefix">›</span> How AI Agent Authorization Works
       </h2>
       <p class="section-intro">
         Alice's agent purchases headphones from StoreCo's agent. Both sides use OpenLeash to authorize actions and exchange cryptographic proofs.
@@ -131,7 +149,7 @@ import QuickStart from '../components/QuickStart.astro';
     <!-- Use cases -->
     <section class="section">
       <h2 class="section-title">
-        <span class="accent-prefix">›</span> Use cases
+        <span class="accent-prefix">›</span> AI Agent Authorization Use Cases
       </h2>
       <div class="features-grid">
         <FeatureCard
@@ -155,12 +173,15 @@ import QuickStart from '../components/QuickStart.astro';
           description="Enforce allowlists and denylists for API calls, emails, or messages. Agents only reach approved endpoints."
         />
       </div>
+      <p class="section-more">
+        <a href="/use-cases">See all use cases and FAQ →</a>
+      </p>
     </section>
 
-    <!-- What you get -->
+    <!-- Features -->
     <section class="section">
       <h2 class="section-title">
-        <span class="accent-prefix">›</span> What you get
+        <span class="accent-prefix">›</span> Features
       </h2>
       <div class="mvp-grid">
         <div class="mvp-item">
@@ -231,6 +252,27 @@ import QuickStart from '../components/QuickStart.astro';
           <div>
             <strong>Deterministic decisions</strong>
             <p>Same input, same output. No probabilistic logic. Policies evaluate to predictable results.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🔔</span>
+          <div>
+            <strong>Webhook notifications</strong>
+            <p>Real-time notifications for authorization events. Get alerts when agents request approval or policies trigger.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🔌</span>
+          <div>
+            <strong>MCP integration</strong>
+            <p>Transparent governance proxy for MCP tool calls. Works as a sidecar for <a href="/openclaw">OpenClaw</a> and other MCP servers.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">📝</span>
+          <div>
+            <strong>Policy drafts</strong>
+            <p>Agents propose policies for owner review. Owners approve, reject, or modify before activation.</p>
           </div>
         </div>
       </div>
@@ -574,6 +616,22 @@ import QuickStart from '../components/QuickStart.astro';
     background: rgba(52, 211, 153, 0.08);
     color: var(--green-bright);
     transform: translateY(-2px);
+  }
+
+  .section-more {
+    margin-top: 16px;
+    font-size: 0.9rem;
+  }
+
+  .section-more a {
+    color: var(--green-bright);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .section-more a:hover {
+    color: var(--amber-bright);
   }
 
   /* Responsive */

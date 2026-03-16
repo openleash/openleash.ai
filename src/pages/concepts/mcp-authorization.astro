@@ -1,0 +1,260 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="MCP Authorization & Tool Governance — OpenLeash"
+  description="Add policy-based authorization to Model Context Protocol (MCP) servers. Control which tools AI agents can call, enforce spending limits, and require human approval for sensitive operations."
+  canonicalPath="/concepts/mcp-authorization"
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'MCP Authorization', href: '/concepts/mcp-authorization' },
+      ]} />
+      <h1 class="page-title">MCP Authorization & Tool Governance</h1>
+      <p class="page-desc">
+        How to add policy-based authorization to Model Context Protocol servers — controlling which tools AI agents can call and under what conditions.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>What is MCP?</h2>
+        <p>
+          The Model Context Protocol (MCP) is an open standard for connecting AI agents to external tools
+          and data sources. An MCP server exposes a set of tools — database queries, API calls, file operations,
+          web searches — that an AI agent can invoke. The agent discovers available tools, selects the appropriate
+          one, and calls it with parameters derived from the conversation context.
+        </p>
+        <p>
+          MCP solves the tool integration problem: instead of building custom connectors for each AI platform,
+          tool providers implement the MCP interface once and it works across any MCP-compatible agent. This
+          has led to rapid growth in available MCP servers covering everything from GitHub operations to
+          Slack messaging to database management.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>The Governance Gap</h2>
+        <p>
+          MCP provides a clean protocol for tool discovery and invocation, but it does not include an
+          authorization layer. When an MCP server exposes a tool, any connected agent can call it without
+          restriction. There is no built-in mechanism to:
+        </p>
+        <ul>
+          <li>Limit which tools a specific agent can use</li>
+          <li>Set cost or rate limits on tool invocations</li>
+          <li>Require human approval for sensitive operations</li>
+          <li>Audit which tools were called and why</li>
+          <li>Provide cryptographic proof of authorization to external services</li>
+        </ul>
+        <p>
+          This means an agent with access to a payment MCP server could initiate unlimited transactions.
+          An agent with database access could execute destructive queries. The tool server trusts the agent
+          completely, which is a reasonable default for development but dangerous in production.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>How OpenLeash Adds MCP Authorization</h2>
+        <p>
+          OpenLeash sits between the AI agent and the MCP server as an authorization sidecar. Before any
+          tool call reaches the MCP server, OpenLeash evaluates it against your policies and returns a
+          decision. The integration works through <a href="/openclaw">OpenClaw</a>, which provides a
+          hook point for intercepting tool executions.
+        </p>
+        <p>
+          The architecture is straightforward:
+        </p>
+        <ol>
+          <li>The AI agent requests a tool call through the MCP protocol</li>
+          <li>OpenClaw intercepts the call before execution</li>
+          <li>OpenClaw sends an authorization request to OpenLeash with the tool name, parameters, and context</li>
+          <li>OpenLeash evaluates the request against all applicable policies</li>
+          <li>If allowed, the tool call proceeds and OpenLeash issues a proof token</li>
+          <li>If denied or requiring approval, the tool call is blocked and the agent is informed</li>
+        </ol>
+        <p>
+          This is transparent to the AI agent — it continues using the standard MCP protocol. The
+          authorization layer is invisible except when a policy blocks or escalates an action.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Example Policies for MCP Tools</h2>
+        <p>
+          Policies for MCP tool authorization follow the same YAML format as any OpenLeash policy.
+          Here are common patterns:
+        </p>
+
+        <CodeBlock
+          title="allow-read-block-write.yaml"
+          lines={[
+            { type: 'comment', text: '# Allow read-only database queries, block writes' },
+            { type: 'code', text: 'name: database-read-only' },
+            { type: 'code', text: 'rules:' },
+            { type: 'code', text: '  - action_type: db_query' },
+            { type: 'code', text: '    decision: ALLOW' },
+            { type: 'code', text: '    conditions:' },
+            { type: 'code', text: '      - expression: "action.payload.operation == \'SELECT\'"' },
+            { type: 'code', text: '  - action_type: db_query' },
+            { type: 'code', text: '    decision: DENY' },
+            { type: 'code', text: '    conditions:' },
+            { type: 'code', text: '      - expression: "action.payload.operation in [\'INSERT\', \'UPDATE\', \'DELETE\']"' },
+          ]}
+        />
+
+        <div style="margin-top: 24px;">
+          <CodeBlock
+            title="require-approval-for-payments.yaml"
+            lines={[
+              { type: 'comment', text: '# Require human approval for any payment tool call' },
+              { type: 'code', text: 'name: payment-approval' },
+              { type: 'code', text: 'rules:' },
+              { type: 'code', text: '  - action_type: process_payment' },
+              { type: 'code', text: '    decision: REQUIRE_APPROVAL' },
+              { type: 'code', text: '    obligations:' },
+              { type: 'code', text: '      - type: HUMAN_APPROVAL' },
+              { type: 'code', text: '        config:' },
+              { type: 'code', text: '          notify: true' },
+              { type: 'code', text: '          timeout_minutes: 60' },
+            ]}
+          />
+        </div>
+      </section>
+
+      <section class="content-section">
+        <h2>Setting Up MCP Authorization</h2>
+        <p>
+          To add OpenLeash authorization to your MCP setup:
+        </p>
+        <ol>
+          <li>Install and start OpenLeash: <code>npx openleash start</code></li>
+          <li>Run the setup wizard: <code>npx openleash wizard</code></li>
+          <li>Write policies targeting your MCP tool action types</li>
+          <li>Configure OpenClaw to call OpenLeash before tool execution (see <a href="/openclaw">integration guide</a>)</li>
+          <li>Test with the <a href="/playground">policy playground</a> before deploying</li>
+        </ol>
+        <p>
+          The entire setup runs locally — no cloud service, no external dependencies. Policies are
+          YAML files you version control alongside your agent code.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Beyond Tool-Level Controls</h2>
+        <p>
+          MCP authorization with OpenLeash goes beyond simple allow/deny per tool. Because policies
+          evaluate the full context of each invocation, you can implement:
+        </p>
+        <ul>
+          <li><strong>Parameter-level controls</strong> — allow a tool but restrict specific parameter values (e.g., allow email but only to approved domains)</li>
+          <li><strong>Cost-based escalation</strong> — auto-approve cheap operations, require approval for expensive ones</li>
+          <li><strong>Trust-based decisions</strong> — different policies for different counterparty trust levels</li>
+          <li><strong>Time-based restrictions</strong> — allow certain tools only during business hours</li>
+          <li><strong>Audit trail</strong> — complete JSONL log of every tool call, decision, and proof token</li>
+        </ul>
+        <p>
+          For a deeper understanding of how policy evaluation works, see
+          <a href="/concepts/ai-agent-authorization">What is AI Agent Authorization?</a> or the
+          <a href="/docs">documentation</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

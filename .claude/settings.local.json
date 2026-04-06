@@ -7,7 +7,8 @@
       "Bash(export:*)",
       "Bash(. \"$NVM_DIR/nvm.sh\")",
       "Bash(nvm use:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

@@ -26,6 +26,15 @@ import QuickStart from '../components/QuickStart.astro';
     downloadUrl: 'https://www.npmjs.com/package/@openleash/cli',
     softwareVersion: '0.5.0',
     programmingLanguage: ['TypeScript', 'Python', 'Go'],
+  }, {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'OpenLeash Owner Portal Demo',
+    description: 'A walkthrough of the OpenLeash owner portal — manage AI agents, authorization policies, approval workflows, and audit logs.',
+    thumbnailUrl: 'https://openleash.ai/video/poster.png',
+    contentUrl: 'https://openleash.ai/video/pr_video_1.0.mp4',
+    uploadDate: '2026-04-06',
+    duration: 'PT1M',
   }]}
 >
   <Nav />
@@ -90,6 +99,20 @@ import QuickStart from '../components/QuickStart.astro';
         href="/openclaw"
         linkText="Learn more"
       />
+    </div>
+
+    <div class="fade-in fade-in-d2 hero-video-wrapper">
+      <p class="hero-video-caption">See the owner portal in action</p>
+      <video
+        class="hero-video"
+        controls
+        playsinline
+        poster="/video/poster.png"
+        title="OpenLeash Owner Portal Demo"
+        aria-label="Video walkthrough of the OpenLeash owner portal showing agent management, policies, approvals, and audit logs"
+      >
+        <source src="/video/pr_video_1.0.mp4" type="video/mp4" />
+      </video>
     </div>
 
     <!-- Quickstart -->
@@ -308,6 +331,33 @@ import QuickStart from '../components/QuickStart.astro';
 </BaseLayout>
 
 <style>
+  /* Hero video */
+  .hero-video-wrapper {
+    max-width: 960px;
+    margin: 0 auto 56px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    padding: 6px;
+  }
+
+  .hero-video-caption {
+    margin: 0;
+    padding: 10px 0 8px;
+    text-align: center;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .hero-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
   /* Hero */
   .hero {
     text-align: center;

@@ -1,3 +1,8 @@
+---
+name: openleash
+description: Authorize AI agent actions via OpenLeash — a local-first policy gate and proof sidecar. Use when an agent needs to request authorization, verify proof tokens, or manage policies.
+---
+
 # OpenLeash — skill.md
 
 > OpenLeash is a local-first authorization and proof sidecar for AI agents. It evaluates YAML-based policies and issues PASETO v4.public cryptographic proof tokens.
@@ -164,6 +169,22 @@ async function pollApprovalRequest(params: {
   intervalMs?: number;
   timeoutMs?: number;
 }): Promise<{ approval_request_id: string; status: string; approval_token?: string }>;
+
+// Propose a new policy for owner review
+async function createPolicyDraft(params: {
+  openleashUrl: string;
+  agentId: string;
+  privateKeyB64: string;
+  policy: string;
+  justification?: string;
+}): Promise<{ draft_id: string; status: string; created_at: string }>;
+
+// List and poll policy draft status
+async function getPolicyDrafts(params: {
+  openleashUrl: string;
+  agentId: string;
+  privateKeyB64: string;
+}): Promise<Array<{ draft_id: string; status: string; created_at: string }>>;
 ```
 
 ## Python SDK (`openleash-sdk`)
@@ -183,6 +204,11 @@ from openleash import (
     sign_request,
     registration_challenge,
     register_agent,
+    create_approval_request,
+    get_approval_request,
+    poll_approval_request,
+    create_policy_draft,
+    get_policy_drafts,
 )
 ```
 
@@ -200,6 +226,10 @@ import openleash "github.com/openleash/openleash/packages/sdk-go"
 keypair, _ := openleash.GenerateEd25519Keypair()
 result, _ := openleash.Authorize(url, agentID, privateKeyB64, action)
 verified, _ := openleash.VerifyProofOffline(token, publicKeys)
+approval, _ := openleash.CreateApprovalRequest(url, agentID, privateKeyB64, decisionID, action)
+status, _ := openleash.PollApprovalRequest(url, agentID, privateKeyB64, approvalID)
+draft, _ := openleash.CreatePolicyDraft(url, agentID, privateKeyB64, policy)
+drafts, _ := openleash.GetPolicyDrafts(url, agentID, privateKeyB64)
 ```
 
 ## API Endpoints
@@ -322,6 +352,19 @@ Response:
 **`GET /v1/agent/approval-requests/{id}`** — Poll approval request status. Returns `approval_token` when approved.
 
 **`GET /v1/agent/self`** — Get the agent's own registration details.
+
+### Policy Drafts (Agent-authenticated)
+
+**`POST /v1/agent/policy-drafts`** — Propose a new policy for owner review.
+
+```json
+{
+  "policy": "version: 1\ndefault: deny\nrules:\n  - id: example\n    effect: allow\n    action: '*'",
+  "justification": "Need broader permissions for task X"
+}
+```
+
+**`GET /v1/agent/policy-drafts`** — List and poll policy draft status.
 
 ### Owner Endpoints (PASETO session token)
 

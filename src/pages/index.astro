@@ -107,6 +107,9 @@ import QuickStart from '../components/QuickStart.astro';
         class="hero-video"
         controls
         playsinline
+        preload="metadata"
+        width="1280"
+        height="720"
         poster="/video/poster.png"
         title="OpenLeash Owner Portal Demo"
         aria-label="Video walkthrough of the OpenLeash owner portal showing agent management, policies, approvals, and audit logs"
@@ -333,6 +336,7 @@ import QuickStart from '../components/QuickStart.astro';
 <style>
   /* Hero video */
   .hero-video-wrapper {
+    width: 100%;
     max-width: 960px;
     margin: 0 auto 56px;
     border-radius: 12px;
@@ -354,7 +358,9 @@ import QuickStart from '../components/QuickStart.astro';
   .hero-video {
     display: block;
     width: 100%;
+    max-width: 100%;
     height: auto;
+    aspect-ratio: 16 / 9;
     border-radius: 8px;
   }
 
@@ -693,6 +699,15 @@ import QuickStart from '../components/QuickStart.astro';
     .mvp-grid {
       grid-template-columns: 1fr;
     }
+
+    .hero-video-wrapper {
+      margin-bottom: 40px;
+      padding: 4px;
+    }
+
+    .hero-video-caption {
+      font-size: 1rem;
+    }
   }
 
   @media (max-width: 640px) {
@@ -702,6 +717,14 @@ import QuickStart from '../components/QuickStart.astro';
 
     .hero-desc {
       font-size: 0.9rem;
+    }
+
+    .hero-video-wrapper {
+      border-radius: 10px;
+    }
+
+    .hero-video {
+      border-radius: 6px;
     }
   }
 </style>

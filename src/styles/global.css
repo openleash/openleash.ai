@@ -61,6 +61,7 @@ body {
   /* Borders */
   --border-subtle: rgba(136, 153, 170, 0.15);
   --border-accent: rgba(52, 211, 153, 0.3);
+  --border-amber: rgba(251, 191, 36, 0.3);
 
   /* Surfaces */
   --surface-card: rgba(10, 17, 24, 0.65);

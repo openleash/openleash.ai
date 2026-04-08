@@ -24,7 +24,7 @@ import QuickStart from '../components/QuickStart.astro';
     license: 'https://www.apache.org/licenses/LICENSE-2.0',
     url: 'https://openleash.ai',
     downloadUrl: 'https://www.npmjs.com/package/@openleash/cli',
-    softwareVersion: '0.5.0',
+    softwareVersion: '0.13.0',
     programmingLanguage: ['TypeScript', 'Python', 'Go'],
   }, {
     '@context': 'https://schema.org',
@@ -74,9 +74,9 @@ import QuickStart from '../components/QuickStart.astro';
       <h1 class="hero-title">
         Open<span class="hero-accent">Leash</span>
       </h1>
-      <p class="hero-tagline">Authorization guardrails for AI agents.</p>
+      <p class="hero-tagline">Authorization guardrails for AI agents and organizations.</p>
       <p class="hero-desc">
-        An open-source authorization layer where owners set policies, agents ask before acting,
+        An open-source authorization layer where owners and organizations set policies, agents ask before acting,
         and counterparties can verify the agent was authorized.
       </p>
       <div class="hero-version fade-in fade-in-d1" id="hero-version" style="display:none">
@@ -93,12 +93,20 @@ import QuickStart from '../components/QuickStart.astro';
       </div>
     </header>
 
-    <div class="fade-in fade-in-d2" style="margin-top: 24px; margin-bottom: 56px;">
+    <div class="fade-in fade-in-d2" style="margin-top: 24px; margin-bottom: 16px;">
       <CalloutBanner
         text="Works as a sidecar for OpenClaw. Also works with any agent."
         href="/openclaw"
         linkText="Learn more"
       />
+    </div>
+
+    <div class="fade-in fade-in-d2 pro-callout" style="margin-bottom: 56px;">
+      <a href="/pro" class="pro-callout-inner">
+        <span class="pro-callout-badge">Coming Soon</span>
+        <span class="pro-callout-text">OpenLeash Pro — Hosted authorization with identity verification, push notifications, and more.</span>
+        <span class="pro-callout-arrow">→</span>
+      </a>
     </div>
 
     <div class="fade-in fade-in-d2 hero-video-wrapper">
@@ -205,10 +213,12 @@ import QuickStart from '../components/QuickStart.astro';
     </section>
 
     <!-- Features -->
-    <section class="section">
+    <section class="section" id="features">
       <h2 class="section-title">
         <span class="accent-prefix">›</span> Features
       </h2>
+
+      <h3 class="category-title">Core Authorization</h3>
       <div class="mvp-grid">
         <div class="mvp-item">
           <span class="mvp-icon" aria-hidden="true">📁</span>
@@ -232,24 +242,60 @@ import QuickStart from '../components/QuickStart.astro';
           </div>
         </div>
         <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🖥️</span>
+          <span class="mvp-icon" aria-hidden="true">📝</span>
           <div>
-            <strong>Web GUI</strong>
-            <p>Admin dashboard and owner portal built in. Manage agents, policies, approvals, and audit logs from the browser.</p>
+            <strong>Policy drafts</strong>
+            <p>Agents propose policies for owner review. Owners approve, reject, or modify before activation.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">⚡</span>
+          <div>
+            <strong>Deterministic decisions</strong>
+            <p>Same input, same output. No probabilistic logic. Policies evaluate to predictable results.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="category-title">Identity & Organizations</h3>
+      <div class="mvp-grid">
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🏢</span>
+          <div>
+            <strong>Organizations & RBAC</strong>
+            <p>Create organizations, manage members, and assign roles. Role hierarchy: org_admin, org_member, org_viewer. System-level admin role for instance management.</p>
           </div>
         </div>
         <div class="mvp-item">
           <span class="mvp-icon" aria-hidden="true">🪪</span>
           <div>
             <strong>Identity management</strong>
-            <p>Track owner identities: contact info, government IDs, company registration. EU-format validation built in.</p>
+            <p>Track identities with contact info, government IDs for 27 EU countries, and 11 company ID types with country-specific validation.</p>
           </div>
         </div>
         <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">📋</span>
+          <span class="mvp-icon" aria-hidden="true">✉️</span>
           <div>
-            <strong>Audit log</strong>
-            <p>Append-only JSONL log of every authorization, decision, approval, and key event. Queryable via API.</p>
+            <strong>Invite system</strong>
+            <p>Organization member invites, agent registration invites, and setup invites. Time-limited with automatic expiry.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🌐</span>
+          <div>
+            <strong>Organization domains</strong>
+            <p>Track domain ownership per organization with verification levels. Link corporate domains to org identity.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="category-title">Developer Experience</h3>
+      <div class="mvp-grid">
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">📦</span>
+          <div>
+            <strong>Multi-language SDKs</strong>
+            <p>TypeScript, Python, and Go SDKs with 13 functions each. Authorize, sign requests, verify proofs, manage approvals and policy drafts.</p>
           </div>
         </div>
         <div class="mvp-item">
@@ -260,24 +306,56 @@ import QuickStart from '../components/QuickStart.astro';
           </div>
         </div>
         <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🤖</span>
+          <span class="mvp-icon" aria-hidden="true">🔌</span>
           <div>
-            <strong>Agent registration</strong>
-            <p>Invite-based onboarding with Ed25519 keys. Owners create invite URLs, agents self-register. Policies can target specific agents or owners.</p>
+            <strong>MCP integration</strong>
+            <p>Transparent governance proxy for MCP tool calls. Works as a sidecar for <a href="/openclaw">OpenClaw</a> and other MCP servers.</p>
           </div>
         </div>
         <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">📦</span>
+          <span class="mvp-icon" aria-hidden="true">🐳</span>
           <div>
-            <strong>Multi-language SDKs</strong>
-            <p>TypeScript, Python, and Go SDKs. Authorize, sign requests, and verify proofs in your language of choice.</p>
+            <strong>Docker deployment</strong>
+            <p>Official Docker images with multi-platform support. Run with Docker Compose or deploy to any container platform.</p>
           </div>
         </div>
         <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">⚡</span>
+          <span class="mvp-icon" aria-hidden="true">🧩</span>
           <div>
-            <strong>Deterministic decisions</strong>
-            <p>Same input, same output. No probabilistic logic. Policies evaluate to predictable results.</p>
+            <strong>Plugin architecture</strong>
+            <p>Extend OpenLeash with server plugins. Custom authentication, storage backends, identity verification providers, and notification channels.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">📖</span>
+          <div>
+            <strong>OpenAPI documentation</strong>
+            <p>Interactive API reference with Scalar UI. Full OpenAPI 3.0 spec for all endpoints — public, agent, owner, and admin.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="category-title">Operations</h3>
+      <div class="mvp-grid">
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🖥️</span>
+          <div>
+            <strong>Web GUI</strong>
+            <p>Owner portal for agents, policies, approvals, and org management. Built-in dark and light themes.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">⚙️</span>
+          <div>
+            <strong>Admin dashboard</strong>
+            <p>Separate admin interface for system-wide management. Users, organizations, agents, policies, audit, and configuration.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">📋</span>
+          <div>
+            <strong>Audit log</strong>
+            <p>Append-only JSONL log of every authorization and key event. Scope filtering by user, organization, or agent.</p>
           </div>
         </div>
         <div class="mvp-item">
@@ -288,20 +366,73 @@ import QuickStart from '../components/QuickStart.astro';
           </div>
         </div>
         <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🔌</span>
+          <span class="mvp-icon" aria-hidden="true">🤖</span>
           <div>
-            <strong>MCP integration</strong>
-            <p>Transparent governance proxy for MCP tool calls. Works as a sidecar for <a href="/openclaw">OpenClaw</a> and other MCP servers.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">📝</span>
-          <div>
-            <strong>Policy drafts</strong>
-            <p>Agents propose policies for owner review. Owners approve, reject, or modify before activation.</p>
+            <strong>Agent registration</strong>
+            <p>Invite-based onboarding with Ed25519 keys. Owners and orgs create invite URLs, agents self-register.</p>
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- Pro teaser -->
+    <section class="section pro-teaser">
+      <div class="pro-teaser-header">
+        <h2 class="section-title">
+          <span class="accent-prefix-amber">›</span> OpenLeash Pro
+        </h2>
+        <span class="pro-badge">Coming Soon</span>
+      </div>
+      <p class="pro-teaser-desc">
+        Everything in the open-source edition, plus hosted infrastructure, enterprise authentication, and managed deployment.
+      </p>
+      <div class="mvp-grid">
+        <div class="mvp-item pro-mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🏦</span>
+          <div>
+            <strong>Identity verification</strong>
+            <p>Swedish BankID, SMS OTP, and email OTP. Government-level eID with animated QR codes.</p>
+          </div>
+        </div>
+        <div class="mvp-item pro-mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🔐</span>
+          <div>
+            <strong>Firebase Authentication</strong>
+            <p>Persistent client-side sessions, Google Sign-in, and email verification with branded emails.</p>
+          </div>
+        </div>
+        <div class="mvp-item pro-mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🔔</span>
+          <div>
+            <strong>Push notifications</strong>
+            <p>Firebase Cloud Messaging for mobile and web. Real-time alerts for approval requests and policy drafts.</p>
+          </div>
+        </div>
+        <div class="mvp-item pro-mvp-item">
+          <span class="mvp-icon" aria-hidden="true">☁️</span>
+          <div>
+            <strong>Cloud database</strong>
+            <p>Google Cloud Firestore as a scalable alternative to file-based storage. Multi-tenant support built in.</p>
+          </div>
+        </div>
+        <div class="mvp-item pro-mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🚀</span>
+          <div>
+            <strong>Managed deployment</strong>
+            <p>Google Cloud Run with automatic scaling, TLS termination, and regional deployment.</p>
+          </div>
+        </div>
+        <div class="mvp-item pro-mvp-item">
+          <span class="mvp-icon" aria-hidden="true">📧</span>
+          <div>
+            <strong>Email service</strong>
+            <p>SMTP and SendGrid backends with HTML templates for verification, invites, and notifications.</p>
+          </div>
+        </div>
+      </div>
+      <p class="section-more" style="margin-top: 20px;">
+        <a href="/pro" class="pro-learn-more">See all Pro features →</a>
+      </p>
     </section>
 
     <!-- Community / OSS -->
@@ -612,6 +743,14 @@ import QuickStart from '../components/QuickStart.astro';
     border-color: var(--green-bright);
   }
 
+  .pro-mvp-item {
+    border-color: var(--border-amber);
+  }
+
+  .pro-mvp-item:hover {
+    border-color: var(--amber-bright);
+  }
+
   .mvp-icon {
     font-size: 1.3rem;
     flex-shrink: 0;
@@ -629,6 +768,119 @@ import QuickStart from '../components/QuickStart.astro';
     font-size: 0.8rem;
     color: var(--text-secondary);
     line-height: 1.5;
+  }
+
+  /* Category titles */
+  .category-title {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 28px;
+    margin-bottom: 14px;
+  }
+
+  .category-title:first-of-type {
+    margin-top: 0;
+  }
+
+  /* Pro callout banner */
+  .pro-callout-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--border-amber);
+    background: rgba(251, 191, 36, 0.04);
+    text-decoration: none;
+    transition: all 0.2s var(--ease-out);
+  }
+
+  .pro-callout-inner:hover {
+    border-color: var(--amber-bright);
+    background: rgba(251, 191, 36, 0.08);
+    color: var(--text-primary);
+  }
+
+  .pro-callout-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--amber-mid);
+    color: #050a0e;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .pro-callout-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    flex: 1;
+  }
+
+  .pro-callout-arrow {
+    color: var(--amber-bright);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  /* Pro teaser section */
+  .pro-teaser {
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-amber);
+    background: rgba(251, 191, 36, 0.02);
+  }
+
+  .pro-teaser-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  .pro-teaser-header .section-title {
+    margin-bottom: 0;
+  }
+
+  .accent-prefix-amber {
+    color: var(--amber-bright);
+    margin-right: 4px;
+  }
+
+  .pro-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--amber-mid), var(--amber-bright));
+    color: #050a0e;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+  }
+
+  .pro-teaser-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .pro-learn-more {
+    color: var(--amber-bright) !important;
+    font-weight: 500;
+  }
+
+  .pro-learn-more:hover {
+    color: var(--amber-mid) !important;
   }
 
   /* Community */
@@ -715,6 +967,11 @@ import QuickStart from '../components/QuickStart.astro';
       padding-top: 24px;
     }
 
+    .hero-tagline {
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+    }
+
     .hero-desc {
       font-size: 0.9rem;
     }
@@ -725,6 +982,25 @@ import QuickStart from '../components/QuickStart.astro';
 
     .hero-video {
       border-radius: 6px;
+    }
+
+    .pro-callout-inner {
+      border-radius: var(--radius-md);
+      gap: 8px;
+      padding: 10px 14px;
+      flex-wrap: wrap;
+    }
+
+    .pro-callout-text {
+      font-size: 0.8rem;
+    }
+
+    .pro-teaser {
+      padding: 20px 16px;
+    }
+
+    .pro-teaser-header {
+      flex-wrap: wrap;
     }
   }
 </style>

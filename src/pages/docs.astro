@@ -35,6 +35,11 @@ const docLinks = [
     description: 'Step-by-step guide for AI agents: registration, authorization, and proof verification.',
     href: 'https://github.com/openleash/openleash/blob/main/AGENTS.md',
   },
+  {
+    title: 'OpenAPI Reference',
+    description: 'Interactive API documentation with Scalar UI. Full OpenAPI 3.0 spec for all endpoints.',
+    href: 'https://github.com/openleash/openleash/blob/main/docs/protocol.md',
+  },
 ];
 ---
 
@@ -199,15 +204,27 @@ const docLinks = [
         </div>
         <div class="ref-item">
           <code class="ref-cmd">GET /v1/owner/audit</code>
-          <span class="ref-label">Owner-scoped audit log</span>
+          <span class="ref-label">Owner-scoped audit log (filter by user/org/agent)</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/owner/organizations/:orgId</code>
+          <span class="ref-label">Organization details and members</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">POST .../members/:userId</code>
+          <span class="ref-label">Invite members, manage roles</span>
         </div>
       </div>
 
-      <h3 class="ref-group-title">Admin (Bearer token / localhost)</h3>
+      <h3 class="ref-group-title">Admin (PASETO session with admin role)</h3>
       <div class="ref-grid">
         <div class="ref-item">
           <code class="ref-cmd">GET /v1/admin/owners</code>
           <span class="ref-label">List all owners</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/admin/organizations</code>
+          <span class="ref-label">List all organizations</span>
         </div>
         <div class="ref-item">
           <code class="ref-cmd">GET /v1/admin/agents</code>
@@ -220,6 +237,10 @@ const docLinks = [
         <div class="ref-item">
           <code class="ref-cmd">GET /v1/admin/audit</code>
           <span class="ref-label">Full audit log</span>
+        </div>
+        <div class="ref-item">
+          <code class="ref-cmd">GET /v1/admin/config</code>
+          <span class="ref-label">Server configuration (read-only)</span>
         </div>
       </div>
     </section>

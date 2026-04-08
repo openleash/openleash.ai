@@ -6,8 +6,8 @@ import Footer from '../components/Footer.astro';
 const proFeatures = [
   {
     icon: '🔐',
-    title: 'Firebase Authentication',
-    description: 'Persistent client-side sessions with Firebase Auth. Google Sign-in, email/password registration, and automatic session renewal. No long-lived tokens stored server-side.',
+    title: 'Enterprise authentication',
+    description: 'Persistent client-side sessions with social sign-in, email/password registration, and automatic session renewal. No long-lived tokens stored server-side.',
   },
   {
     icon: '🏦',
@@ -24,15 +24,11 @@ const proFeatures = [
     title: 'SMS & Email OTP',
     description: 'Secondary verification via one-time passwords. SMS delivery through 46elks or Twilio. Email OTP via SMTP or SendGrid. PASETO attestation tokens for verified identities.',
   },
-  {
-    icon: '☁️',
-    title: 'Cloud database',
-    description: 'Google Cloud Firestore as a scalable alternative to file-based storage. Write-through caching, automatic state bootstrapping, and collection-prefix isolation for multi-tenancy.',
-  },
+
   {
     icon: '🔔',
     title: 'Push notifications',
-    description: 'Firebase Cloud Messaging for mobile and web push. Real-time alerts when agents request approval or propose policy drafts. Per-device token management with automatic cleanup.',
+    description: 'Mobile and web push notifications. Real-time alerts when agents request approval or propose policy drafts. Per-device token management with automatic cleanup.',
   },
   {
     icon: '🖥️',
@@ -42,12 +38,12 @@ const proFeatures = [
   {
     icon: '🚀',
     title: 'Managed deployment',
-    description: 'Google Cloud Run with full infrastructure management. Automatic scaling, TLS termination, and regional deployment. No servers to maintain.',
+    description: 'Fully managed infrastructure with automatic scaling, TLS termination, and regional deployment. No servers to maintain.',
   },
   {
     icon: '🏗️',
     title: 'Multi-tenant support',
-    description: 'Run multiple isolated tenants on shared infrastructure. Collection prefix isolation in Firestore ensures complete data separation between environments.',
+    description: 'Run multiple isolated tenants on shared infrastructure. Complete data separation between environments.',
   },
   {
     icon: '📧',
@@ -59,7 +55,7 @@ const proFeatures = [
 
 <BaseLayout
   title="OpenLeash Pro — Hosted AI Agent Authorization"
-  description="OpenLeash Pro: hosted authorization with Firebase Auth, Swedish BankID, push notifications, Firestore storage, and managed Cloud Run deployment. Coming soon."
+  description="OpenLeash Pro: hosted authorization with enterprise authentication, Swedish BankID, push notifications, and managed deployment. Coming soon."
   canonicalPath="/pro"
 >
   <Nav />

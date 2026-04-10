@@ -1,4 +1,22 @@
+# OpenLeash — https://openleash.ai
+# AI agent authorization framework
+
 User-agent: *
 Allow: /
+Disallow: /assets/
 
+# Sitemap
 Sitemap: https://openleash.ai/sitemap-index.xml
+
+# AI crawlers — allow indexing for discoverability
+User-agent: GPTBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /

@@ -7,6 +7,9 @@ interface Props {
   ogImage?: string;
   canonicalPath?: string;
   jsonLd?: Record<string, unknown>[];
+  keywords?: string;
+  datePublished?: string;
+  dateModified?: string;
 }
 
 const {
@@ -15,6 +18,9 @@ const {
   ogImage = '/og.png',
   canonicalPath,
   jsonLd = [],
+  keywords = 'AI agent authorization, agent guardrails, PASETO tokens, policy engine, human-in-the-loop, MCP authorization, open source, TypeScript, Python, Go',
+  datePublished,
+  dateModified,
 } = Astro.props;
 
 const site = Astro.site?.origin ?? 'https://openleash.ai';
@@ -34,6 +40,15 @@ const globalSchemas: Record<string, unknown>[] = [
     '@type': 'WebSite',
     name: 'OpenLeash',
     url: site,
+    description: 'Open-source authorization framework for AI agents. Define YAML policies, issue PASETO proof tokens, and add human-in-the-loop approvals.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `https://github.com/openleash/openleash/search?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
   },
   ...jsonLd,
 ];
@@ -45,6 +60,8 @@ const globalSchemas: Record<string, unknown>[] = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="OpenLeash Contributors" />
     <meta name="theme-color" content="#050a0e" />
     <link rel="canonical" href={canonical} />
 
@@ -53,12 +70,18 @@ const globalSchemas: Record<string, unknown>[] = [
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={datePublished ? 'article' : 'website'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={`${site}${ogImage}`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${title} — OpenLeash`} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content="OpenLeash" />
+    <meta property="og:locale" content="en_US" />
+    {datePublished && <meta property="article:published_time" content={datePublished} />}
+    {dateModified && <meta property="article:modified_time" content={dateModified} />}
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />

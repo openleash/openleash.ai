@@ -1,0 +1,244 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="Human-in-the-Loop AI — Approval Workflows for AI Agents | OpenLeash"
+  description="How human-in-the-loop controls keep AI agents accountable. Learn about approval workflows, step-up authentication, and configurable escalation policies for autonomous agents."
+  canonicalPath="/concepts/human-in-the-loop-ai"
+  keywords="human-in-the-loop AI, AI approval workflow, human oversight AI agents, AI agent approval, step-up authentication, agent escalation, human AI collaboration"
+  datePublished="2026-04-10"
+  dateModified="2026-04-10"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Human-in-the-Loop AI — Approval Workflows for AI Agents',
+    description: 'How human-in-the-loop controls keep AI agents accountable. Learn about approval workflows, step-up authentication, and configurable escalation policies.',
+    datePublished: '2026-04-10',
+    dateModified: '2026-04-10',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/concepts/human-in-the-loop-ai' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'Human-in-the-Loop AI', href: '/concepts/human-in-the-loop-ai' },
+      ]} />
+      <h1 class="page-title">Human-in-the-Loop AI</h1>
+      <p class="page-desc">
+        Approval workflows, step-up authentication, and escalation policies that keep humans in control of high-stakes AI agent actions.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>The Case for Human Oversight</h2>
+        <p>
+          Full autonomy is not always desirable. An AI agent that can spend money, send legal
+          documents, or interact with government systems should not operate without oversight.
+          Human-in-the-loop (HITL) is the principle that certain actions require explicit human
+          approval before execution — not as a bottleneck, but as a safety mechanism.
+        </p>
+        <p>
+          The challenge is calibration: too much human oversight defeats the purpose of automation,
+          while too little exposes owners to unacceptable risk. Effective HITL systems make the
+          threshold configurable — owners define which actions auto-approve and which require
+          their sign-off.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>How Approval Workflows Work</h2>
+        <p>
+          In OpenLeash, the approval workflow follows a predictable sequence:
+        </p>
+        <ol>
+          <li><strong>Agent requests authorization</strong> — The agent calls <code>POST /v1/authorize</code> with the action details.</li>
+          <li><strong>Policy evaluates to REQUIRE_APPROVAL</strong> — The authorization engine determines this action needs human sign-off.</li>
+          <li><strong>Approval request created</strong> — OpenLeash creates an approval request record with the full action context.</li>
+          <li><strong>Owner is notified</strong> — Via the web portal, push notifications, webhooks, or the agent polls for status.</li>
+          <li><strong>Owner reviews and decides</strong> — The owner sees the action details and approves or denies.</li>
+          <li><strong>Agent receives the decision</strong> — If approved, OpenLeash issues a time-limited approval token. If denied, the agent is informed and should not proceed.</li>
+        </ol>
+        <p>
+          The entire flow is asynchronous. The agent can continue other work while waiting for
+          approval, and owners can review requests on their own schedule.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Step-Up Authentication</h2>
+        <p>
+          Some actions go beyond simple approval. Regulated filings, large financial transactions,
+          or actions with legal consequences may require the owner to verify their identity before
+          the agent can proceed. This is step-up authentication — a higher bar than a simple
+          "approve" button.
+        </p>
+        <p>
+          OpenLeash supports step-up through the <code>REQUIRE_STEP_UP</code> decision type.
+          When a policy triggers this decision, the owner must complete an identity verification
+          flow (such as Swedish BankID, SMS OTP, or email verification) before the action
+          is authorized. The verification result is recorded as a cryptographic attestation token.
+        </p>
+        <p>
+          This creates a strong audit trail: not just "the owner approved" but "the owner
+          verified their identity via BankID at this timestamp, and here is the cryptographic
+          proof."
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Configuring Escalation Policies</h2>
+        <p>
+          The boundary between "auto-approve" and "require approval" is defined in YAML policies.
+          A typical escalation pattern uses cost thresholds:
+        </p>
+        <ul>
+          <li>Actions under $50 from trusted vendors — <strong>auto-approve</strong></li>
+          <li>Actions between $50 and $500 — <strong>require human approval</strong></li>
+          <li>Actions over $500 — <strong>require step-up authentication</strong></li>
+          <li>Actions with untrusted counterparties — <strong>always require approval</strong></li>
+        </ul>
+        <p>
+          These thresholds are fully configurable per agent, per action type, and per counterparty.
+          Organizations can define org-wide policies that apply to all agents, while individual
+          owners can add agent-specific overrides.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Real-Time Notifications</h2>
+        <p>
+          Approval workflows are only effective if owners are notified promptly. OpenLeash
+          supports multiple notification channels:
+        </p>
+        <ul>
+          <li><strong>Web portal</strong> — The owner GUI shows pending approval requests with full action context.</li>
+          <li><strong>Push notifications</strong> — Mobile push via FCM for immediate alerts (available in OpenLeash Pro).</li>
+          <li><strong>Webhooks</strong> — HTTP callbacks to external systems for integration with Slack, email, or custom dashboards.</li>
+          <li><strong>Polling</strong> — The agent SDK can poll for approval status at configurable intervals.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>Audit Trail and Compliance</h2>
+        <p>
+          Every approval decision is recorded in the append-only audit log. The log captures
+          who approved, when, from what device, and through which verification method. This
+          is critical for regulated industries where proof of human oversight is a compliance
+          requirement.
+        </p>
+        <p>
+          Combined with PASETO proof tokens, the audit trail creates end-to-end accountability:
+          from the agent's request, through the owner's approval, to the counterparty's
+          verification. Every step is cryptographically linked and independently verifiable.
+        </p>
+        <p>
+          Learn more about <a href="/concepts/ai-agent-guardrails">AI agent guardrails</a>,
+          or read about <a href="/concepts/paseto-tokens">how PASETO proof tokens work</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

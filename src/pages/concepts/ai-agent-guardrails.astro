@@ -1,0 +1,237 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="AI Agent Guardrails — How to Control Autonomous Agents | OpenLeash"
+  description="Learn how AI agent guardrails prevent unauthorized actions, enforce spending limits, and keep autonomous agents operating within safe boundaries. Policy-based controls with cryptographic proof."
+  canonicalPath="/concepts/ai-agent-guardrails"
+  keywords="AI agent guardrails, AI safety controls, autonomous agent limits, agent spending limits, AI risk management, agent policy enforcement"
+  datePublished="2026-04-10"
+  dateModified="2026-04-10"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'AI Agent Guardrails — How to Control Autonomous Agents',
+    description: 'Learn how AI agent guardrails prevent unauthorized actions, enforce spending limits, and keep autonomous agents operating within safe boundaries.',
+    datePublished: '2026-04-10',
+    dateModified: '2026-04-10',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/concepts/ai-agent-guardrails' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'AI Agent Guardrails', href: '/concepts/ai-agent-guardrails' },
+      ]} />
+      <h1 class="page-title">AI Agent Guardrails</h1>
+      <p class="page-desc">
+        How to set boundaries for autonomous AI agents — spending limits, action controls, approval workflows, and cryptographic accountability.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>Why AI Agents Need Guardrails</h2>
+        <p>
+          AI agents are increasingly autonomous. They make purchases, send emails, book appointments,
+          file documents, and call external APIs — all without human intervention. This autonomy
+          is powerful, but it creates risk. Without guardrails, an agent can overspend, contact
+          the wrong person, or take irreversible actions that its owner never intended.
+        </p>
+        <p>
+          Guardrails are the policies, limits, and controls that keep an agent operating within
+          acceptable boundaries. They answer the question: <em>"What should this agent be allowed
+          to do, and under what conditions?"</em>
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Types of AI Agent Guardrails</h2>
+        <p>
+          Effective guardrails operate at multiple levels, from simple hard limits to
+          context-aware policy evaluation:
+        </p>
+        <ul>
+          <li><strong>Spending limits</strong> — Cap how much an agent can spend per transaction, per day, or per vendor. A policy might allow purchases under $50 automatically but require approval for anything higher.</li>
+          <li><strong>Action allowlists</strong> — Define exactly which action types an agent can perform. An email agent might be allowed to draft messages but not send them without approval.</li>
+          <li><strong>Counterparty trust levels</strong> — Differentiate between trusted and untrusted recipients. An agent might auto-approve actions with known vendors but flag interactions with new ones.</li>
+          <li><strong>Time-based constraints</strong> — Restrict when actions can occur. A booking agent might only operate during business hours.</li>
+          <li><strong>Human-in-the-loop approval</strong> — Require explicit human sign-off for high-risk or high-cost actions before the agent proceeds.</li>
+          <li><strong>Step-up authentication</strong> — Require the owner to verify their identity (e.g., via BankID or MFA) before the agent executes sensitive operations like government filings.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>Policy-Based Guardrails vs. Hardcoded Limits</h2>
+        <p>
+          The simplest form of guardrail is a hardcoded check: <code>if (amount &gt; 100) deny()</code>.
+          This works for trivial cases, but it doesn't scale. Real-world agent behavior requires
+          nuance — the same action might be fine in one context and risky in another.
+        </p>
+        <p>
+          Policy-based guardrails express rules as declarative YAML documents that the authorization
+          engine evaluates at runtime. This approach separates the "what's allowed" logic from the
+          agent's application code. Policies can be updated, versioned, and audited without redeploying
+          the agent.
+        </p>
+        <p>
+          OpenLeash uses this policy-based approach. Each authorization request is evaluated against
+          all applicable policies, considering the action type, cost, counterparty trust, time window,
+          and any custom constraints. The result is a deterministic decision: allow, deny, require
+          approval, or require step-up authentication.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Cryptographic Proof of Authorization</h2>
+        <p>
+          Guardrails are only effective if they're verifiable. When OpenLeash allows an action,
+          it issues a PASETO v4.public proof token — a cryptographically signed record of the
+          authorization decision. This token proves that the agent was authorized by its owner,
+          what action was approved, and when the approval was granted.
+        </p>
+        <p>
+          Counterparties (the services receiving the agent's requests) can verify this token
+          offline using the owner's public key. This creates a chain of accountability: the
+          agent proves it had permission, and the proof is tamper-evident and independently
+          verifiable.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Guardrails for Multi-Agent Systems</h2>
+        <p>
+          When multiple agents collaborate — for example, a research agent that delegates to
+          a purchasing agent — guardrails become even more critical. Each agent in the chain
+          needs its own authorization boundary. The purchasing agent should not inherit the
+          research agent's permissions, and the research agent should not be able to escalate
+          its own privileges through delegation.
+        </p>
+        <p>
+          OpenLeash handles this by binding policies to individual agents. Each agent has its
+          own Ed25519 keypair and its own set of applicable policies. Authorization decisions
+          are per-agent, per-action — there's no implicit trust inheritance between agents.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Implementing Guardrails with OpenLeash</h2>
+        <p>
+          Getting started with AI agent guardrails takes three steps:
+        </p>
+        <ol>
+          <li><strong>Define policies</strong> — Write YAML policies that express your guardrails: spending limits, allowed actions, trust levels, and escalation rules.</li>
+          <li><strong>Integrate the SDK</strong> — Add the OpenLeash SDK (TypeScript, Python, or Go) to your agent. Call <code>authorize()</code> before any risky action.</li>
+          <li><strong>Handle decisions</strong> — Respect the authorization decision. If the result is <code>ALLOW</code>, proceed and pass the proof token to the counterparty. If it's <code>REQUIRE_APPROVAL</code>, wait for the owner's sign-off.</li>
+        </ol>
+        <p>
+          Explore the <a href="/docs">documentation</a> for the full policy language reference,
+          or try the <a href="/playground">policy playground</a> to test guardrails against
+          sample scenarios.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

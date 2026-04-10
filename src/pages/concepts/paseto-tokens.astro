@@ -1,0 +1,252 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="PASETO Proof Tokens for AI Agents — OpenLeash"
+  description="How PASETO v4.public tokens provide cryptographic proof of AI agent authorization. Learn why PASETO is more secure than JWT and how proof tokens enable offline verification."
+  canonicalPath="/concepts/paseto-tokens"
+  keywords="PASETO tokens, PASETO vs JWT, cryptographic proof tokens, AI agent proof, v4.public tokens, Ed25519 signing, offline token verification, PASETO security"
+  datePublished="2026-04-10"
+  dateModified="2026-04-10"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'PASETO Proof Tokens for AI Agents',
+    description: 'How PASETO v4.public tokens provide cryptographic proof of AI agent authorization. Learn why PASETO is more secure than JWT and how proof tokens enable offline verification.',
+    datePublished: '2026-04-10',
+    dateModified: '2026-04-10',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/concepts/paseto-tokens' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'PASETO Proof Tokens', href: '/concepts/paseto-tokens' },
+      ]} />
+      <h1 class="page-title">PASETO Proof Tokens for AI Agents</h1>
+      <p class="page-desc">
+        How cryptographic proof tokens create verifiable accountability for autonomous AI agent actions — and why PASETO is a better choice than JWT.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>What Are Proof Tokens?</h2>
+        <p>
+          When an AI agent acts on behalf of its owner — making a purchase, booking an appointment,
+          or calling an external API — the counterparty (the service receiving the request) needs
+          to know: <em>was this agent actually authorized to do this?</em>
+        </p>
+        <p>
+          A proof token answers that question cryptographically. It's a signed document that contains
+          the authorization decision, the action details, and a timestamp. The counterparty can verify
+          the token independently using the owner's public key, without contacting the authorization
+          server. This is the foundation of verifiable agent accountability.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Why PASETO Over JWT?</h2>
+        <p>
+          JSON Web Tokens (JWT) are the most widely used token format, but they carry well-documented
+          security pitfalls that make them a poor choice for high-stakes authorization proof:
+        </p>
+        <ul>
+          <li><strong>Algorithm confusion attacks</strong> — JWT allows the token to specify its own signing algorithm in the header. Attackers have exploited this to forge tokens by switching from asymmetric (RS256) to symmetric (HS256) verification, using the public key as the HMAC secret.</li>
+          <li><strong>The "none" algorithm</strong> — JWT supports an <code>alg: "none"</code> header that disables signature verification entirely. Libraries that don't explicitly reject this accept unsigned tokens as valid.</li>
+          <li><strong>Key confusion</strong> — JWT's flexibility in algorithm selection creates a class of vulnerabilities where the wrong key type is used for verification.</li>
+        </ul>
+        <p>
+          PASETO (Platform-Agnostic Security Tokens) eliminates these issues by design:
+        </p>
+        <ul>
+          <li><strong>No algorithm negotiation</strong> — The token version and purpose determine the cryptographic suite. There is no header field to override.</li>
+          <li><strong>No "none" algorithm</strong> — Every PASETO token is cryptographically signed or encrypted. Unsigned tokens are not representable in the format.</li>
+          <li><strong>Versioned protocols</strong> — Each PASETO version (v1–v4) locks in a specific set of algorithms. v4.public uses Ed25519 signatures exclusively.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>PASETO v4.public — The Token Format</h2>
+        <p>
+          OpenLeash uses PASETO v4.public tokens for all proof issuance. The v4.public purpose means
+          the token is signed (not encrypted) with an Ed25519 key, making it readable by anyone but
+          only creatable by the key holder.
+        </p>
+        <p>
+          A v4.public token has this structure:
+        </p>
+        <ul>
+          <li><strong>Header</strong> — Always <code>v4.public.</code>, identifying the version and purpose.</li>
+          <li><strong>Payload</strong> — JSON claims including the action type, agent ID, decision, timestamp, and expiration.</li>
+          <li><strong>Signature</strong> — Ed25519 signature over the header, payload, and optional footer.</li>
+          <li><strong>Footer (optional)</strong> — Unencrypted metadata like the key ID (<code>kid</code>) used for key rotation.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>What's Inside a Proof Token</h2>
+        <p>
+          When OpenLeash issues a proof token after an ALLOW decision, the token claims include:
+        </p>
+        <ul>
+          <li><code>action_id</code> — Unique identifier for this specific action.</li>
+          <li><code>action_type</code> — What the agent did (e.g., <code>purchase</code>, <code>book_appointment</code>).</li>
+          <li><code>agent_id</code> — Which agent performed the action.</li>
+          <li><code>decision</code> — The authorization decision (<code>ALLOW</code>).</li>
+          <li><code>iat</code> — When the token was issued.</li>
+          <li><code>exp</code> — When the token expires.</li>
+          <li><code>payload</code> — Action-specific data (cost, vendor, resource details).</li>
+        </ul>
+        <p>
+          These claims give the counterparty full context about what was authorized, by whom,
+          and when — all cryptographically bound to the owner's key.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Offline Verification</h2>
+        <p>
+          One of PASETO's key advantages for AI agent authorization is offline verification. A
+          counterparty only needs the owner's public key to verify a proof token. There's no
+          callback to OpenLeash, no network dependency, and no centralized verification service.
+        </p>
+        <p>
+          This matters for several reasons:
+        </p>
+        <ul>
+          <li><strong>Resilience</strong> — Verification works even when the authorization server is unreachable.</li>
+          <li><strong>Privacy</strong> — The authorization server doesn't learn which counterparties the agent interacts with.</li>
+          <li><strong>Performance</strong> — No additional network round-trip for verification.</li>
+          <li><strong>Decentralization</strong> — Any party with the public key can independently verify. No trust in a central authority is required.</li>
+        </ul>
+        <p>
+          OpenLeash also supports online verification via <code>POST /v1/verify-proof</code> for
+          counterparties that prefer server-side validation or don't have access to the public key.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Multi-Language SDK Support</h2>
+        <p>
+          Proof token verification is available in all three OpenLeash SDKs:
+        </p>
+        <ul>
+          <li><strong>TypeScript</strong> — <code>verifyProofOffline()</code> and <code>verifyProofOnline()</code></li>
+          <li><strong>Python</strong> — <code>verify_proof_offline()</code> and <code>verify_proof_online()</code></li>
+          <li><strong>Go</strong> — <code>VerifyProofOffline()</code> and <code>VerifyProofOnline()</code></li>
+        </ul>
+        <p>
+          All three SDKs handle the Ed25519 signature verification, claim parsing, and expiration
+          checking. The counterparty integration is typically a few lines of code.
+        </p>
+        <p>
+          Read more about <a href="/concepts/ai-agent-authorization">how AI agent authorization works</a>,
+          or explore the <a href="/docs">SDK documentation</a> to start verifying proof tokens.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

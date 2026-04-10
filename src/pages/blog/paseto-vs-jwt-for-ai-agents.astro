@@ -1,0 +1,468 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="PASETO vs JWT: Why We Chose PASETO for Agent Proof Tokens — OpenLeash"
+  description="A technical comparison of PASETO and JWT for AI agent authorization. Learn why PASETO v4.public with Ed25519 avoids JWT's security pitfalls and is the better choice for cryptographic proof tokens."
+  ogImage="/og/blog.png"
+  canonicalPath="/blog/paseto-vs-jwt-for-ai-agents"
+  keywords="PASETO vs JWT, PASETO tokens, JWT security issues, PASETO v4 public, Ed25519 tokens, AI agent proof tokens, cryptographic authorization"
+  datePublished="2026-04-10"
+  dateModified="2026-04-10"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'PASETO vs JWT: Why We Chose PASETO for Agent Proof Tokens',
+    description: 'A technical comparison of PASETO and JWT for AI agent authorization. Why PASETO v4.public with Ed25519 avoids the security pitfalls that plague JWT implementations.',
+    datePublished: '2026-04-10',
+    dateModified: '2026-04-10',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/blog/paseto-vs-jwt-for-ai-agents' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Blog', href: '/blog' },
+        { label: 'PASETO vs JWT', href: '/blog/paseto-vs-jwt-for-ai-agents' },
+      ]} />
+      <h1 class="page-title">PASETO vs JWT: Why We Chose PASETO for Agent Proof Tokens</h1>
+      <p class="page-desc">
+        JWT is ubiquitous but flawed by design. PASETO fixes the structural vulnerabilities that make JWT dangerous for high-stakes authorization proofs.
+      </p>
+      <div class="page-meta">
+        <time datetime="2026-04-10">April 10, 2026</time>
+        <span class="meta-sep">·</span>
+        <span>7 min read</span>
+      </div>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>The Problem with JWT</h2>
+        <p>
+          JSON Web Tokens (JWT) are the most widely used token format on the web. They are also one of the
+          most misused. The JWT specification (RFC 7519) is flexible by design — it supports multiple
+          algorithms, multiple key types, and multiple serialization formats. This flexibility has produced
+          a long history of security vulnerabilities, many of which are structural rather than implementation bugs.
+        </p>
+        <p>
+          For a typical web application session token, these issues are manageable with careful implementation.
+          But for AI agent authorization proofs — tokens that serve as cryptographic evidence that a specific
+          action was authorized by a specific owner at a specific time — the stakes are higher. A forged or
+          manipulated proof token could authorize an agent to spend money, access sensitive data, or perform
+          irreversible actions. The token format needs to be secure by default, not secure if configured correctly.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>JWT's Structural Vulnerabilities</h2>
+        <p>
+          The security issues with JWT are well-documented and have been exploited repeatedly in production systems.
+          The most critical are structural — they exist because of how the specification was designed, not because
+          of implementation errors.
+        </p>
+
+        <h3>The <code>alg</code> Header Attack</h3>
+        <p>
+          JWT includes the signing algorithm in the token header. The verifier reads this header to determine
+          how to verify the signature. This means an attacker can change the algorithm to one the verifier
+          does not expect. The most famous variant: if a server uses RSA to sign tokens but the verifier
+          also accepts HMAC, an attacker can take the server's RSA public key (which is public), use it as
+          an HMAC secret to sign a forged token, and set <code>alg: HS256</code>. The verifier uses the
+          "public key" as the HMAC secret, the signature validates, and the forged token is accepted.
+        </p>
+
+        <h3>The <code>none</code> Algorithm</h3>
+        <p>
+          The JWT specification includes an <code>alg: none</code> option that produces unsigned tokens.
+          This was intended for contexts where the token integrity is guaranteed by other means (like TLS).
+          In practice, many JWT libraries accepted <code>none</code> tokens by default, allowing attackers
+          to strip the signature entirely and present an unsigned token that the verifier accepted as valid.
+        </p>
+
+        <h3>Key Confusion Attacks</h3>
+        <p>
+          JWT's support for multiple key types (symmetric and asymmetric) within the same verification
+          flow creates confusion vulnerabilities. If a system is configured for asymmetric signing (RS256)
+          but the library also supports symmetric verification, an attacker can exploit the overlap.
+          These attacks are subtle and difficult to detect through code review alone.
+        </p>
+
+        <h3>Weak Default Configurations</h3>
+        <p>
+          Many JWT libraries ship with permissive defaults: accepting multiple algorithms, not validating
+          expiration claims, allowing unsigned tokens in development mode. Each permissive default is a
+          potential vulnerability in production. Securing JWT requires explicitly disabling features —
+          a negative security model where forgetting a configuration option creates an exploit.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>How PASETO Solves These Problems</h2>
+        <p>
+          PASETO (Platform-Agnostic Security Tokens) was designed explicitly to fix JWT's structural issues.
+          Created by Scott Arciszewski in 2018, PASETO takes a different approach: instead of being flexible,
+          it is opinionated. Instead of letting the developer choose (and potentially mischoose) algorithms,
+          PASETO prescribes exactly one algorithm per version and purpose.
+        </p>
+
+        <h3>No Algorithm Negotiation</h3>
+        <p>
+          PASETO tokens do not contain an algorithm header. The version and purpose are encoded in the token
+          prefix (e.g., <code>v4.public</code>), and each prefix maps to exactly one algorithm. There is no
+          mechanism for an attacker to change the algorithm because the algorithm is not specified in the token —
+          it is determined by the protocol version. The <code>alg</code> header attack is structurally impossible.
+        </p>
+
+        <h3>No <code>none</code> Option</h3>
+        <p>
+          PASETO does not have an unsigned token mode. Every token is either encrypted (local) or signed (public).
+          There is no way to produce a valid PASETO token without a key. This eliminates an entire class of
+          vulnerabilities by simply not offering the dangerous option.
+        </p>
+
+        <h3>Strict Purpose Separation</h3>
+        <p>
+          PASETO separates symmetric encryption (<code>local</code>) from asymmetric signing (<code>public</code>)
+          at the protocol level. A <code>v4.local</code> token can only be verified with symmetric decryption.
+          A <code>v4.public</code> token can only be verified with asymmetric signature verification. The key
+          types cannot be confused because they use different token prefixes and different verification code paths.
+        </p>
+
+        <h3>Modern Cryptography</h3>
+        <p>
+          PASETO v4 uses Ed25519 for public tokens and XChaCha20-Poly1305 for local tokens. These are modern,
+          well-analyzed primitives with strong security margins. There is no option to use SHA-1, RSA with
+          PKCS#1 v1.5 padding, or any of the legacy algorithms that JWT supports and that have known weaknesses.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Why v4.public with Ed25519 for Agent Proofs</h2>
+        <p>
+          OpenLeash uses PASETO <code>v4.public</code> tokens for authorization proofs. This choice is driven
+          by the specific requirements of AI agent authorization:
+        </p>
+        <ul>
+          <li>
+            <strong>Offline verification.</strong> Counterparties (the services receiving agent requests) need to
+            verify proof tokens without calling back to the authorization server. Public-key signatures enable
+            this — anyone with the public key can verify, but only the key holder can sign.
+          </li>
+          <li>
+            <strong>Non-repudiation.</strong> A signed proof token is evidence that the owner's key authorized
+            the action. Unlike symmetric tokens (where anyone who can verify can also forge), asymmetric tokens
+            provide non-repudiation: the verifier cannot create fake proofs.
+          </li>
+          <li>
+            <strong>Performance.</strong> Ed25519 signatures are fast — roughly 50,000 signatures per second on
+            modest hardware. Verification is even faster. For an authorization sidecar that evaluates every
+            agent action, signature performance matters.
+          </li>
+          <li>
+            <strong>Small keys and signatures.</strong> Ed25519 public keys are 32 bytes. Signatures are 64 bytes.
+            This keeps proof tokens compact, which matters when tokens are included in HTTP headers or passed
+            between services.
+          </li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>What a Proof Token Looks Like</h2>
+        <p>
+          An OpenLeash proof token is a standard PASETO <code>v4.public</code> token. The payload contains
+          the authorization decision, the action that was evaluated, constraints that were applied, and
+          metadata for auditing:
+        </p>
+
+        <CodeBlock
+          title="PASETO v4.public proof token payload"
+          lines={[
+            { type: 'code', text: '{' },
+            { type: 'code', text: '  "sub": "agent_01HQ3...",       // agent ID' },
+            { type: 'code', text: '  "iss": "openleash",            // issuer' },
+            { type: 'code', text: '  "iat": "2026-04-10T12:00:00Z", // issued at' },
+            { type: 'code', text: '  "exp": "2026-04-10T12:05:00Z", // expires' },
+            { type: 'code', text: '  "action": "payment.send",      // authorized action' },
+            { type: 'code', text: '  "decision": "ALLOW",           // policy decision' },
+            { type: 'code', text: '  "constraints": {' },
+            { type: 'code', text: '    "max_amount": 50,            // enforced limit' },
+            { type: 'code', text: '    "currency": "USD"' },
+            { type: 'code', text: '  },' },
+            { type: 'code', text: '  "policy_ids": ["pol_spending_limit"]' },
+            { type: 'code', text: '}' },
+          ]}
+        />
+
+        <p>
+          The token is signed with the owner's Ed25519 private key. A counterparty receiving this token
+          can verify the signature using the public key (available at <code>GET /v1/public-keys</code>)
+          and confirm that the agent was authorized to send a payment of up to $50 USD. No trust in the
+          agent itself is required — the trust is in the cryptographic signature.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Side-by-Side Comparison</h2>
+        <div class="comparison-table">
+          <div class="comparison-row comparison-header">
+            <span class="comparison-feature">Feature</span>
+            <span class="comparison-jwt">JWT</span>
+            <span class="comparison-paseto">PASETO v4</span>
+          </div>
+          <div class="comparison-row">
+            <span class="comparison-feature">Algorithm in token</span>
+            <span class="comparison-jwt">Yes (<code>alg</code> header)</span>
+            <span class="comparison-paseto">No (fixed per version)</span>
+          </div>
+          <div class="comparison-row">
+            <span class="comparison-feature">Unsigned tokens</span>
+            <span class="comparison-jwt">Yes (<code>alg: none</code>)</span>
+            <span class="comparison-paseto">Not possible</span>
+          </div>
+          <div class="comparison-row">
+            <span class="comparison-feature">Key confusion risk</span>
+            <span class="comparison-jwt">Yes (sym/asym mixing)</span>
+            <span class="comparison-paseto">No (strict separation)</span>
+          </div>
+          <div class="comparison-row">
+            <span class="comparison-feature">Signing algorithm</span>
+            <span class="comparison-jwt">RS256, ES256, HS256, etc.</span>
+            <span class="comparison-paseto">Ed25519 only (public)</span>
+          </div>
+          <div class="comparison-row">
+            <span class="comparison-feature">Encryption</span>
+            <span class="comparison-jwt">JWE (complex, many options)</span>
+            <span class="comparison-paseto">XChaCha20-Poly1305 (local)</span>
+          </div>
+          <div class="comparison-row">
+            <span class="comparison-feature">Security model</span>
+            <span class="comparison-jwt">Opt-in (disable unsafe)</span>
+            <span class="comparison-paseto">Secure by default</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <h2>When JWT Is Still Appropriate</h2>
+        <p>
+          JWT is not universally bad. For web application session tokens in a controlled environment where
+          you own both the issuer and the verifier, JWT with a pinned algorithm (e.g., ES256) and strict
+          validation works fine. The ecosystem is mature, every language has libraries, and the interoperability
+          is excellent.
+        </p>
+        <p>
+          The case for PASETO is strongest when tokens cross trust boundaries — when a token issued by one
+          party is verified by a different party, when tokens serve as evidence rather than session state,
+          or when the cost of a forged token is high. AI agent proof tokens meet all three criteria. The
+          token issuer (OpenLeash) is different from the verifier (the counterparty). The token is evidence
+          of authorization. And a forged token could authorize unauthorized spending, data access, or actions.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Further Reading</h2>
+        <p>
+          Learn more about how OpenLeash uses PASETO tokens in the
+          <a href="/concepts/paseto-tokens">PASETO proof tokens concept page</a>. For a hands-on walkthrough,
+          see our <a href="/blog/getting-started-with-openleash">getting started guide</a>. To understand the
+          broader context of why agents need authorization,
+          read <a href="/blog/why-ai-agents-need-authorization">why AI agents need authorization in 2026</a>.
+          For the full specification, visit the <a href="https://paseto.io" target="_blank" rel="noopener noreferrer">PASETO website</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .page-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .meta-sep {
+    color: var(--text-muted);
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section h3 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+
+  /* Comparison table */
+  .comparison-table {
+    max-width: 680px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 0;
+  }
+
+  .comparison-row > span {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border-subtle);
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  .comparison-row > span:last-child {
+    border-right: none;
+  }
+
+  .comparison-row:last-child > span {
+    border-bottom: none;
+  }
+
+  .comparison-header > span {
+    font-weight: 600;
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .comparison-feature {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .comparison-jwt {
+    color: var(--text-secondary);
+  }
+
+  .comparison-paseto {
+    color: var(--green-bright);
+  }
+
+  @media (max-width: 640px) {
+    .comparison-row {
+      grid-template-columns: 1fr;
+    }
+
+    .comparison-row > span {
+      border-right: none;
+    }
+
+    .comparison-header {
+      display: none;
+    }
+
+    .comparison-feature {
+      background: rgba(0, 0, 0, 0.2);
+      font-weight: 600;
+    }
+  }
+</style>

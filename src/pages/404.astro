@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Page Not Found — OpenLeash"
+  description="The page you're looking for doesn't exist."
+>
+  <Nav />
+
+  <main class="container">
+    <div class="not-found fade-in">
+      <span class="not-found-code">404</span>
+      <h1 class="not-found-title">Page not found</h1>
+      <p class="not-found-desc">
+        The page you're looking for doesn't exist or has been moved.
+      </p>
+      <div class="not-found-links">
+        <a href="/" class="btn btn-primary">Back to Home</a>
+        <a href="/docs" class="btn btn-secondary">Documentation</a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .not-found {
+    text-align: center;
+    padding: 80px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .not-found-code {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: clamp(4rem, 15vw, 8rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--green-bright), var(--green-dark));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .not-found-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .not-found-desc {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+  }
+
+  .not-found-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+    text-decoration: none;
+    transition: all 0.2s var(--ease-out);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-bright));
+    color: #050a0e;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(52, 211, 153, 0.3);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--green-bright);
+    color: var(--green-bright);
+    transform: translateY(-2px);
+  }
+</style>

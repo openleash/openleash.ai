@@ -1,0 +1,251 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="OpenLeash vs API Keys for AI Agent Authorization — OpenLeash"
+  description="Compare API key-based access control with OpenLeash policy-based authorization for AI agents. Learn when API keys fall short and when per-action evaluation, proof tokens, and approval workflows matter."
+  ogImage="/og/openleash-vs-api-keys.png"
+  canonicalPath="/concepts/openleash-vs-api-keys"
+  keywords="API keys vs policy authorization, AI agent API security, API key limitations AI agents, agent authorization comparison, per-action authorization"
+  datePublished="2026-04-10"
+  dateModified="2026-04-10"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'OpenLeash vs API Keys for AI Agent Authorization',
+    description: 'Compare API key-based access control with OpenLeash policy-based authorization for AI agents. Learn when API keys fall short and when per-action evaluation, proof tokens, and approval workflows matter.',
+    datePublished: '2026-04-10',
+    dateModified: '2026-04-10',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/concepts/openleash-vs-api-keys' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'OpenLeash vs API Keys', href: '/concepts/openleash-vs-api-keys' },
+      ]} />
+      <h1 class="page-title">OpenLeash vs API Keys for AI Agent Authorization</h1>
+      <p class="page-desc">
+        API keys are the default way to authenticate service access. But when AI agents make autonomous decisions, static credentials create risks that per-action policy evaluation is designed to solve.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>How API Keys Work</h2>
+        <p>
+          API keys are static credentials — long-lived strings that grant access to an API. They work
+          on a simple principle: if you have the key, you have access. Most API key systems provide
+          scope-based restrictions, letting you limit a key to specific endpoints or operations like
+          "read-only" or "billing:write."
+        </p>
+        <p>
+          This model works well for server-to-server communication where both sides are controlled by the
+          same team. The key authenticates the caller, the scopes define what it can access, and rate
+          limits prevent abuse. It's straightforward, well-understood, and easy to implement.
+        </p>
+        <p>
+          For human-driven applications, API keys are typically managed by developers who understand
+          the consequences of each scope they enable. The human makes judgment calls about when and
+          how to use the access the key provides.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Limitations of API Keys for AI Agents</h2>
+        <p>
+          When an AI agent holds an API key, the assumptions behind key-based access break down.
+          Agents don't exercise judgment about individual actions — they execute tool calls based on
+          model outputs. This creates several problems:
+        </p>
+        <ul>
+          <li><strong>No per-action evaluation</strong> — an API key grants blanket access to everything within its scopes. There's no mechanism to evaluate whether a specific action is appropriate given the context, cost, or risk level.</li>
+          <li><strong>No spending limits</strong> — if a key has billing access, the agent can make unlimited purchases. There's no built-in way to say "allow purchases under $50 but require approval above that."</li>
+          <li><strong>No human-in-the-loop</strong> — API keys don't support approval workflows. Every action the key permits happens immediately with no opportunity for human review of individual decisions.</li>
+          <li><strong>No proof of authorization</strong> — an API key proves the caller has credentials, but it doesn't prove that a specific action was authorized by the key's owner at a specific time. There's no auditable record linking a decision to an authorization check.</li>
+          <li><strong>Leaked keys mean full access</strong> — if an agent's API key is exposed through logs, error messages, or a compromised dependency, the attacker gets the same access the agent had. There's no way to limit the blast radius of a single key.</li>
+        </ul>
+        <p>
+          These limitations are manageable when humans are in the loop making decisions. They become
+          critical when autonomous agents are making hundreds of API calls without human oversight.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>How OpenLeash Differs</h2>
+        <p>
+          OpenLeash takes a fundamentally different approach: instead of granting broad access upfront,
+          every action is evaluated individually against declarative policies. The agent doesn't hold
+          a static credential that grants blanket access — it requests authorization for each specific
+          action before executing it.
+        </p>
+        <ul>
+          <li><strong>Per-action policy evaluation</strong> — each action the agent wants to perform is evaluated against YAML policies that consider the action type, target, cost, and context. The same agent might be allowed to send a $10 payment but denied a $1,000 one.</li>
+          <li><strong>Contextual decisions</strong> — policies can factor in cost thresholds, counterparty trust levels, time of day, and cumulative spending. The authorization decision adapts to the specific situation rather than applying a static yes/no.</li>
+          <li><strong>Cryptographic proof tokens</strong> — when an action is allowed, OpenLeash issues a PASETO v4.public token that cryptographically proves the agent was authorized for that specific action at that specific time. Counterparties can verify these tokens independently.</li>
+          <li><strong>Approval workflows</strong> — policies can require human approval for high-risk actions. The agent pauses, the owner reviews the request, and execution only continues after explicit authorization.</li>
+          <li><strong>Append-only audit trail</strong> — every authorization request and decision is logged in an immutable audit log, creating a complete record of what the agent was authorized to do and when.</li>
+        </ul>
+        <p>
+          The key difference is granularity. API keys operate at the credential level — you either have
+          access or you don't. OpenLeash operates at the action level — each individual action is
+          evaluated, authorized, and recorded.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>When API Keys Are Enough</h2>
+        <p>
+          API keys remain the right choice in many scenarios. Not every agent interaction requires
+          per-action authorization:
+        </p>
+        <ul>
+          <li><strong>Simple internal tools</strong> — if your agent only reads data from internal APIs with no financial or security implications, API keys with read-only scopes work fine.</li>
+          <li><strong>Low-risk read-only APIs</strong> — querying weather data, looking up public information, or fetching search results don't need per-action governance.</li>
+          <li><strong>Trusted environments</strong> — when the agent, the API, and the infrastructure are all controlled by the same team, and the consequences of any action are low, API keys provide sufficient access control.</li>
+          <li><strong>Rate-limited services</strong> — if the API already enforces rate limits and the worst-case scenario is acceptable, adding an authorization layer may not be worth the complexity.</li>
+        </ul>
+        <p>
+          The decision comes down to consequences. If an agent misbehaving with an API key results in
+          a large bill, a data breach, or an irreversible action, you need more than static credentials.
+          If the worst case is a few unnecessary API calls, keys are probably fine.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>When You Need OpenLeash</h2>
+        <p>
+          Per-action authorization becomes essential when agents operate in higher-stakes environments:
+        </p>
+        <ul>
+          <li><strong>Agents spending money</strong> — any agent with access to payment APIs, marketplace purchases, or subscription management needs spending controls that API keys can't provide.</li>
+          <li><strong>Agents with external communication</strong> — sending emails, posting messages, or contacting third parties on behalf of a user requires authorization beyond "has email API access."</li>
+          <li><strong>Regulated actions</strong> — healthcare, finance, and legal domains often require proof that each action was explicitly authorized, not just that the system had credentials.</li>
+          <li><strong>Multi-agent systems</strong> — when multiple agents collaborate, each agent's actions need independent authorization. A shared API key across agents provides no isolation or accountability.</li>
+          <li><strong>Counterparty verification</strong> — if the service receiving the agent's request needs to verify that the agent's owner actually authorized it, API keys offer no mechanism for that. Cryptographic proof tokens do.</li>
+        </ul>
+        <p>
+          In these scenarios, OpenLeash sits between the agent and the action — not replacing the API
+          key (the agent still needs credentials to call the API) but adding a policy layer that
+          governs which actions are permitted, under what conditions, with what proof.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Learn More</h2>
+        <p>
+          Explore how OpenLeash compares to other authorization models:
+          <a href="/concepts/openleash-vs-oauth">OpenLeash vs OAuth</a> covers how OpenLeash
+          complements token-based delegation. For foundational concepts, read about
+          <a href="/concepts/ai-agent-authorization">AI agent authorization</a>,
+          <a href="/concepts/ai-agent-guardrails">AI agent guardrails</a>,
+          <a href="/concepts/human-in-the-loop-ai">human-in-the-loop controls</a>, and
+          <a href="/concepts/paseto-tokens">PASETO proof tokens</a>. Or jump into the
+          <a href="/docs">documentation</a> to start building.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

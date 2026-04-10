@@ -1,0 +1,468 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="Getting Started with OpenLeash: Your First AI Agent Authorization — OpenLeash"
+  description="A step-by-step tutorial: install OpenLeash, create an owner, register an agent, write a YAML authorization policy, authorize an action, and verify the cryptographic proof token."
+  ogImage="/og/blog.png"
+  canonicalPath="/blog/getting-started-with-openleash"
+  keywords="OpenLeash tutorial, AI agent authorization setup, how to authorize AI agents, OpenLeash getting started, YAML policy tutorial, PASETO proof token tutorial"
+  datePublished="2026-04-10"
+  dateModified="2026-04-10"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Getting Started with OpenLeash: Your First AI Agent Authorization',
+    description: 'A step-by-step tutorial: install OpenLeash, create an owner, register an agent, write a YAML authorization policy, authorize an action, and verify the proof token.',
+    datePublished: '2026-04-10',
+    dateModified: '2026-04-10',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/blog/getting-started-with-openleash' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Blog', href: '/blog' },
+        { label: 'Getting Started', href: '/blog/getting-started-with-openleash' },
+      ]} />
+      <h1 class="page-title">Getting Started with OpenLeash: Your First AI Agent Authorization</h1>
+      <p class="page-desc">
+        From zero to a verified proof token in under 10 minutes. Install OpenLeash, write a policy, authorize an action, and verify the cryptographic proof.
+      </p>
+      <div class="page-meta">
+        <time datetime="2026-04-10">April 10, 2026</time>
+        <span class="meta-sep">·</span>
+        <span>8 min read</span>
+      </div>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>What You Will Build</h2>
+        <p>
+          By the end of this tutorial, you will have a running OpenLeash instance with an owner account,
+          a registered agent, a YAML authorization policy, and a verified proof token. The entire setup
+          runs locally — no cloud services, no databases, no external dependencies beyond Node.js.
+        </p>
+        <p>
+          Here is the flow: install OpenLeash, run the interactive wizard to create an owner and agent,
+          write a policy that controls spending, send an authorization request, and verify the proof token
+          that comes back. Each step builds on the previous one.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Prerequisites</h2>
+        <p>
+          You need <strong>Node.js 20 or later</strong> and <strong>npm</strong>. That is it. OpenLeash
+          is a single npm package with no native dependencies. Check your version:
+        </p>
+
+        <CodeBlock
+          title="Check Node.js version"
+          lines={[
+            { type: 'cmd', text: 'node --version', prompt: '$' },
+            { type: 'output', text: 'v22.4.0' },
+          ]}
+        />
+      </section>
+
+      <section class="content-section">
+        <h2>Step 1: Install and Initialize</h2>
+        <p>
+          Install OpenLeash globally or use <code>npx</code> to run it directly. The <code>wizard</code>
+          command walks you through initial setup: it creates a data directory, generates signing keys,
+          and sets up your first owner account.
+        </p>
+
+        <CodeBlock
+          title="Install and run the wizard"
+          lines={[
+            { type: 'cmd', text: 'npx openleash wizard', prompt: '$' },
+            { type: 'output', text: '' },
+            { type: 'output', text: '  OpenLeash Setup Wizard' },
+            { type: 'output', text: '  ======================' },
+            { type: 'output', text: '' },
+            { type: 'output', text: '  ? Enter a display name for the owner:' },
+            { type: 'output', text: '  > Alice' },
+            { type: 'output', text: '' },
+            { type: 'output', text: '  ? Enter a passphrase (min 8 chars):' },
+            { type: 'output', text: '  > ********' },
+            { type: 'output', text: '' },
+            { type: 'output', text: '  Created owner: usr_01HQ3...' },
+            { type: 'output', text: '  Generated Ed25519 signing keypair' },
+            { type: 'output', text: '  Created data directory: ./data' },
+            { type: 'output', text: '' },
+            { type: 'output', text: '  Setup complete. Run `npx openleash start` to begin.' },
+          ]}
+        />
+
+        <p>
+          The wizard creates a <code>./data</code> directory containing your owner file, signing keys,
+          and a state index. All state is file-based — you can inspect, version control, or back up
+          the data directory at any time.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Step 2: Start the Server</h2>
+        <p>
+          Start the OpenLeash sidecar. It runs as a local HTTP server on port 8787 by default and includes
+          a web GUI for managing agents, policies, and approval requests.
+        </p>
+
+        <CodeBlock
+          title="Start the server"
+          lines={[
+            { type: 'cmd', text: 'npx openleash start', prompt: '$' },
+            { type: 'output', text: '' },
+            { type: 'output', text: '  OpenLeash v0.14.0' },
+            { type: 'output', text: '  Listening on http://127.0.0.1:8787' },
+            { type: 'output', text: '  GUI available at http://127.0.0.1:8787/gui' },
+          ]}
+        />
+
+        <p>
+          Open <code>http://127.0.0.1:8787/gui</code> in your browser to access the owner portal.
+          Log in with the passphrase you set during the wizard. From here you can create agent invites,
+          manage policies, and review approval requests.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Step 3: Register an Agent</h2>
+        <p>
+          Agents register by accepting an invite and providing an Ed25519 public key. The invite flow
+          ensures only agents you authorize can connect. You can create an invite through the GUI
+          or the API. Here we will use the TypeScript SDK from the agent's perspective:
+        </p>
+
+        <CodeBlock
+          title="agent-setup.ts — Register with OpenLeash"
+          lines={[
+            { type: 'code', text: 'import {' },
+            { type: 'code', text: '  generateEd25519Keypair,' },
+            { type: 'code', text: '  registerAgent,' },
+            { type: 'code', text: '} from &quot;@openleash/sdk&quot;;' },
+            { type: 'code', text: '' },
+            { type: 'comment', text: '// Generate a keypair for the agent' },
+            { type: 'code', text: 'const keypair = await generateEd25519Keypair();' },
+            { type: 'code', text: '' },
+            { type: 'comment', text: '// Register using the invite code from the owner' },
+            { type: 'code', text: 'const agent = await registerAgent({' },
+            { type: 'code', text: '  baseUrl: &quot;http://127.0.0.1:8787&quot;,' },
+            { type: 'code', text: '  inviteCode: &quot;inv_01HQ3...&quot;,  // from GUI or API' },
+            { type: 'code', text: '  publicKey: keypair.publicKey,' },
+            { type: 'code', text: '  privateKey: keypair.privateKey,' },
+            { type: 'code', text: '  name: &quot;Shopping Agent&quot;,' },
+            { type: 'code', text: '});' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'console.log(&quot;Agent ID:&quot;, agent.agentId);' },
+            { type: 'comment', text: '// Agent ID: agt_01HQ3...' },
+          ]}
+        />
+
+        <p>
+          The agent is now registered and bound to the owner. It can send authorization requests,
+          but all requests will be denied until you create a policy that allows specific actions.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Step 4: Write a Policy</h2>
+        <p>
+          Policies define what actions an agent can perform and under what conditions. They are YAML files
+          stored in <code>./data/policies/</code>. Here is a policy that allows the agent to make purchases
+          under $100, requires human approval for $100-$500, and denies anything above $500:
+        </p>
+
+        <CodeBlock
+          title="data/policies/spending-policy.yaml"
+          lines={[
+            { type: 'code', text: 'id: pol_spending_limit' },
+            { type: 'code', text: 'name: Spending Limit Policy' },
+            { type: 'code', text: 'description: Controls agent purchasing behavior' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'rules:' },
+            { type: 'code', text: '  - action: &quot;purchase.*&quot;' },
+            { type: 'code', text: '    effect: ALLOW' },
+            { type: 'code', text: '    conditions:' },
+            { type: 'code', text: '      - field: context.amount' },
+            { type: 'code', text: '        operator: lt' },
+            { type: 'code', text: '        value: 100' },
+            { type: 'code', text: '' },
+            { type: 'code', text: '  - action: &quot;purchase.*&quot;' },
+            { type: 'code', text: '    effect: REQUIRE_APPROVAL' },
+            { type: 'code', text: '    conditions:' },
+            { type: 'code', text: '      - field: context.amount' },
+            { type: 'code', text: '        operator: gte' },
+            { type: 'code', text: '        value: 100' },
+            { type: 'code', text: '      - field: context.amount' },
+            { type: 'code', text: '        operator: lte' },
+            { type: 'code', text: '        value: 500' },
+            { type: 'code', text: '' },
+            { type: 'code', text: '  - action: &quot;purchase.*&quot;' },
+            { type: 'code', text: '    effect: DENY' },
+            { type: 'code', text: '    conditions:' },
+            { type: 'code', text: '      - field: context.amount' },
+            { type: 'code', text: '        operator: gt' },
+            { type: 'code', text: '        value: 500' },
+          ]}
+        />
+
+        <p>
+          You can also create and manage policies through the CLI (<code>npx openleash policy upsert</code>)
+          or the owner API. Policies take effect immediately — no server restart required.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Step 5: Authorize an Action</h2>
+        <p>
+          Now the agent can request authorization before performing actions. The SDK handles Ed25519
+          request signing automatically. Here is an authorization request for a $45 purchase:
+        </p>
+
+        <CodeBlock
+          title="agent-action.ts — Request authorization"
+          lines={[
+            { type: 'code', text: 'import { authorize } from &quot;@openleash/sdk&quot;;' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'const result = await authorize({' },
+            { type: 'code', text: '  baseUrl: &quot;http://127.0.0.1:8787&quot;,' },
+            { type: 'code', text: '  privateKey: keypair.privateKey,' },
+            { type: 'code', text: '  agentId: &quot;agt_01HQ3...&quot;,' },
+            { type: 'code', text: '  action: &quot;purchase.order&quot;,' },
+            { type: 'code', text: '  context: {' },
+            { type: 'code', text: '    amount: 45,' },
+            { type: 'code', text: '    currency: &quot;USD&quot;,' },
+            { type: 'code', text: '    vendor: &quot;example-store&quot;,' },
+            { type: 'code', text: '    description: &quot;Office supplies&quot;,' },
+            { type: 'code', text: '  },' },
+            { type: 'code', text: '});' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'console.log(result.decision);' },
+            { type: 'comment', text: '// "ALLOW"' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'console.log(result.proof_token);' },
+            { type: 'comment', text: '// "v4.public.eyJ..."' },
+          ]}
+        />
+
+        <p>
+          The request is evaluated against the spending policy. Since $45 is under the $100 threshold,
+          the decision is <code>ALLOW</code> and OpenLeash returns a signed PASETO proof token. The agent
+          can now proceed with the purchase and present the proof token to the vendor.
+        </p>
+        <p>
+          If the agent had requested a $250 purchase, the decision would be <code>REQUIRE_APPROVAL</code>,
+          and the agent would need to wait for the owner to approve through the GUI or API. A $600 purchase
+          would be denied outright.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Step 6: Verify the Proof Token</h2>
+        <p>
+          The counterparty (the service receiving the agent's request) verifies the proof token to confirm
+          the action was authorized. Verification can be done offline using the owner's public key or
+          online by calling the OpenLeash verification endpoint:
+        </p>
+
+        <CodeBlock
+          title="verify.ts — Verify proof token (offline)"
+          lines={[
+            { type: 'code', text: 'import { verifyProofOffline } from &quot;@openleash/sdk&quot;;' },
+            { type: 'code', text: '' },
+            { type: 'comment', text: '// Public key from GET /v1/public-keys' },
+            { type: 'code', text: 'const publicKey = &quot;...owner-ed25519-public-key...&quot;;' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'const verified = await verifyProofOffline({' },
+            { type: 'code', text: '  token: result.proof_token,' },
+            { type: 'code', text: '  publicKey,' },
+            { type: 'code', text: '});' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'console.log(verified.action);' },
+            { type: 'comment', text: '// "purchase.order"' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'console.log(verified.decision);' },
+            { type: 'comment', text: '// "ALLOW"' },
+            { type: 'code', text: '' },
+            { type: 'code', text: 'console.log(verified.constraints);' },
+            { type: 'comment', text: '// { max_amount: 100, currency: "USD" }' },
+          ]}
+        />
+
+        <p>
+          Offline verification uses only the public key and the token itself — no network call to OpenLeash.
+          This means proof tokens work even when the authorization server is offline, across different networks,
+          and with zero additional latency.
+        </p>
+        <p>
+          For online verification (useful when you do not have the public key cached), use the
+          <code>POST /v1/verify-proof</code> endpoint or <code>verifyProofOnline()</code> in the SDK.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>What Happens in the Audit Log</h2>
+        <p>
+          Every authorization decision is recorded in the append-only audit log at <code>./data/audit.log.jsonl</code>.
+          Each line is a JSON object with the full request, decision, policy matches, and timestamp.
+          The log is useful for debugging policy behavior, compliance reporting, and understanding
+          how your agent is operating over time.
+        </p>
+
+        <CodeBlock
+          title="Audit log entry"
+          lines={[
+            { type: 'code', text: '{' },
+            { type: 'code', text: '  "timestamp": "2026-04-10T12:00:00.000Z",' },
+            { type: 'code', text: '  "agent_id": "agt_01HQ3...",' },
+            { type: 'code', text: '  "action": "purchase.order",' },
+            { type: 'code', text: '  "decision": "ALLOW",' },
+            { type: 'code', text: '  "matched_policies": ["pol_spending_limit"],' },
+            { type: 'code', text: '  "context": { "amount": 45, "currency": "USD" }' },
+            { type: 'code', text: '}' },
+          ]}
+        />
+      </section>
+
+      <section class="content-section">
+        <h2>Next Steps</h2>
+        <p>
+          You now have a working authorization setup. From here you can:
+        </p>
+        <ul>
+          <li>Write more policies for different action types (email, file access, API calls)</li>
+          <li>Set up approval workflows for high-value actions</li>
+          <li>Integrate the SDK into your agent framework (works with LangChain, CrewAI, AutoGen, or any custom agent)</li>
+          <li>Deploy OpenLeash as a Docker container for production use</li>
+          <li>Use the <a href="/playground">interactive playground</a> to test policy evaluation</li>
+        </ul>
+        <p>
+          For more depth, explore the <a href="/concepts/ai-agent-authorization">AI agent authorization concepts</a>,
+          learn <a href="/blog/paseto-vs-jwt-for-ai-agents">why we chose PASETO over JWT</a> for proof tokens,
+          or read about <a href="/blog/why-ai-agents-need-authorization">why AI agents need authorization</a>
+          in production systems. The full API reference and policy language documentation are available in the
+          <a href="/docs">documentation</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .page-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .meta-sep {
+    color: var(--text-muted);
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

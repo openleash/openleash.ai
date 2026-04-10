@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+const posts = [
+  {
+    title: 'Why AI Agents Need Authorization in 2026',
+    description: 'The rise of autonomous agents brings new risks: uncontrolled spending, unauthorized communications, and data leaks. Learn how policy-based authorization solves these problems.',
+    href: '/blog/why-ai-agents-need-authorization',
+    date: '2026-04-10',
+    readingTime: '6 min read',
+  },
+  {
+    title: 'PASETO vs JWT: Why We Chose PASETO for Agent Proof Tokens',
+    description: 'A technical comparison of PASETO and JWT for AI agent authorization. Why PASETO v4.public with Ed25519 avoids the security pitfalls that plague JWT implementations.',
+    href: '/blog/paseto-vs-jwt-for-ai-agents',
+    date: '2026-04-10',
+    readingTime: '7 min read',
+  },
+  {
+    title: 'Getting Started with OpenLeash: Your First AI Agent Authorization',
+    description: 'A step-by-step walkthrough: install OpenLeash, create an owner, register an agent, write a policy, authorize an action, and verify the proof token.',
+    href: '/blog/getting-started-with-openleash',
+    date: '2026-04-10',
+    readingTime: '8 min read',
+  },
+];
+---
+
+<BaseLayout
+  title="Blog — OpenLeash"
+  description="Articles on AI agent authorization, policy-based governance, cryptographic proof tokens, and building safer autonomous agents with OpenLeash."
+  ogImage="/og/blog.png"
+  canonicalPath="/blog"
+  keywords="AI agent authorization blog, PASETO tokens, agent guardrails, OpenLeash tutorials, autonomous agent safety"
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <h1 class="page-title">
+        <span class="accent-prefix">›</span> Blog
+      </h1>
+      <p class="page-desc">
+        Articles on AI agent authorization, cryptographic proof tokens, and building safer autonomous agents.
+      </p>
+    </header>
+
+    <div class="blog-grid fade-in fade-in-d1">
+      {posts.map((post) => (
+        <a href={post.href} class="blog-card">
+          <div class="blog-card-meta">
+            <time class="blog-date" datetime={post.date}>
+              {new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+            <span class="blog-reading-time">{post.readingTime}</span>
+          </div>
+          <h2 class="blog-card-title">{post.title}</h2>
+          <p class="blog-card-desc">{post.description}</p>
+          <span class="blog-card-link">Read article <span aria-hidden="true">&rarr;</span></span>
+        </a>
+      ))}
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .accent-prefix {
+    color: var(--green-bright);
+  }
+
+  .page-desc {
+    max-width: 560px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .blog-card {
+    padding: 24px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    text-decoration: none;
+    transition: all 0.25s var(--ease-out);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .blog-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--green-bright);
+    box-shadow: 0 12px 40px rgba(52, 211, 153, 0.12);
+  }
+
+  .blog-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .blog-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .blog-reading-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
+  .blog-card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .blog-card-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .blog-card-link {
+    margin-top: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--green-bright);
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .blog-card:hover .blog-card-link {
+    color: var(--amber-bright);
+  }
+
+  @media (max-width: 768px) {
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

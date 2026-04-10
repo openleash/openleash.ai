@@ -1,0 +1,202 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+
+const sdks = [
+  {
+    name: 'TypeScript',
+    href: '/sdk/typescript',
+    pkg: 'npm install @openleash/sdk-ts',
+    desc: 'First-party SDK for Node.js and TypeScript agents. Handles Ed25519 request signing, authorization, and PASETO proof verification.',
+  },
+  {
+    name: 'Python',
+    href: '/sdk/python',
+    pkg: 'pip install openleash-sdk',
+    desc: 'Python SDK for AI agents built with LangChain, AutoGen, or custom frameworks. Async-ready with httpx.',
+  },
+  {
+    name: 'Go',
+    href: '/sdk/go',
+    pkg: 'go get github.com/openleash/openleash/packages/sdk-go',
+    desc: 'Go module for high-performance agents and microservices. Minimal dependencies, single import.',
+  },
+];
+---
+
+<BaseLayout
+  title="SDKs — OpenLeash AI Agent Authorization"
+  description="Official OpenLeash SDKs for TypeScript, Python, and Go. Integrate AI agent authorization, Ed25519 request signing, and PASETO proof verification in your language of choice."
+  ogImage="/og/sdk.png"
+  canonicalPath="/sdk"
+  keywords="OpenLeash SDK, AI agent SDK, TypeScript SDK, Python SDK, Go SDK, agent authorization SDK"
+  datePublished="2026-04-10"
+  dateModified="2026-04-10"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'OpenLeash SDKs',
+    description: 'Official OpenLeash SDKs for TypeScript, Python, and Go.',
+    url: 'https://openleash.ai/sdk',
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'SDKs', href: '/sdk' },
+      ]} />
+      <h1 class="page-title">SDKs</h1>
+      <p class="page-desc">
+        Official client libraries for integrating OpenLeash authorization into your AI agents.
+        All SDKs provide the same 13 functions for authorization, proof verification, and agent management.
+      </p>
+    </header>
+
+    <div class="sdk-grid fade-in fade-in-d1">
+      {sdks.map((sdk) => (
+        <a href={sdk.href} class="sdk-card">
+          <h2 class="sdk-card-name">{sdk.name}</h2>
+          <p class="sdk-card-desc">{sdk.desc}</p>
+          <code class="sdk-card-pkg">{sdk.pkg}</code>
+        </a>
+      ))}
+    </div>
+
+    <section class="content fade-in fade-in-d1">
+      <div class="content-section">
+        <h2>Full Endpoint Parity</h2>
+        <p>
+          All three SDKs implement the same 13 agent-facing functions: <code>authorize</code>,
+          <code>signRequest</code>, <code>registerAgent</code>, <code>verifyProofOffline</code>,
+          <code>verifyProofOnline</code>, <code>generateEd25519Keypair</code>,
+          <code>createApprovalRequest</code>, <code>getApprovalRequest</code>,
+          <code>pollApprovalRequest</code>, <code>getAgent</code>, <code>listPolicies</code>,
+          <code>listApprovalRequests</code>, and <code>proposePolicy</code>.
+          Choose the language that fits your stack.
+        </p>
+      </div>
+
+      <div class="content-section">
+        <h2>REST API Fallback</h2>
+        <p>
+          The OpenLeash server exposes a standard REST API, so any language that can make HTTP requests
+          and sign with Ed25519 can integrate directly. The SDKs simplify this by handling request
+          signing, JSON canonicalization, and proof token parsing automatically.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .sdk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+
+  .sdk-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  }
+
+  .sdk-card:hover {
+    border-color: var(--green-bright);
+    transform: translateY(-2px);
+  }
+
+  .sdk-card-name {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .sdk-card-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  .sdk-card-pkg {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 6px 10px;
+    border-radius: 4px;
+    word-break: break-all;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+</style>

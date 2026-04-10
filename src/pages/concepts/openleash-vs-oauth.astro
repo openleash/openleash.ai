@@ -1,0 +1,253 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="OpenLeash vs OAuth for AI Agent Authorization — OpenLeash"
+  description="Compare OAuth token-based delegation with OpenLeash per-action authorization for AI agents. Learn why OAuth scopes aren't enough for autonomous agents and how the two systems complement each other."
+  ogImage="/og/openleash-vs-oauth.png"
+  canonicalPath="/concepts/openleash-vs-oauth"
+  keywords="OAuth vs AI agent authorization, OAuth limitations AI agents, OAuth agent delegation, per-action authorization OAuth, AI agent security"
+  datePublished="2026-04-10"
+  dateModified="2026-04-10"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'OpenLeash vs OAuth for AI Agent Authorization',
+    description: 'Compare OAuth token-based delegation with OpenLeash per-action authorization for AI agents. Learn why OAuth scopes aren\'t enough for autonomous agents and how the two systems complement each other.',
+    datePublished: '2026-04-10',
+    dateModified: '2026-04-10',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/concepts/openleash-vs-oauth' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'OpenLeash vs OAuth', href: '/concepts/openleash-vs-oauth' },
+      ]} />
+      <h1 class="page-title">OpenLeash vs OAuth for AI Agent Authorization</h1>
+      <p class="page-desc">
+        OAuth is the standard for delegated access. OpenLeash adds per-action authorization on top. Understanding how they work together is key to building secure AI agent systems.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>What OAuth Provides</h2>
+        <p>
+          OAuth 2.0 is the industry standard for delegated authorization. It allows a user to grant
+          an application access to their resources on another service without sharing credentials.
+          The user authenticates with the resource server, consents to a set of scopes, and the
+          application receives an access token.
+        </p>
+        <p>
+          OAuth provides several important capabilities: token-based delegation (the application acts
+          on behalf of the user), scope-based access (the token is limited to specific permissions
+          like <code>email:read</code> or <code>calendar:write</code>), refresh tokens for long-lived
+          sessions without re-authentication, and token revocation when access needs to be withdrawn.
+        </p>
+        <p>
+          It's a well-understood, battle-tested protocol with broad ecosystem support. Nearly every
+          major API supports OAuth, and developers know how to implement it. For user-to-application
+          delegation, it works exactly as designed.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Why OAuth Isn't Enough for AI Agents</h2>
+        <p>
+          OAuth was designed for a specific interaction model: a human user delegates access to an
+          application, and that application performs actions within well-defined scopes. AI agents
+          break several assumptions this model relies on:
+        </p>
+        <ul>
+          <li><strong>Scopes are static</strong> — OAuth scopes are granted at authentication time and remain fixed for the lifetime of the token. An agent with <code>payments:write</code> can make a $1 payment or a $10,000 payment. The scope doesn't distinguish between them.</li>
+          <li><strong>No per-action cost evaluation</strong> — OAuth has no concept of action cost or risk level. A token that grants write access grants it equally for all writes, regardless of their real-world impact.</li>
+          <li><strong>No human-in-the-loop for individual actions</strong> — once the user grants consent, every action within those scopes proceeds automatically. There's no mechanism for the user to review and approve specific high-risk actions while allowing routine ones.</li>
+          <li><strong>No cryptographic proof of specific actions</strong> — an OAuth token proves the holder has delegated access, but it doesn't prove that a specific action was evaluated and authorized. There's no auditable proof linking a decision to a policy check.</li>
+          <li><strong>Designed for user-to-app, not agent-to-service</strong> — OAuth's consent flow assumes a human clicks "Allow" in a browser. Agents operate autonomously, often calling multiple services in sequence, making the traditional consent model a poor fit.</li>
+        </ul>
+        <p>
+          These aren't flaws in OAuth — they're boundaries of its design. OAuth answers the question
+          <em>"does this application have permission to access this API?"</em> It doesn't answer
+          <em>"should this agent perform this specific action right now?"</em>
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>How OpenLeash Complements OAuth</h2>
+        <p>
+          OpenLeash is not a replacement for OAuth. The two systems solve different problems and work
+          together naturally. OAuth handles authentication and delegation — proving who the agent is
+          and what APIs it can access. OpenLeash handles per-action authorization — deciding whether
+          a specific action should proceed given the current context.
+        </p>
+        <p>
+          Think of it as two layers. OAuth is the outer layer: the agent uses an OAuth token to
+          authenticate with an API. OpenLeash is the inner layer: before making the API call, the
+          agent checks with OpenLeash whether this particular action is authorized by its owner's
+          policies.
+        </p>
+        <p>
+          An agent might have an OAuth token granting <code>payments:write</code> access to a payment
+          API. Without OpenLeash, every payment is permitted. With OpenLeash, the agent calls
+          <code>POST /v1/authorize</code> before each payment. The policy might allow payments under
+          $100 automatically, require owner approval for payments between $100 and $1,000, and deny
+          anything above $1,000. The OAuth token provides access to the API. The OpenLeash policy
+          governs how that access is used.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>The Combined Architecture</h2>
+        <p>
+          In a typical deployment, the two systems interact in a clear sequence:
+        </p>
+        <ol>
+          <li><strong>Authentication</strong> — the agent authenticates with external services using OAuth tokens. This establishes the agent's identity and grants API-level access.</li>
+          <li><strong>Action planning</strong> — the agent's model decides to perform an action, such as making a purchase or sending an email.</li>
+          <li><strong>Authorization check</strong> — before executing, the agent sends the action details to OpenLeash. The request includes the action type, target, cost, and any relevant context.</li>
+          <li><strong>Policy evaluation</strong> — OpenLeash evaluates the request against the owner's YAML policies, considering constraints like cost thresholds, counterparty trust, and time-based rules.</li>
+          <li><strong>Decision</strong> — OpenLeash returns ALLOW (with a proof token), DENY, REQUIRE_APPROVAL, or REQUIRE_STEP_UP. The agent proceeds accordingly.</li>
+          <li><strong>Execution</strong> — if allowed, the agent makes the API call using its OAuth token and attaches the OpenLeash proof token. The receiving service can verify the proof independently.</li>
+        </ol>
+        <p>
+          OAuth gets the agent through the door. OpenLeash decides what the agent is allowed to do
+          once inside. Neither replaces the other — they address different layers of the authorization
+          stack.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Key Differences Summary</h2>
+        <p>
+          The core distinctions between the two systems:
+        </p>
+        <ul>
+          <li><strong>Evaluation timing</strong> — OAuth evaluates access at token issuance. OpenLeash evaluates at action time, every time.</li>
+          <li><strong>Granularity</strong> — OAuth operates at the scope level (e.g., <code>payments:write</code>). OpenLeash operates at the individual action level (e.g., "pay $47.50 to Vendor X").</li>
+          <li><strong>Context awareness</strong> — OAuth scopes are fixed. OpenLeash policies consider cost, counterparty, time, cumulative spending, and risk level for each action.</li>
+          <li><strong>Human oversight</strong> — OAuth consent happens once upfront. OpenLeash can require human approval for specific actions based on policy rules.</li>
+          <li><strong>Proof model</strong> — OAuth tokens prove delegated access. OpenLeash proof tokens prove a specific action was authorized by a specific policy at a specific time.</li>
+          <li><strong>Verification</strong> — OAuth tokens are verified by the issuing authorization server. OpenLeash PASETO tokens can be verified offline by any party with the public key.</li>
+          <li><strong>Design intent</strong> — OAuth was designed for user-to-application delegation. OpenLeash was designed for governing autonomous agent behavior.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>Learn More</h2>
+        <p>
+          See how OpenLeash compares to other access control models:
+          <a href="/concepts/openleash-vs-api-keys">OpenLeash vs API Keys</a> examines why static
+          credentials fall short for autonomous agents. For foundational concepts, read about
+          <a href="/concepts/ai-agent-authorization">AI agent authorization</a>,
+          <a href="/concepts/ai-agent-guardrails">AI agent guardrails</a>,
+          <a href="/concepts/human-in-the-loop-ai">human-in-the-loop controls</a>, and
+          <a href="/concepts/paseto-tokens">PASETO proof tokens</a>. Or dive into the
+          <a href="/docs">documentation</a> to start implementing.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

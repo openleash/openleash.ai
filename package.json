@@ -21,14 +21,18 @@
 	],
 	"scripts": {
 		"dev": "astro dev",
-		"build": "astro build",
+		"build": "node scripts/generate-og.mjs && astro build",
 		"preview": "astro preview",
 		"lint": "astro check"
 	},
 	"dependencies": {
-		"astro": "^5.7.0",
 		"@astrojs/check": "^0.9.0",
 		"@astrojs/sitemap": "^3.2.0",
+		"astro": "^5.7.0",
 		"typescript": "^5.7.0"
+	},
+	"devDependencies": {
+		"@resvg/resvg-js": "^2.6.2",
+		"satori": "^0.26.0"
 	}
 }

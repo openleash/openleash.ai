@@ -41,6 +41,7 @@ const docLinks = [
 <BaseLayout
   title="Documentation — OpenLeash AI Agent Authorization"
   description="OpenLeash docs: policy language reference, authorization protocol, SDK guides, CLI commands, and REST API endpoints for AI agent authorization."
+  ogImage="/og/docs.png"
   canonicalPath="/docs"
 >
   <Nav />
@@ -94,6 +95,32 @@ const docLinks = [
         <a href="/concepts/human-in-the-loop-ai" class="doc-card">
           <h2 class="doc-title">Human-in-the-Loop AI</h2>
           <p class="doc-desc">Approval workflows, step-up authentication, and configurable escalation policies for high-stakes AI agent actions.</p>
+        </a>
+        <a href="/concepts/openleash-vs-api-keys" class="doc-card">
+          <h2 class="doc-title">OpenLeash vs API Keys</h2>
+          <p class="doc-desc">Why static API keys aren't enough for autonomous agents and when per-action authorization matters.</p>
+        </a>
+        <a href="/concepts/openleash-vs-oauth" class="doc-card">
+          <h2 class="doc-title">OpenLeash vs OAuth</h2>
+          <p class="doc-desc">How OpenLeash complements OAuth by adding per-action authorization on top of token-based delegation.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="concepts-section fade-in fade-in-d1">
+      <h2 class="section-title">SDKs</h2>
+      <div class="concepts-grid">
+        <a href="/sdk/typescript" class="doc-card">
+          <h2 class="doc-title">TypeScript SDK</h2>
+          <p class="doc-desc">npm install @openleash/sdk-ts — authorization, signing, and proof verification for Node.js agents.</p>
+        </a>
+        <a href="/sdk/python" class="doc-card">
+          <h2 class="doc-title">Python SDK</h2>
+          <p class="doc-desc">pip install openleash-sdk — authorization, signing, and proof verification for Python agents.</p>
+        </a>
+        <a href="/sdk/go" class="doc-card">
+          <h2 class="doc-title">Go SDK</h2>
+          <p class="doc-desc">go get github.com/openleash/openleash/packages/sdk-go — for Go agents and microservices.</p>
         </a>
       </div>
     </section>

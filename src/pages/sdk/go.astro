@@ -1,0 +1,245 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="Go SDK — OpenLeash AI Agent Authorization"
+  description="Official Go SDK for OpenLeash. Integrate AI agent authorization, Ed25519 request signing, and PASETO proof verification into Go agents and microservices."
+  ogImage="/og/sdk-go.png"
+  canonicalPath="/sdk/go"
+  keywords="OpenLeash Go SDK, AI agent authorization Go, golang AI agent"
+  datePublished="2026-04-10"
+  dateModified="2026-04-10"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'OpenLeash Go SDK',
+    description: 'Official Go SDK for OpenLeash. Integrate AI agent authorization, Ed25519 request signing, and PASETO proof verification into Go agents and microservices.',
+    datePublished: '2026-04-10',
+    dateModified: '2026-04-10',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/sdk/go' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'SDKs', href: '/sdk' },
+        { label: 'Go', href: '/sdk/go' },
+      ]} />
+      <h1 class="page-title">Go SDK</h1>
+      <p class="page-desc">
+        The official Go module for OpenLeash. Minimal dependencies, high performance,
+        designed for Go agents and microservices. Single dependency: <code>go-paseto</code>.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>Installation</h2>
+        <CodeBlock title="Terminal" lines={[
+          { type: 'cmd', prompt: '$', text: 'go get github.com/openleash/openleash/packages/sdk-go' },
+        ]} />
+      </section>
+
+      <section class="content-section">
+        <h2>Quick Example</h2>
+        <p>
+          Request authorization before performing a risky action. The SDK signs the request with your
+          agent's Ed25519 private key and returns a decision with an optional proof token.
+        </p>
+        <CodeBlock title="main.go" lines={[
+          { type: 'code', text: 'package main' },
+          { type: 'code', text: '' },
+          { type: 'code', text: 'import (' },
+          { type: 'code', text: '    "fmt"' },
+          { type: 'code', text: '    "log"' },
+          { type: 'code', text: '' },
+          { type: 'code', text: '    openleash "github.com/openleash/openleash/packages/sdk-go"' },
+          { type: 'code', text: ')' },
+          { type: 'code', text: '' },
+          { type: 'code', text: 'func main() {' },
+          { type: 'comment', text: '    // Generate a keypair (do this once, store the keys)' },
+          { type: 'code', text: '    pub, priv, err := openleash.GenerateEd25519Keypair()' },
+          { type: 'code', text: '    if err != nil {' },
+          { type: 'code', text: '        log.Fatal(err)' },
+          { type: 'code', text: '    }' },
+          { type: 'code', text: '' },
+          { type: 'comment', text: '    // Request authorization for an action' },
+          { type: 'code', text: '    result, err := openleash.Authorize(openleash.AuthorizeInput{' },
+          { type: 'code', text: '        BaseURL:    "http://localhost:8787",' },
+          { type: 'code', text: '        AgentID:    "agent-uuid",' },
+          { type: 'code', text: '        PrivateKey: priv,' },
+          { type: 'code', text: '        Request: openleash.AuthorizeRequest{' },
+          { type: 'code', text: '            Action:   "purchase",' },
+          { type: 'code', text: '            Resource: "office-supplies",' },
+          { type: 'code', text: '            Context:  map[string]any{"amount": 42.00},' },
+          { type: 'code', text: '        },' },
+          { type: 'code', text: '    })' },
+          { type: 'code', text: '    if err != nil {' },
+          { type: 'code', text: '        log.Fatal(err)' },
+          { type: 'code', text: '    }' },
+          { type: 'code', text: '' },
+          { type: 'comment', text: '    // result.Decision: "ALLOW" | "DENY" | "REQUIRE_APPROVAL" | ...' },
+          { type: 'comment', text: '    // result.ProofToken: signed PASETO v4.public token (if allowed)' },
+          { type: 'code', text: '    fmt.Println("Decision:", result.Decision)' },
+          { type: 'code', text: '    _ = pub' },
+          { type: 'code', text: '}' },
+        ]} />
+      </section>
+
+      <section class="content-section">
+        <h2>Available Functions</h2>
+        <p>
+          The Go SDK provides 13 functions covering the full agent authorization lifecycle.
+          All functions use PascalCase per Go convention:
+        </p>
+        <ul>
+          <li><code>Authorize</code> — request an authorization decision for an action</li>
+          <li><code>SignRequest</code> — sign an HTTP request body with Ed25519</li>
+          <li><code>RegisterAgent</code> — register an agent with the OpenLeash server</li>
+          <li><code>VerifyProofOffline</code> — verify a proof token locally using the public key</li>
+          <li><code>VerifyProofOnline</code> — verify a proof token via the server API</li>
+          <li><code>GenerateEd25519Keypair</code> — generate a new Ed25519 signing keypair</li>
+          <li><code>CreateApprovalRequest</code> — create a pending approval request</li>
+          <li><code>GetApprovalRequest</code> — fetch the status of an approval request</li>
+          <li><code>PollApprovalRequest</code> — poll until an approval request is resolved</li>
+          <li><code>GetAgent</code> — retrieve agent details from the server</li>
+          <li><code>ListPolicies</code> — list all policies visible to the agent</li>
+          <li><code>ListApprovalRequests</code> — list all approval requests for the agent</li>
+          <li><code>ProposePolicy</code> — propose a new policy for owner review</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>Proof Verification</h2>
+        <p>
+          Counterparties can verify proof tokens offline without contacting the OpenLeash server.
+          The token is a PASETO v4.public token signed with Ed25519.
+        </p>
+        <CodeBlock title="verify.go" lines={[
+          { type: 'code', text: 'import openleash "github.com/openleash/openleash/packages/sdk-go"' },
+          { type: 'code', text: '' },
+          { type: 'code', text: 'claims, err := openleash.VerifyProofOffline(openleash.VerifyProofOfflineInput{' },
+          { type: 'code', text: '    ProofToken: proofToken,' },
+          { type: 'code', text: '    PublicKey:  ownerPublicKey,' },
+          { type: 'code', text: '})' },
+          { type: 'code', text: 'if err != nil {' },
+          { type: 'code', text: '    log.Fatal(err)' },
+          { type: 'code', text: '}' },
+          { type: 'code', text: '' },
+          { type: 'comment', text: '// claims.Action, claims.Resource, claims.Decision, claims.Exp' },
+        ]} />
+      </section>
+
+      <section class="content-section">
+        <h2>Links</h2>
+        <ul>
+          <li><a href="https://pkg.go.dev/github.com/openleash/openleash/packages/sdk-go" target="_blank" rel="noopener noreferrer">Go module: pkg.go.dev</a></li>
+          <li><a href="https://github.com/openleash/openleash/tree/main/packages/sdk-go" target="_blank" rel="noopener noreferrer">GitHub source</a></li>
+          <li><a href="/docs">Full documentation</a></li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

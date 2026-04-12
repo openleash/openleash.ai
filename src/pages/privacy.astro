@@ -1,0 +1,342 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy — OpenLeash"
+  description="Privacy policy for OpenLeash services and mobile application. Learn how Delori AB collects, uses, and protects your personal data."
+  canonicalPath="/privacy"
+  keywords="privacy policy, GDPR, data protection, OpenLeash, Delori AB"
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <h1 class="page-title">
+        <span class="accent-prefix">›</span> Privacy Policy
+      </h1>
+      <p class="page-desc">
+        Last updated: April 12, 2026
+      </p>
+    </header>
+
+    <article class="legal fade-in fade-in-d1">
+      <section>
+        <h2>1. Who we are</h2>
+        <p>
+          OpenLeash is operated by <strong>Delori AB</strong>, a company registered in Sweden.
+          Delori AB is the data controller for the personal data processed through the OpenLeash
+          website, mobile application, and cloud services (collectively, the "Service").
+        </p>
+        <p>
+          For privacy inquiries, contact us at
+          <a href="mailto:privacy@openleash.ai">privacy@openleash.ai</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. Data we collect</h2>
+
+        <h3>2.1 Account information</h3>
+        <p>
+          When you create an account we collect your <strong>email address</strong> and, if provided,
+          your <strong>display name</strong>. If you sign in through a third-party identity provider
+          (e.g., Google, Apple, or Swedish BankID), we receive the profile information that provider
+          shares with us.
+        </p>
+
+        <h3>2.2 Device and app data</h3>
+        <p>We may collect the following from your device:</p>
+        <ul>
+          <li><strong>Device identifiers</strong> &mdash; anonymous IDs used to associate push-notification tokens with your account.</li>
+          <li><strong>Push-notification tokens</strong> &mdash; Firebase Cloud Messaging (FCM) tokens, used solely to deliver notifications you have enabled.</li>
+          <li><strong>Crash and performance data</strong> &mdash; stack traces, device model, OS version, and app version, collected through Sentry to diagnose errors and improve reliability.</li>
+        </ul>
+
+        <h3>2.3 Biometric and identity-verification data</h3>
+        <p>
+          If you use identity-verification features (e.g., Swedish BankID), biometric processing
+          happens entirely on your device or within the identity provider's infrastructure.
+          We receive only the verification result and your national identity number where required
+          by the verification flow. We do not store biometric templates.
+        </p>
+
+        <h3>2.4 Camera</h3>
+        <p>
+          The app may request camera access to scan QR codes (e.g., for BankID or device pairing).
+          Images captured for scanning are processed locally on your device and are not transmitted
+          to our servers.
+        </p>
+
+        <h3>2.5 Usage and analytics data</h3>
+        <p>
+          We may collect anonymized usage statistics such as feature usage frequency, session
+          duration, and navigation patterns to improve the Service. This data cannot be used to
+          identify you.
+        </p>
+
+        <h3>2.6 Authorization and audit data</h3>
+        <p>
+          When the Service evaluates authorization requests on your behalf, we log the decision
+          (allow, deny, require approval, etc.), the resource and action involved, and a timestamp.
+          These audit records are retained for security and compliance purposes.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. How we use your data</h2>
+        <p>We process your personal data for the following purposes:</p>
+        <ul>
+          <li><strong>Provide the Service</strong> &mdash; authenticate your identity, evaluate authorization policies, and deliver notifications.</li>
+          <li><strong>Security</strong> &mdash; detect and prevent fraud, abuse, and unauthorized access through audit logs and cryptographic proof tokens.</li>
+          <li><strong>Improve reliability</strong> &mdash; diagnose crashes and performance issues using error-reporting tools.</li>
+          <li><strong>Communicate with you</strong> &mdash; send transactional messages such as approval requests, security alerts, and account-related notices.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. Legal basis for processing (GDPR)</h2>
+        <p>Under the EU General Data Protection Regulation (GDPR), we rely on the following legal bases:</p>
+        <ul>
+          <li><strong>Contract performance</strong> (Art. 6(1)(b)) &mdash; processing necessary to provide the Service you signed up for.</li>
+          <li><strong>Legitimate interest</strong> (Art. 6(1)(f)) &mdash; security monitoring, fraud prevention, and service improvement, balanced against your rights.</li>
+          <li><strong>Consent</strong> (Art. 6(1)(a)) &mdash; where required, for example for optional analytics or marketing communications. You may withdraw consent at any time.</li>
+          <li><strong>Legal obligation</strong> (Art. 6(1)(c)) &mdash; where we are required to retain data by law.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>5. Third-party services</h2>
+        <p>We use the following third-party processors to operate the Service:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Purpose</th>
+              <th>Data shared</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Google Cloud (Firebase Auth, Firestore, Cloud Run)</td>
+              <td>Authentication, data storage, hosting</td>
+              <td>Account info, application data</td>
+            </tr>
+            <tr>
+              <td>Firebase Cloud Messaging (FCM)</td>
+              <td>Push notifications</td>
+              <td>Device tokens, notification content</td>
+            </tr>
+            <tr>
+              <td>Sentry</td>
+              <td>Error and crash reporting</td>
+              <td>Crash data, device info, app version</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          All processors are bound by data-processing agreements and process data only on our
+          instructions. Google Cloud infrastructure for the Service is located in the EU.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. International data transfers</h2>
+        <p>
+          We store and process data primarily within the European Economic Area (EEA). Where data
+          is transferred outside the EEA (e.g., Sentry's infrastructure), we ensure adequate
+          safeguards are in place, such as EU Standard Contractual Clauses (SCCs) or an adequacy
+          decision by the European Commission.
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Data retention</h2>
+        <ul>
+          <li><strong>Account data</strong> &mdash; retained for as long as your account is active. Deleted within 30 days of account deletion.</li>
+          <li><strong>Audit logs</strong> &mdash; retained for up to 12 months for security and compliance, then permanently deleted.</li>
+          <li><strong>Crash reports</strong> &mdash; retained for up to 90 days.</li>
+          <li><strong>Push-notification tokens</strong> &mdash; deleted when you sign out, uninstall the app, or delete your account.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>8. Your rights</h2>
+        <p>Under GDPR, you have the right to:</p>
+        <ul>
+          <li><strong>Access</strong> &mdash; request a copy of the personal data we hold about you.</li>
+          <li><strong>Rectification</strong> &mdash; correct inaccurate or incomplete data.</li>
+          <li><strong>Erasure</strong> &mdash; request deletion of your personal data ("right to be forgotten").</li>
+          <li><strong>Restriction</strong> &mdash; request that we limit processing of your data.</li>
+          <li><strong>Data portability</strong> &mdash; receive your data in a structured, machine-readable format.</li>
+          <li><strong>Object</strong> &mdash; object to processing based on legitimate interest.</li>
+          <li><strong>Withdraw consent</strong> &mdash; where processing is based on consent, withdraw it at any time.</li>
+        </ul>
+        <p>
+          To exercise any of these rights, email
+          <a href="mailto:privacy@openleash.ai">privacy@openleash.ai</a>.
+          We will respond within 30 days.
+        </p>
+        <p>
+          You also have the right to lodge a complaint with the Swedish Authority for Privacy
+          Protection (<a href="https://www.imy.se" target="_blank" rel="noopener noreferrer">IMY</a>)
+          or your local supervisory authority.
+        </p>
+      </section>
+
+      <section>
+        <h2>9. Account deletion</h2>
+        <p>
+          You can delete your account at any time from within the app under
+          <strong>Settings &rarr; Account &rarr; Delete account</strong>, or by visiting our
+          <a href="/delete-account">account deletion page</a>. You may also request deletion
+          by emailing <a href="mailto:privacy@openleash.ai">privacy@openleash.ai</a>.
+        </p>
+        <p>
+          When you delete your account, we permanently remove your personal data within 30 days.
+          Anonymized audit records that can no longer be linked to you may be retained for security
+          purposes.
+        </p>
+      </section>
+
+      <section>
+        <h2>10. Children's privacy</h2>
+        <p>
+          The Service is not intended for children under the age of 16. We do not knowingly collect
+          personal data from children. If you believe a child has provided us with personal data,
+          please contact us at
+          <a href="mailto:privacy@openleash.ai">privacy@openleash.ai</a>
+          and we will delete it promptly.
+        </p>
+      </section>
+
+      <section>
+        <h2>11. Security</h2>
+        <p>
+          We implement appropriate technical and organizational measures to protect your data,
+          including encryption in transit (TLS), encryption at rest, cryptographic proof tokens
+          (PASETO v4.public), Ed25519 request signing, and role-based access controls.
+        </p>
+      </section>
+
+      <section>
+        <h2>12. Changes to this policy</h2>
+        <p>
+          We may update this privacy policy from time to time. Material changes will be communicated
+          through the app or by email. The "Last updated" date at the top of this page reflects the
+          most recent revision.
+        </p>
+      </section>
+
+      <section>
+        <h2>13. Contact</h2>
+        <p>
+          If you have questions about this privacy policy or how we handle your data, contact us at:
+        </p>
+        <address>
+          Delori AB<br />
+          Email: <a href="mailto:privacy@openleash.ai">privacy@openleash.ai</a>
+        </address>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .legal {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-bottom: 64px;
+  }
+
+  .legal section {
+    margin-top: 40px;
+  }
+
+  .legal h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .legal h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+
+  .legal p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+
+  .legal ul {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    padding-left: 24px;
+    margin-bottom: 12px;
+  }
+
+  .legal li {
+    margin-bottom: 6px;
+  }
+
+  .legal a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .legal a:hover {
+    color: var(--amber-bright);
+  }
+
+  .legal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+
+  .legal th,
+  .legal td {
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+
+  .legal th {
+    background: var(--surface-card);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .legal address {
+    font-style: normal;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+
+  @media (max-width: 640px) {
+    .legal table {
+      font-size: 0.8rem;
+    }
+
+    .legal th,
+    .legal td {
+      padding: 8px 10px;
+    }
+  }
+</style>

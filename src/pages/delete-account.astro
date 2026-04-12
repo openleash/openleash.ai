@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Delete Your Account — OpenLeash"
+  description="Request deletion of your OpenLeash account and all associated personal data."
+  canonicalPath="/delete-account"
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <h1 class="page-title">
+        <span class="accent-prefix">›</span> Delete Your Account
+      </h1>
+      <p class="page-desc">
+        You can permanently delete your OpenLeash account and all associated personal data.
+      </p>
+    </header>
+
+    <div class="content fade-in fade-in-d1">
+      <section class="method-card">
+        <h2>Option 1: Delete from the app</h2>
+        <p>
+          Open the OpenLeash app and go to
+          <strong>Settings &rarr; Account &rarr; Delete account</strong>.
+          Your account and data will be permanently deleted.
+        </p>
+      </section>
+
+      <section class="method-card">
+        <h2>Option 2: Request deletion by email</h2>
+        <p>
+          If you no longer have access to the app, send an email to
+          <a href="mailto:privacy@openleash.ai?subject=Account%20deletion%20request">privacy@openleash.ai</a>
+          from the email address associated with your account. Include "Account deletion request"
+          in the subject line.
+        </p>
+        <p>We will process your request within 30 days.</p>
+      </section>
+
+      <section class="what-happens">
+        <h2>What gets deleted</h2>
+        <ul>
+          <li>Your account profile and credentials</li>
+          <li>Organization memberships and agent registrations</li>
+          <li>Push-notification tokens and device associations</li>
+          <li>Authorization policies you created</li>
+          <li>Pending approval requests</li>
+        </ul>
+        <p>
+          Anonymized audit records that can no longer be linked to your identity may be retained
+          for up to 12 months for security purposes. For full details, see our
+          <a href="/privacy">Privacy Policy</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .content {
+    max-width: 640px;
+    margin: 0 auto;
+    padding-bottom: 64px;
+  }
+
+  .method-card {
+    margin-top: 32px;
+    padding: 24px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+  }
+
+  .method-card h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .method-card p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 8px;
+  }
+
+  .method-card a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .method-card a:hover {
+    color: var(--amber-bright);
+  }
+
+  .what-happens {
+    margin-top: 40px;
+  }
+
+  .what-happens h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .what-happens ul {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    padding-left: 24px;
+    margin-bottom: 12px;
+  }
+
+  .what-happens li {
+    margin-bottom: 4px;
+  }
+
+  .what-happens p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-top: 12px;
+  }
+
+  .what-happens a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .what-happens a:hover {
+    color: var(--amber-bright);
+  }
+</style>

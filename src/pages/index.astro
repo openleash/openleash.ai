@@ -76,10 +76,12 @@ import QuickStart from '../components/QuickStart.astro';
       <h1 class="hero-title">
         Open<span class="hero-accent">Leash</span>
       </h1>
-      <p class="hero-tagline">Authorization guardrails for AI agents and organizations.</p>
+      <p class="hero-tagline">Authorization guardrails for AI agents.</p>
       <p class="hero-desc">
-        An open-source authorization layer where owners and organizations set policies, agents ask before acting,
-        and counterparties can verify the agent was authorized.
+        Your agent asks before doing anything risky. You define what's allowed in YAML.
+        OpenLeash decides — ALLOW, DENY, or escalate to a human. Every approved action gets
+        a cryptographic proof token, verifiable offline by anyone. Local-first, no cloud
+        dependency, Apache-2.0.
       </p>
       <div class="hero-version fade-in fade-in-d1" id="hero-version" style="display:none">
         <a id="version-link" href="https://github.com/openleash/openleash/releases/latest" target="_blank" rel="noopener noreferrer" class="version-badge">
@@ -106,20 +108,39 @@ import QuickStart from '../components/QuickStart.astro';
       </div>
     </header>
 
-    <div class="fade-in fade-in-d2" style="margin-top: 24px; margin-bottom: 16px;">
+    <div class="audience-band fade-in fade-in-d2">
+      <div class="audience-card">
+        <span class="audience-tag">For agent developers</span>
+        <p class="audience-body">
+          Wrap any risky action with one call. Your agent can't overspend, call random APIs,
+          or take irreversible actions without policy approval — and you get human-in-the-loop
+          escalation for free.
+        </p>
+        <p class="audience-meta">
+          SDKs for TypeScript, Python, Go. Works with LangChain, LlamaIndex, AutoGen, CrewAI, MCP servers.
+        </p>
+        <a href="/getting-started" class="audience-cta">Add to your agent →</a>
+      </div>
+      <div class="audience-card audience-card-security">
+        <span class="audience-tag">For security &amp; compliance</span>
+        <p class="audience-body">
+          Every agent action is policy-checked, logged, and produces a cryptographic proof token
+          (PASETO v4.public, Ed25519-signed). Append-only audit log. Policies as YAML,
+          version-controlled in your repo.
+        </p>
+        <p class="audience-meta">
+          Runs locally next to your agent. No data leaves your network. Self-hostable.
+        </p>
+        <a href="/use-cases" class="audience-cta">See use cases →</a>
+      </div>
+    </div>
+
+    <div class="fade-in fade-in-d2" style="margin-top: 24px; margin-bottom: 56px;">
       <CalloutBanner
         text="Works as a sidecar for OpenClaw. Also works with any agent."
         href="/openclaw"
         linkText="Learn more"
       />
-    </div>
-
-    <div class="fade-in fade-in-d2 pro-callout" style="margin-bottom: 56px;">
-      <a href="/pro" class="pro-callout-inner">
-        <span class="pro-callout-badge">Coming Soon</span>
-        <span class="pro-callout-text">OpenLeash Pro — Hosted authorization with identity verification, push notifications, and more.</span>
-        <span class="pro-callout-arrow">→</span>
-      </a>
     </div>
 
     <div class="fade-in fade-in-d2 hero-video-wrapper">
@@ -144,41 +165,122 @@ import QuickStart from '../components/QuickStart.astro';
 
     <section class="section fade-in fade-in-d3">
       <div class="sdk-example">
-        <h3 class="subsection-title">SDK usage</h3>
-        <CodeBlock
-          title="authorize-and-verify.ts"
-          lines={[
-            { type: 'comment', text: '// Ask OpenLeash before performing a risky action' },
-            { type: 'code', text: 'import { authorize } from "@openleash/sdk-ts";' },
-            { type: 'code', text: '' },
-            { type: 'code', text: 'const result = await authorize({' },
-            { type: 'code', text: '  openleashUrl: "http://127.0.0.1:8787",' },
-            { type: 'code', text: '  agentId: "agent-booking-001",' },
-            { type: 'code', text: '  privateKeyB64: process.env.OPENLEASH_AGENT_PRIVATE_KEY_B64!,' },
-            { type: 'code', text: '  action: {' },
-            { type: 'code', text: '    action_id: crypto.randomUUID(),' },
-            { type: 'code', text: '    action_type: "book_appointment",' },
-            { type: 'code', text: '    requested_at: new Date().toISOString(),' },
-            { type: 'code', text: '    principal: { agent_id: "agent-booking-001" },' },
-            { type: 'code', text: '    subject: { principal_id: "<owner-id>" },' },
-            { type: 'code', text: '    relying_party: { domain: "salon-xyz.com", trust_profile: "LOW" },' },
-            { type: 'code', text: '    payload: { provider: "salon-xyz", cost: 45 }' },
-            { type: 'code', text: '  }' },
-            { type: 'code', text: '});' },
-            { type: 'code', text: '' },
-            { type: 'code', text: 'const { decision, proof_token } = result;' },
-            { type: 'comment', text: '// decision: "ALLOW" | "DENY" | "REQUIRE_APPROVAL" | "REQUIRE_STEP_UP" | "REQUIRE_DEPOSIT"' },
-            { type: 'code', text: '' },
-            { type: 'comment', text: '// Counterparty verifies the proof token offline' },
-            { type: 'code', text: 'import { verifyProofOffline } from "@openleash/sdk-ts";' },
-            { type: 'code', text: '' },
-            { type: 'code', text: 'const verification = await verifyProofOffline({' },
-            { type: 'code', text: '  token: proof_token,' },
-            { type: 'code', text: '  publicKeys: [{ kid: "key-id", public_key_b64: "..." }]' },
-            { type: 'code', text: '});' },
-            { type: 'comment', text: '// verification.valid: true, verification.claims.action_type: "book_appointment"' },
-          ]}
-        />
+        <h3 class="subsection-title">Add OpenLeash to your agent</h3>
+        <p class="sdk-intro">
+          Wrap any risky action with one call. Your agent gets a decision and a cryptographic
+          proof token it can attach to the action.
+        </p>
+
+        <div class="lang-tabs" role="tablist" aria-label="SDK language">
+          <button class="lang-tab active" role="tab" aria-selected="true" data-lang="ts" id="lang-tab-ts">TypeScript</button>
+          <button class="lang-tab" role="tab" aria-selected="false" data-lang="py" id="lang-tab-py">Python</button>
+          <button class="lang-tab" role="tab" aria-selected="false" data-lang="go" id="lang-tab-go">Go</button>
+        </div>
+
+        <div class="lang-panel" role="tabpanel" data-lang="ts" aria-labelledby="lang-tab-ts">
+          <CodeBlock
+            title="agent.ts"
+            lines={[
+              { type: 'comment', text: '// Before — your agent acts directly' },
+              { type: 'code', text: 'await sendEmail({ to, subject, body });' },
+              { type: 'code', text: '' },
+              { type: 'comment', text: '// After — your agent asks OpenLeash first' },
+              { type: 'code', text: 'import { authorize } from "@openleash/sdk-ts";' },
+              { type: 'code', text: '' },
+              { type: 'code', text: 'const result = await authorize({' },
+              { type: 'code', text: '  openleashUrl: process.env.OPENLEASH_URL!,' },
+              { type: 'code', text: '  agentId: process.env.OPENLEASH_AGENT_ID!,' },
+              { type: 'code', text: '  privateKeyB64: process.env.OPENLEASH_AGENT_KEY!,' },
+              { type: 'code', text: '  action: {' },
+              { type: 'code', text: '    action_id: crypto.randomUUID(),' },
+              { type: 'code', text: '    action_type: "send_email",' },
+              { type: 'code', text: '    requested_at: new Date().toISOString(),' },
+              { type: 'code', text: '    principal: { agent_id: process.env.OPENLEASH_AGENT_ID! },' },
+              { type: 'code', text: '    subject: { principal_id: ownerId },' },
+              { type: 'code', text: '    relying_party: { domain: "your-app.com", trust_profile: "LOW" },' },
+              { type: 'code', text: '    payload: { to, subject, body },' },
+              { type: 'code', text: '  },' },
+              { type: 'code', text: '});' },
+              { type: 'code', text: '' },
+              { type: 'code', text: 'if (result.decision !== "ALLOW") {' },
+              { type: 'code', text: '  throw new Error(`Action ${result.decision}`);' },
+              { type: 'code', text: '}' },
+              { type: 'code', text: '' },
+              { type: 'code', text: 'await sendEmail({ to, subject, body });' },
+              { type: 'comment', text: '// result.proof_token — share or store as a verifiable receipt' },
+            ]}
+          />
+        </div>
+
+        <div class="lang-panel hidden" role="tabpanel" data-lang="py" aria-labelledby="lang-tab-py">
+          <CodeBlock
+            title="agent.py"
+            lines={[
+              { type: 'comment', text: '# Before — your agent acts directly' },
+              { type: 'code', text: 'send_email(to=to, subject=subject, body=body)' },
+              { type: 'code', text: '' },
+              { type: 'comment', text: '# After — your agent asks OpenLeash first' },
+              { type: 'code', text: 'from openleash import authorize' },
+              { type: 'code', text: '' },
+              { type: 'code', text: 'result = await authorize(' },
+              { type: 'code', text: '    openleash_url=os.environ["OPENLEASH_URL"],' },
+              { type: 'code', text: '    agent_id=os.environ["OPENLEASH_AGENT_ID"],' },
+              { type: 'code', text: '    private_key_b64=os.environ["OPENLEASH_AGENT_KEY"],' },
+              { type: 'code', text: '    action={' },
+              { type: 'code', text: '        "action_id": str(uuid.uuid4()),' },
+              { type: 'code', text: '        "action_type": "send_email",' },
+              { type: 'code', text: '        "requested_at": datetime.now(timezone.utc).isoformat(),' },
+              { type: 'code', text: '        "principal": {"agent_id": os.environ["OPENLEASH_AGENT_ID"]},' },
+              { type: 'code', text: '        "subject": {"principal_id": owner_id},' },
+              { type: 'code', text: '        "relying_party": {"domain": "your-app.com", "trust_profile": "LOW"},' },
+              { type: 'code', text: '        "payload": {"to": to, "subject": subject, "body": body},' },
+              { type: 'code', text: '    },' },
+              { type: 'code', text: ')' },
+              { type: 'code', text: '' },
+              { type: 'code', text: 'if result["decision"] != "ALLOW":' },
+              { type: 'code', text: '    raise Exception(f"Action {result[\'decision\']}")' },
+              { type: 'code', text: '' },
+              { type: 'code', text: 'send_email(to=to, subject=subject, body=body)' },
+              { type: 'comment', text: '# result["proof_token"] — share or store as a verifiable receipt' },
+            ]}
+          />
+        </div>
+
+        <div class="lang-panel hidden" role="tabpanel" data-lang="go" aria-labelledby="lang-tab-go">
+          <CodeBlock
+            title="agent.go"
+            lines={[
+              { type: 'comment', text: '// Before — your agent acts directly' },
+              { type: 'code', text: 'sendEmail(to, subject, body)' },
+              { type: 'code', text: '' },
+              { type: 'comment', text: '// After — your agent asks OpenLeash first' },
+              { type: 'code', text: 'import openleash "github.com/openleash/openleash/packages/sdk-go"' },
+              { type: 'code', text: '' },
+              { type: 'code', text: 'result, err := openleash.Authorize(' },
+              { type: 'code', text: '    os.Getenv("OPENLEASH_URL"),' },
+              { type: 'code', text: '    os.Getenv("OPENLEASH_AGENT_ID"),' },
+              { type: 'code', text: '    os.Getenv("OPENLEASH_AGENT_KEY"),' },
+              { type: 'code', text: '    map[string]interface{}{' },
+              { type: 'code', text: '        "action_id":     uuid.New().String(),' },
+              { type: 'code', text: '        "action_type":   "send_email",' },
+              { type: 'code', text: '        "requested_at":  time.Now().UTC().Format(time.RFC3339),' },
+              { type: 'code', text: '        "principal":     map[string]string{"agent_id": os.Getenv("OPENLEASH_AGENT_ID")},' },
+              { type: 'code', text: '        "subject":       map[string]string{"principal_id": ownerID},' },
+              { type: 'code', text: '        "relying_party": map[string]interface{}{"domain": "your-app.com", "trust_profile": "LOW"},' },
+              { type: 'code', text: '        "payload":       map[string]interface{}{"to": to, "subject": subject, "body": body},' },
+              { type: 'code', text: '    },' },
+              { type: 'code', text: ')' },
+              { type: 'code', text: 'if err != nil { return err }' },
+              { type: 'code', text: '' },
+              { type: 'code', text: 'if result["decision"] != "ALLOW" {' },
+              { type: 'code', text: '    return fmt.Errorf("action %v", result["decision"])' },
+              { type: 'code', text: '}' },
+              { type: 'code', text: '' },
+              { type: 'code', text: 'sendEmail(to, subject, body)' },
+              { type: 'comment', text: '// result["proof_token"] — share or store as a verifiable receipt' },
+            ]}
+          />
+        </div>
       </div>
     </section>
 
@@ -387,6 +489,14 @@ import QuickStart from '../components/QuickStart.astro';
         </div>
       </div>
     </section>
+
+    <div class="pro-callout" style="margin-bottom: 24px;">
+      <a href="/pro" class="pro-callout-inner">
+        <span class="pro-callout-badge">Coming Soon</span>
+        <span class="pro-callout-text">OpenLeash Pro — Hosted authorization with identity verification, push notifications, and more.</span>
+        <span class="pro-callout-arrow">→</span>
+      </a>
+    </div>
 
     <!-- Pro teaser -->
     <section class="section pro-teaser">
@@ -699,6 +809,138 @@ import QuickStart from '../components/QuickStart.astro';
     transform: translateY(-2px);
   }
 
+  /* Audience band */
+  .audience-band {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+    margin-bottom: 8px;
+  }
+
+  .audience-card {
+    padding: 20px 22px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.25s var(--ease-out);
+  }
+
+  .audience-card:hover {
+    border-color: var(--green-bright);
+  }
+
+  .audience-card-security:hover {
+    border-color: var(--amber-bright);
+  }
+
+  .audience-tag {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    color: var(--green-bright);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .audience-card-security .audience-tag {
+    background: rgba(251, 191, 36, 0.06);
+    border-color: rgba(251, 191, 36, 0.25);
+    color: var(--amber-bright);
+  }
+
+  .audience-body {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .audience-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .audience-cta {
+    margin-top: auto;
+    padding-top: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .audience-card-security .audience-cta {
+    color: var(--amber-bright);
+  }
+
+  .audience-cta:hover {
+    color: var(--green-mid);
+  }
+
+  .audience-card-security .audience-cta:hover {
+    color: var(--amber-mid);
+  }
+
+  /* Language tabs */
+  .lang-tabs {
+    display: flex;
+    gap: 4px;
+    margin-top: 16px;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .lang-tab {
+    padding: 8px 16px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+    margin-bottom: -1px;
+  }
+
+  .lang-tab:hover {
+    color: var(--text-primary);
+  }
+
+  .lang-tab.active {
+    color: var(--green-bright);
+    border-bottom-color: var(--green-bright);
+  }
+
+  .lang-panel {
+    margin-top: 0;
+  }
+
+  .lang-panel.hidden {
+    display: none;
+  }
+
+  .sdk-intro {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
   /* Sections */
   .section {
     margin-bottom: 56px;
@@ -977,6 +1219,11 @@ import QuickStart from '../components/QuickStart.astro';
       grid-template-columns: 1fr;
     }
 
+    .audience-band {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
     .hero-video-wrapper {
       margin-bottom: 40px;
       padding: 4px;
@@ -1044,4 +1291,19 @@ import QuickStart from '../components/QuickStart.astro';
       }
     })
     .catch(() => {});
+
+  document.querySelectorAll<HTMLButtonElement>('.lang-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const lang = tab.dataset.lang;
+      if (!lang) return;
+      document.querySelectorAll<HTMLButtonElement>('.lang-tab').forEach((t) => {
+        const active = t.dataset.lang === lang;
+        t.classList.toggle('active', active);
+        t.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      document.querySelectorAll<HTMLDivElement>('.lang-panel').forEach((p) => {
+        p.classList.toggle('hidden', p.dataset.lang !== lang);
+      });
+    });
+  });
 </script>

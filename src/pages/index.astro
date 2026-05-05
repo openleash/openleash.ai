@@ -284,6 +284,62 @@ import QuickStart from '../components/QuickStart.astro';
       </div>
     </section>
 
+    <!-- What you get back -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="accent-prefix">›</span> What you get back
+      </h2>
+      <p class="section-intro">
+        Every approved action returns a <strong>PASETO v4.public</strong> proof token — Ed25519-signed,
+        offline-verifiable by anyone with the public key. The same decision is written to an
+        append-only audit log scoped per user, organization, and agent.
+      </p>
+
+      <div class="proof-grid">
+        <div class="proof-block">
+          <h3 class="subsection-title">Decoded proof token</h3>
+          <CodeBlock
+            title="proof_token (claims)"
+            lines={[
+              { type: 'code', text: '{' },
+              { type: 'code', text: '  "iss": "openleash",' },
+              { type: 'code', text: '  "sub": "agent_01h8x...",' },
+              { type: 'code', text: '  "aud": "your-app.com",' },
+              { type: 'code', text: '  "iat": "2026-05-05T13:42:11Z",' },
+              { type: 'code', text: '  "exp": "2026-05-05T13:47:11Z",' },
+              { type: 'code', text: '  "action_id": "8e3b...",' },
+              { type: 'code', text: '  "action_type": "send_email",' },
+              { type: 'code', text: '  "action_hash": "sha256:b1a7...",' },
+              { type: 'code', text: '  "decision": "ALLOW",' },
+              { type: 'code', text: '  "policy_id": "default-mail",' },
+              { type: 'code', text: '  "kid": "k1"' },
+              { type: 'code', text: '}' },
+            ]}
+          />
+        </div>
+
+        <div class="proof-block">
+          <h3 class="subsection-title">Audit log entry (JSONL)</h3>
+          <CodeBlock
+            title="audit.log.jsonl"
+            lines={[
+              { type: 'code', text: '{' },
+              { type: 'code', text: '  "ts": "2026-05-05T13:42:11Z",' },
+              { type: 'code', text: '  "actor_type": "agent",' },
+              { type: 'code', text: '  "actor_id": "agent_01h8x...",' },
+              { type: 'code', text: '  "action_type": "send_email",' },
+              { type: 'code', text: '  "action_id": "8e3b...",' },
+              { type: 'code', text: '  "decision": "ALLOW",' },
+              { type: 'code', text: '  "policy_id": "default-mail",' },
+              { type: 'code', text: '  "proof_kid": "k1",' },
+              { type: 'code', text: '  "signature_valid": true' },
+              { type: 'code', text: '}' },
+            ]}
+          />
+        </div>
+      </div>
+    </section>
+
     <!-- How it works -->
     <section class="section">
       <h2 class="section-title">
@@ -327,97 +383,80 @@ import QuickStart from '../components/QuickStart.astro';
       </p>
     </section>
 
+    <!-- Compared to other tools -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="accent-prefix">›</span> How OpenLeash Compares
+      </h2>
+      <p class="section-intro">
+        OpenLeash is opinionated for AI agents. If you're already using a general-purpose policy engine, here's how the boundaries differ — and where each tool wins.
+      </p>
+      <div class="compare-grid">
+        <a href="/concepts/openleash-vs-opa" class="compare-card">
+          <div class="compare-card-title">vs OPA</div>
+          <p class="compare-card-desc">General-purpose policy engine versus AI-agent-specific sidecar with built-in identity, approvals, and proof tokens.</p>
+          <span class="compare-card-arrow">Read comparison →</span>
+        </a>
+        <a href="/concepts/openleash-vs-cedar" class="compare-card">
+          <div class="compare-card-title">vs Cedar</div>
+          <p class="compare-card-desc">AWS's embedded authorization library versus a sidecar service with cryptographic proof tokens and approval workflows.</p>
+          <span class="compare-card-arrow">Read comparison →</span>
+        </a>
+        <a href="/concepts/openleash-vs-openfga" class="compare-card">
+          <div class="compare-card-title">vs OpenFGA</div>
+          <p class="compare-card-desc">Relationship-based access (Zanzibar-style) versus action-level governance for autonomous agents.</p>
+          <span class="compare-card-arrow">Read comparison →</span>
+        </a>
+      </div>
+    </section>
+
     <!-- Features -->
     <section class="section" id="features">
       <h2 class="section-title">
         <span class="accent-prefix">›</span> Features
       </h2>
 
-      <h3 class="category-title">Core Authorization</h3>
       <div class="mvp-grid">
         <div class="mvp-item">
           <span class="mvp-icon" aria-hidden="true">📁</span>
           <div>
-            <strong>File-based policies</strong>
-            <p>Define authorization rules in YAML. Expressions, constraints, obligations. No database, no cloud dependency.</p>
+            <strong>YAML policies</strong>
+            <p>Authorization rules as YAML. Constraints, obligations, schema-validated. No database, no cloud dependency, version-controlled in your repo.</p>
           </div>
         </div>
         <div class="mvp-item">
           <span class="mvp-icon" aria-hidden="true">🔑</span>
           <div>
             <strong>PASETO proof tokens</strong>
-            <p>Cryptographic tokens bound to specific actions. Verifiable by any counterparty without calling home.</p>
+            <p>PASETO v4.public, Ed25519-signed. Bound to a specific action and verifiable offline by any counterparty with the public key.</p>
           </div>
         </div>
         <div class="mvp-item">
           <span class="mvp-icon" aria-hidden="true">✅</span>
           <div>
             <strong>Approval workflow</strong>
-            <p>Human-in-the-loop for high-risk actions. Agents request approval, owners approve or deny via the portal.</p>
+            <p>Human-in-the-loop for high-risk actions. Agents request approval; owners approve or deny in the portal. Tokens are single-use and action-scoped.</p>
           </div>
         </div>
         <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">📝</span>
+          <span class="mvp-icon" aria-hidden="true">📋</span>
           <div>
-            <strong>Policy drafts</strong>
-            <p>Agents propose policies for owner review. Owners approve, reject, or modify before activation.</p>
+            <strong>Append-only audit log</strong>
+            <p>Every authorization, approval, and policy change in JSONL. Scope filtering by user, organization, or agent.</p>
           </div>
         </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">⚡</span>
-          <div>
-            <strong>Deterministic decisions</strong>
-            <p>Same input, same output. No probabilistic logic. Policies evaluate to predictable results.</p>
-          </div>
-        </div>
-      </div>
-
-      <h3 class="category-title">Identity & Organizations</h3>
-      <div class="mvp-grid">
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🏢</span>
-          <div>
-            <strong>Organizations & RBAC</strong>
-            <p>Create organizations, manage members, and assign roles. Role hierarchy: org_admin, org_member, org_viewer. System-level admin role for instance management.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🪪</span>
-          <div>
-            <strong>Identity management</strong>
-            <p>Track identities with contact info, government IDs for 27 EU countries, and 11 company ID types with country-specific validation.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">✉️</span>
-          <div>
-            <strong>Invite system</strong>
-            <p>Organization member invites, agent registration invites, and setup invites. Time-limited with automatic expiry.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🌐</span>
-          <div>
-            <strong>Organization domains</strong>
-            <p>Track domain ownership per organization with verification levels. Link corporate domains to org identity.</p>
-          </div>
-        </div>
-      </div>
-
-      <h3 class="category-title">Developer Experience</h3>
-      <div class="mvp-grid">
         <div class="mvp-item">
           <span class="mvp-icon" aria-hidden="true">📦</span>
           <div>
             <strong>Multi-language SDKs</strong>
-            <p>TypeScript, Python, and Go SDKs with 13 functions each. Authorize, sign requests, verify proofs, manage approvals and policy drafts.</p>
+            <p>TypeScript, Python, and Go SDKs at endpoint parity. 13 functions each — authorize, sign, verify, approvals, policy drafts.</p>
           </div>
         </div>
         <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🧪</span>
+          <span class="mvp-icon" aria-hidden="true">🤖</span>
           <div>
-            <strong>Policy playground</strong>
-            <p>Test policies against scenarios locally before deploying. See the evaluation trace step by step.</p>
+            <strong>Agent registration</strong>
+            <p>Invite-based onboarding with Ed25519 keys. Every request is signed, timestamp-bound, and replay-protected.</p>
           </div>
         </div>
         <div class="mvp-item">
@@ -428,66 +467,30 @@ import QuickStart from '../components/QuickStart.astro';
           </div>
         </div>
         <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🐳</span>
+          <span class="mvp-icon" aria-hidden="true">🧪</span>
           <div>
-            <strong>Docker deployment</strong>
-            <p>Official Docker images with multi-platform support. Run with Docker Compose or deploy to any container platform.</p>
+            <strong>Policy playground</strong>
+            <p>Test policies against scenarios locally before deploying. See the evaluation trace step by step.</p>
+          </div>
+        </div>
+        <div class="mvp-item">
+          <span class="mvp-icon" aria-hidden="true">🖥️</span>
+          <div>
+            <strong>Owner & admin GUI</strong>
+            <p>Server-rendered portal for managing agents, policies, approvals, audit, and organization membership.</p>
           </div>
         </div>
         <div class="mvp-item">
           <span class="mvp-icon" aria-hidden="true">🧩</span>
           <div>
             <strong>Plugin architecture</strong>
-            <p>Extend OpenLeash with server plugins. Custom authentication, storage backends, identity verification providers, and notification channels.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">📖</span>
-          <div>
-            <strong>OpenAPI documentation</strong>
-            <p>Interactive API reference with Scalar UI. Full OpenAPI 3.0 spec for all endpoints — public, agent, owner, and admin.</p>
+            <p>Extend with server plugins — custom authentication, storage backends, identity verification, and notification channels.</p>
           </div>
         </div>
       </div>
-
-      <h3 class="category-title">Operations</h3>
-      <div class="mvp-grid">
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🖥️</span>
-          <div>
-            <strong>Web GUI</strong>
-            <p>Owner portal for agents, policies, approvals, and org management. Built-in dark and light themes.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">⚙️</span>
-          <div>
-            <strong>Admin dashboard</strong>
-            <p>Separate admin interface for system-wide management. Users, organizations, agents, policies, audit, and configuration.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">📋</span>
-          <div>
-            <strong>Audit log</strong>
-            <p>Append-only JSONL log of every authorization and key event. Scope filtering by user, organization, or agent.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🔔</span>
-          <div>
-            <strong>Webhook notifications</strong>
-            <p>Real-time notifications for authorization events. Get alerts when agents request approval or policies trigger.</p>
-          </div>
-        </div>
-        <div class="mvp-item">
-          <span class="mvp-icon" aria-hidden="true">🤖</span>
-          <div>
-            <strong>Agent registration</strong>
-            <p>Invite-based onboarding with Ed25519 keys. Owners and orgs create invite URLs, agents self-register.</p>
-          </div>
-        </div>
-      </div>
+      <p class="section-more">
+        <a href="/docs">Full feature reference in the docs →</a>
+      </p>
     </section>
 
     <div class="pro-callout" style="margin-bottom: 24px;">
@@ -941,6 +944,67 @@ import QuickStart from '../components/QuickStart.astro';
     margin-bottom: 8px;
   }
 
+  /* Proof token + audit log grid */
+  .proof-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .proof-block .subsection-title {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  /* Comparison cards */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .compare-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-card);
+    backdrop-filter: blur(12px);
+    text-decoration: none;
+    transition: border-color 0.25s var(--ease-out), transform 0.2s var(--ease-out);
+  }
+
+  .compare-card:hover {
+    border-color: var(--green-bright);
+    transform: translateY(-2px);
+  }
+
+  .compare-card-title {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .compare-card-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .compare-card-arrow {
+    margin-top: auto;
+    padding-top: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--green-bright);
+  }
+
   /* Sections */
   .section {
     margin-bottom: 56px;
@@ -1220,6 +1284,16 @@ import QuickStart from '../components/QuickStart.astro';
     }
 
     .audience-band {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .proof-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .compare-grid {
       grid-template-columns: 1fr;
       gap: 12px;
     }

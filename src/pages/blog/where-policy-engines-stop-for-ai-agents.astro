@@ -1,0 +1,363 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="Where General-Purpose Policy Engines Stop, and Agent Governance Starts — OpenLeash"
+  description="OPA, Cedar, and OpenFGA solve different problems than the one most teams hit when they put an AI agent into production. Here's where the boundary is, and what fills the gap."
+  ogImage="/og/blog.png"
+  canonicalPath="/blog/where-policy-engines-stop-for-ai-agents"
+  keywords="AI agent authorization, OPA AI agents, Cedar AI agents, OpenFGA AI agents, policy engine for agents, agent identity, agent approval workflow, agent proof tokens"
+  datePublished="2026-05-05"
+  dateModified="2026-05-05"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Where General-Purpose Policy Engines Stop, and Agent Governance Starts',
+    description: 'OPA, Cedar, and OpenFGA solve different problems than the one most teams hit when they put an AI agent into production. Here\'s where the boundary is, and what fills the gap.',
+    datePublished: '2026-05-05',
+    dateModified: '2026-05-05',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/blog/where-policy-engines-stop-for-ai-agents' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Blog', href: '/blog' },
+        { label: 'Where Policy Engines Stop', href: '/blog/where-policy-engines-stop-for-ai-agents' },
+      ]} />
+      <h1 class="page-title">Where General-Purpose Policy Engines Stop, and Agent Governance Starts</h1>
+      <p class="page-desc">
+        OPA, Cedar, and OpenFGA solve different problems than the one most teams hit when they put an AI agent into production. Here's where the boundary is, and what fills the gap.
+      </p>
+      <div class="page-meta">
+        <time datetime="2026-05-05">May 5, 2026</time>
+        <span class="meta-sep">·</span>
+        <span>8 min read</span>
+      </div>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>The Shape of the Problem</h2>
+        <p>
+          When an AI agent takes real-world actions — purchases, bookings, API calls, message
+          sending, government submissions — the policy questions you need to answer are specific:
+        </p>
+        <ul>
+          <li>Can this agent spend more than $X on this purchase?</li>
+          <li>Has it spent more than $Y in the last 24 hours, cumulatively?</li>
+          <li>Is the counterparty domain in the allowlist? At what trust level?</li>
+          <li>Is this a routine action or one that requires a human signoff?</li>
+          <li>After the action completes, can the recipient prove it was authorized?</li>
+        </ul>
+        <p>
+          These look like access control questions, but they aren't quite. They're decisions over
+          individual <em>actions</em> with their own attributes, in a context that includes recent
+          history, cost thresholds, counterparty trust, and obligations like "require approval"
+          or "step up auth." And once the decision is made, the question of <em>proving</em> it
+          — to the recipient, to an auditor, to a compliance officer — matters as much as the
+          decision itself.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>What's Already Available</h2>
+        <p>
+          The OSS authorization stack already has good tools. None are designed for this specific
+          shape of question.
+        </p>
+        <p>
+          <strong>OPA (Open Policy Agent)</strong> is a general-purpose policy engine, written in
+          Go, evaluating Rego policies against structured JSON. It's used widely for Kubernetes
+          admission, Envoy authorization, and microservice authz. It's stateless, expressive,
+          and CNCF-graduated. (<a href="/concepts/openleash-vs-opa">Detailed comparison →</a>)
+        </p>
+        <p>
+          <strong>Cedar</strong> is AWS's open-source policy language and library, written in
+          Rust, embeddable directly in applications. It targets RBAC and ABAC use cases over
+          principal/action/resource tuples, with a notable formal verification capability via
+          its symbolic compiler. (<a href="/concepts/openleash-vs-cedar">Detailed comparison →</a>)
+        </p>
+        <p>
+          <strong>OpenFGA</strong> is a relationship-based authorization service inspired by
+          Google Zanzibar. It models permissions as relationship tuples and answers traversal
+          queries — the right tool for SaaS sharing semantics where Alice can view Document X
+          because she's a member of the project that owns the folder it's in.
+          (<a href="/concepts/openleash-vs-openfga">Detailed comparison →</a>)
+        </p>
+        <p>
+          Each is excellent for what it's designed for. None of them ship with the surrounding
+          pieces an autonomous agent needs.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Where They Stop</h2>
+        <p>
+          A general-purpose policy engine like OPA gives you the <em>decision</em>. It doesn't
+          give you:
+        </p>
+        <ul>
+          <li>An identity model for the agent making the request</li>
+          <li>A signing scheme that prevents replays and confirms the agent is who it claims to be</li>
+          <li>A state machine for human-in-the-loop approvals when a policy says "ask first"</li>
+          <li>A cryptographic proof token the counterparty can verify offline, without calling back into your system</li>
+          <li>An audit log structured for compliance review, scoped per agent and per organization</li>
+        </ul>
+        <p>
+          For OPA's traditional use cases — Kubernetes admission, microservice authorization —
+          those pieces don't matter. The host system already has identity (the kubelet, the
+          service mesh), already has audit (the API server, OpenTelemetry), and the decision
+          consumer is the calling service itself, not some third party who needs to prove the
+          action was approved.
+        </p>
+        <p>
+          For autonomous AI agents, those pieces <em>do</em> matter, and you have to build
+          them yourself. Or you adopt something that bundles them.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>What "AI-Agent-Specific" Actually Means</h2>
+        <p>
+          When we say <a href="/">OpenLeash</a> is opinionated for AI agents, we mean five
+          concrete things.
+        </p>
+        <p>
+          <strong>1. Agent identity.</strong> Agents register with Ed25519 keypairs and sign
+          every authorization request. The signature includes a timestamp and a single-use
+          nonce. OpenLeash verifies the signature, the timestamp window, and that the nonce
+          hasn't been seen before — <em>before</em> evaluating any policy. An agent can't lie
+          about who it is, and a captured request can't be replayed.
+        </p>
+        <p>
+          <strong>2. Approval workflow.</strong> When a policy returns
+          <code>REQUIRE_APPROVAL</code>, OpenLeash creates a pending approval request that an
+          owner reviews in a portal and approves or denies. The approval token is single-use,
+          action-scoped, and time-limited — the agent gets it back, includes it on a follow-up
+          authorize call, and then proceeds. State machine, audit log, retry semantics, all
+          built in.
+        </p>
+        <p>
+          <strong>3. Cryptographic proof tokens.</strong> Every approved action returns a
+          <a href="/concepts/paseto-tokens">PASETO v4.public</a> token signed with Ed25519. The
+          token binds the decision to the <em>specific</em> action — it includes the action ID
+          and a hash of the canonical action body — so it can't be reused for a different
+          action. Any counterparty can verify the token offline with the public key. There's
+          no "phone home" required.
+        </p>
+        <p>
+          <strong>4. Append-only audit log.</strong> Every authorization attempt, every
+          approval, every policy change is recorded in a JSONL audit log scoped per user,
+          organization, and agent. The log is the receipt for compliance review.
+        </p>
+        <p>
+          <strong>5. Action-level YAML policies.</strong> Policies are constraints
+          (<code>cost &lt;= 100</code>, <code>cumulative_spend_24h &lt; 500</code>,
+          <code>counterparty_trust &gt;= MEDIUM</code>) and obligations
+          (<code>HUMAN_APPROVAL</code>, <code>STEP_UP_AUTH</code>, <code>DEPOSIT</code>).
+          Schema-validated YAML, version-controlled in your repo, reviewable by a non-engineer
+          compliance officer without learning Rego.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>The Tradeoffs</h2>
+        <p>
+          OpenLeash is opinionated, and being opinionated has costs.
+        </p>
+        <p>
+          <strong>YAML is less expressive than Rego.</strong> If your policy logic needs
+          iteration over arbitrary data structures, recursive rule evaluation, or partial
+          evaluation across a complex policy bundle, OpenLeash YAML won't get you there. You
+          should be using OPA. We picked YAML because for the agent-governance domain, the
+          constraint-and-obligation model covers what you actually need to express, and the
+          simplicity makes the policies reviewable by people who aren't engineers — the
+          compliance officer, the head of finance, the operations lead.
+        </p>
+        <p>
+          <strong>A sidecar service has different operational characteristics than an embedded
+          library.</strong> Cedar can be embedded directly in your Rust application. OpenLeash
+          runs as a separate process. That means an extra deployment surface, an extra HTTP
+          hop, and an extra failure mode to think about. We chose a sidecar because the agent's
+          process and the authorization process want different operational properties — the
+          policy engine should outlive any specific agent run, and the audit log shouldn't be
+          lost when the agent crashes.
+        </p>
+        <p>
+          <strong>Some of OPA's flexibility is gone.</strong> Rego can express almost any
+          policy logic. OpenLeash YAML is intentionally less powerful. We picked simplicity
+          over generality because the domain is narrow — agents take a small number of action
+          types with predictable attributes — and a constrained language makes mistakes harder.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Where This Fits in Your Stack</h2>
+        <p>
+          If you already use OPA for Kubernetes admission, keep using it. OpenLeash isn't trying
+          to replace your infrastructure policy engine.
+        </p>
+        <p>
+          If you use OAuth for delegated access between services, keep using it. OpenLeash
+          isn't an OAuth replacement — it complements OAuth by adding per-action authorization
+          on top of API-level access. (<a href="/concepts/openleash-vs-oauth">Comparison →</a>)
+        </p>
+        <p>
+          If you use OpenFGA or Cedar for in-application access decisions, keep using those.
+          OpenLeash sits at a different layer — outside the application, between the agent
+          and its actions.
+        </p>
+        <p>
+          The intended deployment is: your application keeps its existing authz stack. You add
+          OpenLeash as a sidecar specifically for AI agents that take side-effectful actions in
+          or alongside your application. The agent calls OpenLeash before each action, gets a
+          decision and (if allowed) a proof token, and proceeds. Your audit trail now has a
+          per-action record with a verifiable cryptographic receipt.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Get Started</h2>
+        <p>
+          OpenLeash is Apache-2.0 and runs locally. Install with
+          <code>npm install -g @openleash/cli</code> or the
+          <a href="https://openleash.ai/install.sh">one-liner installer</a>, run
+          <code>openleash wizard</code> to create your first owner / agent / policy, and you
+          have a working sidecar on <code>127.0.0.1:8787</code> in about ninety seconds. SDKs
+          are at endpoint parity for
+          <a href="/sdk/typescript">TypeScript</a>,
+          <a href="/sdk/python">Python</a>, and
+          <a href="/sdk/go">Go</a>.
+        </p>
+        <p>
+          The full comparison pages — <a href="/concepts/openleash-vs-opa">vs OPA</a>,
+          <a href="/concepts/openleash-vs-cedar">vs Cedar</a>,
+          <a href="/concepts/openleash-vs-openfga">vs OpenFGA</a> — go deeper into when to use
+          each tool. They're written to be honest, not boosterish: each has a section explicitly
+          recommending the alternative when it's the better fit.
+        </p>
+        <p>
+          If you're already running an autonomous AI agent in production and you're solving
+          these problems with bespoke glue, we'd like to hear what you've built — and whether
+          OpenLeash would have saved you the trouble. Issues and discussions are open on
+          <a href="https://github.com/openleash/openleash" target="_blank" rel="noopener noreferrer">GitHub</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .page-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .meta-sep {
+    color: var(--text-muted);
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

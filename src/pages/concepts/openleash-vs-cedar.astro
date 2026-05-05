@@ -1,0 +1,332 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="OpenLeash vs Cedar for AI Agent Authorization — OpenLeash"
+  description="Compare AWS's Cedar policy language with OpenLeash for AI agent authorization. Cedar is an embedded library and language for in-app authz; OpenLeash is a sidecar with built-in identity, approval workflows, and proof tokens."
+  ogImage="/og/openleash-vs-cedar.png"
+  canonicalPath="/concepts/openleash-vs-cedar"
+  keywords="Cedar vs OpenLeash, AWS Cedar AI agents, Cedar policy language, AWS Verified Permissions agents, embedded authorization library, agent authorization sidecar"
+  datePublished="2026-05-05"
+  dateModified="2026-05-05"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'OpenLeash vs Cedar for AI Agent Authorization',
+    description: 'Compare AWS\'s Cedar policy language with OpenLeash for AI agent authorization. Cedar is an embedded library and language for in-app authz; OpenLeash is a sidecar with built-in identity, approval workflows, and proof tokens.',
+    datePublished: '2026-05-05',
+    dateModified: '2026-05-05',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/concepts/openleash-vs-cedar' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'OpenLeash vs Cedar', href: '/concepts/openleash-vs-cedar' },
+      ]} />
+      <h1 class="page-title">OpenLeash vs Cedar for AI Agent Authorization</h1>
+      <p class="page-desc">
+        Cedar is AWS's open-source policy language and library, designed to be embedded in applications. OpenLeash is an authorization sidecar opinionated for AI agents. They live at different layers: Cedar runs inside your application, OpenLeash runs next to your agent.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>What Cedar Is</h2>
+        <p>
+          <a href="https://www.cedarpolicy.com" target="_blank" rel="noopener noreferrer">Cedar</a>
+          is a policy language and authorization engine, originally created at AWS to power
+          <em>Amazon Verified Permissions</em> and released as open source under Apache-2.0 in 2023.
+          The reference implementation is in Rust; there's a WebAssembly build, a CLI, a language
+          server, a formatter, and — unusually for an authorization library — a symbolic compiler
+          (<code>cedar-policy-symcc</code>) for proving properties of policies formally.
+        </p>
+        <p>
+          Cedar is a <em>library</em>, not a service. Applications integrate the
+          <code>cedar-policy</code> Rust crate directly, or use one of the language bindings via
+          WebAssembly, or call AWS Verified Permissions for a managed service that wraps Cedar.
+          The engine evaluates a request — principal, action, resource, context — against a set
+          of policies and returns <code>Allow</code> or <code>Deny</code>. Cedar policies look
+          like this:
+        </p>
+        <pre><code>permit (
+  principal == User::"alice",
+  action == Action::"view",
+  resource in Album::"vacation_photos"
+)
+when &#123; resource.owner == principal &#125;;</code></pre>
+        <p>
+          The grammar is small and purpose-built for authorization, not a general-purpose
+          programming language. Cedar is designed around RBAC and ABAC; relationship-based
+          authorization is not a primary target.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>What Cedar Gives You — and What It Doesn't</h2>
+        <p>Out of the box, Cedar gives you:</p>
+        <ul>
+          <li>The authorization engine (<code>cedar-policy</code> crate, WASM build)</li>
+          <li>A schema language for declaring entity types and validating policies against them</li>
+          <li>A CLI for evaluating, validating, formatting, and linting policies</li>
+          <li>A language server for IDE integration</li>
+          <li>A symbolic compiler that can prove properties of your policies (e.g. "no policy permits Alice to delete a public album")</li>
+        </ul>
+        <p>
+          What Cedar <em>doesn't</em> include — and where it intentionally stops — is everything
+          surrounding the decision. Policy distribution, persistent storage of entities and
+          relationships, audit logging, decision signing, request authentication, an approval
+          workflow for human-in-the-loop decisions, an agent identity model. AWS Verified
+          Permissions adds some of those (storage, policy management, change history) as a managed
+          service; outside that managed context, those layers are your responsibility.
+        </p>
+        <p>
+          For in-application authorization — the SaaS app that needs to decide whether the current
+          user can view a document — that's appropriate. Your application already has authentication,
+          a database, and a deployment platform. Cedar slots in as the decision engine and the
+          surrounding pieces are already provided.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>What OpenLeash Adds for AI Agents</h2>
+        <p>
+          OpenLeash is designed for autonomous AI agents acting on a person's or organization's
+          behalf. It bundles the decision engine with the surrounding pieces an agent needs:
+        </p>
+        <ul>
+          <li><strong>Agent identity</strong> — agents register with Ed25519 keypairs and sign every authorization request. OpenLeash verifies the signature, the timestamp, and a single-use nonce before evaluating any policy.</li>
+          <li><strong>Approval workflow</strong> — when a policy returns <code>REQUIRE_APPROVAL</code>, OpenLeash creates a pending request that an owner can review and approve in a portal. Approval tokens are single-use, action-scoped, and time-limited.</li>
+          <li><strong>Cryptographic proof tokens</strong> — every approved action returns a PASETO v4.public token (Ed25519-signed) that any counterparty can verify offline with the public key. The token binds the decision to the specific action.</li>
+          <li><strong>Append-only audit log</strong> — every authorization attempt, approval, and policy change is recorded in a JSONL log scoped per user, organization, and agent.</li>
+          <li><strong>Policy drafts</strong> — agents can propose new policies for owner review when they hit an action type the existing rules don't cover.</li>
+          <li><strong>Opinionated YAML</strong> — policies are YAML, schema-validated, and intentionally constrained for action-level governance: cost limits, counterparty trust, time windows, cumulative spending, action-type allowlists.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>The Policy Language Comparison</h2>
+        <p>
+          Cedar and OpenLeash YAML are closer in spirit than either is to Rego. Both are
+          purpose-built for authorization, both prefer readability over expressive power, both
+          can be reviewed by non-developers if they have to be. The differences come from what
+          each is designed for.
+        </p>
+        <p>
+          Cedar's grammar is built around <code>permit</code> / <code>forbid</code> on
+          principal–action–resource tuples with <code>when</code> / <code>unless</code> conditions.
+          That maps cleanly onto in-application authorization questions: "can <em>this user</em>
+          perform <em>this action</em> on <em>this resource</em>?" Cedar's symbolic compiler can
+          formally verify properties of those policies — a meaningful advantage in high-assurance
+          environments where you need to prove that no policy permits some forbidden combination.
+        </p>
+        <p>
+          OpenLeash YAML is built around action types with constraints (<code>cost &lt;= 100</code>,
+          <code>cumulative_spend_24h &lt; 500</code>, <code>counterparty_trust &gt;= MEDIUM</code>)
+          and obligations (<code>HUMAN_APPROVAL</code>, <code>STEP_UP_AUTH</code>,
+          <code>DEPOSIT</code>, <code>COUNTERPARTY_ATTESTATION</code>). Those primitives map cleanly
+          onto agent governance questions: "should this agent take <em>this specific action</em>
+          right now, given the current spending context?" Cedar can express agent-action policies,
+          but the constraint and obligation language has to be invented in the host application.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>When to Use Which</h2>
+        <p>
+          <strong>Use Cedar when</strong> you're embedding authorization in an application — a
+          SaaS product, an API, a service — and you control both the request shape and the runtime.
+          When your access decisions fit cleanly into RBAC or ABAC over principal/action/resource.
+          When you want formal verification of policy properties. When AWS Verified Permissions is
+          a deployment option you'd consider for the managed-service layer.
+        </p>
+        <p>
+          <strong>Use OpenLeash when</strong> you're building or operating AI agents that take
+          side-effectful actions, and you need agent identity, request signing, human-in-the-loop
+          approvals, and offline-verifiable proof tokens out of the box. When your policy authors
+          include compliance or operations people who shouldn't have to learn a programming
+          language.
+        </p>
+        <p>
+          <strong>Use both when</strong> the same system has both layers: Cedar handling
+          in-application authorization for users acting in the product, OpenLeash handling
+          governance of the AI agents that operate alongside them. Cedar decides whether Alice
+          can view Document X. OpenLeash decides whether Alice's agent should email a vendor on
+          her behalf right now.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Could You Build OpenLeash on Top of Cedar?</h2>
+        <p>
+          Cedar is a library, not a service, so the gap is larger than building on OPA. To match
+          OpenLeash you would need to:
+        </p>
+        <ul>
+          <li>Wrap Cedar in a sidecar service with an HTTP API for agent integration</li>
+          <li>Add an agent registration system with keypair generation and Ed25519 verification</li>
+          <li>Add a request signing scheme with timestamp + nonce + body-hash binding</li>
+          <li>Translate Cedar's <code>Allow</code> / <code>Deny</code> output into the richer decision space agents need (<code>REQUIRE_APPROVAL</code>, <code>REQUIRE_STEP_UP</code>, <code>REQUIRE_DEPOSIT</code>) along with obligations</li>
+          <li>Build the approval-request state machine with single-use, action-scoped tokens</li>
+          <li>Issue PASETO (or equivalent) proof tokens from your service, with a key rotation strategy and an offline verification path</li>
+          <li>Maintain an audit log and policy distribution mechanism</li>
+        </ul>
+        <p>
+          You give up Cedar's symbolic verifier in the process unless you preserve a path back to
+          the original Cedar grammar — which constrains how rich your obligation and constraint
+          language can be. That's the tradeoff: Cedar's verifier is excellent for what it covers,
+          but it covers RBAC/ABAC, not agent-flow obligations.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Key Differences Summary</h2>
+        <ul>
+          <li><strong>Form factor</strong> — Cedar is an embedded library (with AWS Verified Permissions as the managed service option). OpenLeash is a sidecar service with SDKs.</li>
+          <li><strong>Scope</strong> — Cedar is a general authorization language for RBAC/ABAC use cases. OpenLeash is purpose-built for AI agent governance.</li>
+          <li><strong>Policy language</strong> — Cedar (purpose-built for authz, with formal verification) versus YAML with constraints + obligations.</li>
+          <li><strong>Identity model</strong> — Cedar models principals abstractly; the host application provides identity. OpenLeash registers agents with Ed25519 keypairs and verifies every request signature.</li>
+          <li><strong>Decision output</strong> — Cedar returns <code>Allow</code> or <code>Deny</code>. OpenLeash returns a richer decision (<code>ALLOW</code> / <code>DENY</code> / <code>REQUIRE_APPROVAL</code> / <code>REQUIRE_STEP_UP</code> / <code>REQUIRE_DEPOSIT</code>) plus a cryptographic proof token bound to the specific action.</li>
+          <li><strong>Verification model</strong> — Cedar decisions are consumed by the calling code. OpenLeash proof tokens can be verified offline by any third party with the public key.</li>
+          <li><strong>Human approval</strong> — Cedar has no approval workflow. OpenLeash has a built-in state machine for owner-driven approvals.</li>
+          <li><strong>Stewardship</strong> — Cedar is open source under cedar-policy/cedar with heavy AWS contribution; AWS Verified Permissions is the managed offering. OpenLeash is a single-vendor open-source project (Apache-2.0) focused on AI agent authorization.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>Learn More</h2>
+        <p>
+          See how OpenLeash compares to other authorization tools:
+          <a href="/concepts/openleash-vs-opa">OpenLeash vs OPA</a> covers the general-purpose
+          policy engine, and <a href="/concepts/openleash-vs-openfga">OpenLeash vs OpenFGA</a>
+          contrasts attribute-based decisions with relationship-based authorization.
+          For foundational concepts, read about
+          <a href="/concepts/ai-agent-authorization">AI agent authorization</a>,
+          <a href="/concepts/ai-agent-guardrails">AI agent guardrails</a>,
+          <a href="/concepts/human-in-the-loop-ai">human-in-the-loop controls</a>, and
+          <a href="/concepts/paseto-tokens">PASETO proof tokens</a>. Or dive into the
+          <a href="/docs">documentation</a> to start implementing.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section pre {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    overflow-x: auto;
+    max-width: 680px;
+    margin-bottom: 16px;
+  }
+
+  .content-section pre code {
+    background: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    padding: 0;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

@@ -1,0 +1,324 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="OpenLeash vs OpenFGA for AI Agent Authorization — OpenLeash"
+  description="Compare OpenFGA's relationship-based authorization with OpenLeash for AI agent governance. OpenFGA answers 'who can access what' via Zanzibar-style relationships; OpenLeash answers 'should this agent take this action right now.'"
+  ogImage="/og/openleash-vs-openfga.png"
+  canonicalPath="/concepts/openleash-vs-openfga"
+  keywords="OpenFGA vs OpenLeash, ReBAC AI agents, Zanzibar AI agents, relationship based authorization agents, OpenFGA limitations agents, agent authorization sidecar"
+  datePublished="2026-05-05"
+  dateModified="2026-05-05"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'OpenLeash vs OpenFGA for AI Agent Authorization',
+    description: 'Compare OpenFGA\'s relationship-based authorization with OpenLeash for AI agent governance. OpenFGA answers "who can access what" via Zanzibar-style relationships; OpenLeash answers "should this agent take this action right now."',
+    datePublished: '2026-05-05',
+    dateModified: '2026-05-05',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/concepts/openleash-vs-openfga' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'OpenLeash vs OpenFGA', href: '/concepts/openleash-vs-openfga' },
+      ]} />
+      <h1 class="page-title">OpenLeash vs OpenFGA for AI Agent Authorization</h1>
+      <p class="page-desc">
+        OpenFGA is a relationship-based authorization service inspired by Google Zanzibar. OpenLeash is a sidecar for AI agent governance. They solve different problems: OpenFGA answers "who can access what?" by traversing relationships. OpenLeash answers "should this agent take this specific action right now?"
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>What OpenFGA Is</h2>
+        <p>
+          <a href="https://openfga.dev" target="_blank" rel="noopener noreferrer">OpenFGA</a>
+          is a relationship-based authorization (ReBAC) service originally created at Auth0/Okta
+          and now a CNCF Incubating project. It implements the model described in Google's
+          <a href="https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system" target="_blank" rel="noopener noreferrer">Zanzibar paper</a>:
+          permissions are stored as relationship tuples between users and resources, and
+          authorization decisions are answered by traversing those relationships at query time.
+        </p>
+        <p>
+          OpenFGA runs as a stateful service with HTTP and gRPC APIs, backed by PostgreSQL,
+          MySQL, or SQLite. Apache-2.0, written in Go. SDKs for Java, Node.js, Go, Python, and
+          .NET. A web playground for modeling, a CLI for tuple management, and a Terraform
+          provider for declarative configuration. Deployed in production at Auth0 and a growing
+          set of SaaS products with sharing semantics.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>The ReBAC Model in Practice</h2>
+        <p>
+          ReBAC encodes permissions as a graph. You define an authorization model — the relation
+          types that exist between objects — and then store concrete tuples that say specific
+          users have specific relations to specific resources. A simplified example:
+        </p>
+        <pre><code>model
+  schema 1.1
+
+type user
+type folder
+  relations
+    define owner: [user]
+    define editor: [user] or owner
+    define viewer: [user] or editor
+type document
+  relations
+    define parent: [folder]
+    define viewer: viewer from parent</code></pre>
+        <p>
+          With that model and tuples like <code>(alice, owner, folder:projects)</code>, OpenFGA can
+          answer "can Alice view document:design-doc?" by walking the relationship graph: the
+          document's parent folder is <code>folder:projects</code>, Alice is the owner of that
+          folder, owner implies editor, editor implies viewer. The answer is yes.
+        </p>
+        <p>
+          That model is excellent for sharing semantics — Google Drive, Notion, Linear, multi-tenant
+          SaaS where users have nested permissions on resources they own, are members of, or have
+          been granted access to. ReBAC handles those questions efficiently and correctly.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Why ReBAC Doesn't Quite Fit AI Agent Governance</h2>
+        <p>
+          AI agent governance asks a different question. The typical agent decision isn't "does
+          the agent have a relation to the resource?" — it's "given <em>this specific action</em>
+          with <em>these attributes</em>, in <em>this context</em>, should it proceed?" The
+          relevant inputs are usually:
+        </p>
+        <ul>
+          <li>Cost or quantity of the action (pay $X, send Y emails, allocate Z tokens)</li>
+          <li>Cumulative spend or rate-limit windows (less than $500 in the last 24 hours)</li>
+          <li>Counterparty trust level (LOW / MEDIUM / HIGH based on domain or attestation)</li>
+          <li>Time-of-day or business-hours rules</li>
+          <li>Action type (allowed for purchases, denied for fund transfers, requires approval for legal filings)</li>
+          <li>Policy obligations (require human approval, require step-up auth, require deposit)</li>
+        </ul>
+        <p>
+          You can express some of these as ReBAC relations — agent has the
+          <code>can_purchase_under_100</code> relation, for example — but each cost threshold
+          becomes a different relation, and the model degrades fast. Constraint evaluation, policy
+          obligations, and contextual decisions aren't what ReBAC is designed for. Trying to bend
+          OpenFGA to do agent governance ends up rebuilding most of OpenLeash inside relationship
+          tuples, and the result is harder to read, harder to maintain, and slower to query.
+        </p>
+        <p>
+          The reverse is also true: OpenLeash isn't designed for relationship-based access
+          decisions. If your real question is "can this user view this document because they're a
+          member of the project that owns its parent folder," OpenFGA is the right tool. They
+          answer different questions.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>What OpenLeash Adds for AI Agents</h2>
+        <p>
+          OpenLeash is designed specifically for autonomous AI agents acting on a person's or
+          organization's behalf:
+        </p>
+        <ul>
+          <li><strong>Agent identity</strong> — agents register with Ed25519 keypairs and sign every authorization request. OpenLeash verifies the signature, the timestamp, and a single-use nonce before evaluating any policy.</li>
+          <li><strong>Approval workflow</strong> — when a policy returns <code>REQUIRE_APPROVAL</code>, OpenLeash creates a pending request that an owner can review in a portal and approve or deny. Approval tokens are single-use, action-scoped, and time-limited.</li>
+          <li><strong>Cryptographic proof tokens</strong> — every approved action returns a PASETO v4.public token (Ed25519-signed) that any counterparty can verify offline with the public key. The token binds the decision to the specific action.</li>
+          <li><strong>Append-only audit log</strong> — every authorization attempt, approval, and policy change is recorded in a JSONL log scoped per user, organization, and agent.</li>
+          <li><strong>Policy drafts</strong> — agents can propose new policies for owner review when they hit an action type the existing rules don't cover.</li>
+          <li><strong>Action-level YAML</strong> — policies use constraints (<code>cost &lt;= 100</code>) and obligations (<code>HUMAN_APPROVAL</code>, <code>STEP_UP_AUTH</code>) that map directly onto agent decisions.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>When to Use Which</h2>
+        <p>
+          <strong>Use OpenFGA when</strong> your authorization questions are
+          relationship-shaped — file sharing, project membership, document hierarchies,
+          group-based permissions, multi-tenant access. When users have permissions on
+          resources because of who they are, who they're related to, or what they own, and
+          you need fast queries over that graph.
+        </p>
+        <p>
+          <strong>Use OpenLeash when</strong> your authorization questions are
+          action-shaped — agent governance, spending limits, approval thresholds,
+          counterparty trust, time-based rules. When the inputs to the decision are
+          attributes of the action itself, not relationships between actors and resources.
+        </p>
+        <p>
+          <strong>Use both when</strong> an AI agent operates inside a system with rich
+          sharing semantics. OpenFGA decides whether the agent — acting as user X — can
+          even see the resource. OpenLeash decides whether the agent should take a specific
+          side-effectful action against it. The two complement each other directly: ReBAC
+          for the access boundary, OpenLeash for what's allowed inside it.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Could You Build OpenLeash on Top of OpenFGA?</h2>
+        <p>
+          OpenFGA is a less natural foundation for agent governance than OPA or Cedar. ReBAC's
+          data model is relationships, not attributes or constraints, so encoding "approve if
+          cost ≤ 100" requires either pre-computing every threshold as a separate relation or
+          embedding constraint logic outside OpenFGA — at which point OpenFGA isn't really making
+          the decision. You'd also need to add agent identity, request signing, the approval
+          state machine, proof token issuance, and audit trail, none of which ReBAC provides.
+        </p>
+        <p>
+          Pragmatically, the right approach is to use each tool for the layer it's designed for.
+          ReBAC for who can access what; OpenLeash for what agents can do once they're inside.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Key Differences Summary</h2>
+        <ul>
+          <li><strong>Authorization model</strong> — ReBAC (relationship-based) versus action-level constraints + obligations.</li>
+          <li><strong>Question answered</strong> — "Does this user have a relationship that grants access to this resource?" versus "Should this agent perform this specific action right now, given the context?"</li>
+          <li><strong>Policy shape</strong> — Authorization model (relation types) plus relationship tuples versus YAML constraints (<code>cost &lt;= 100</code>) and obligations (<code>HUMAN_APPROVAL</code>).</li>
+          <li><strong>Identity model</strong> — OpenFGA models users as opaque identifiers; the host system handles authentication. OpenLeash registers agents with Ed25519 keypairs and verifies every request signature.</li>
+          <li><strong>Decision output</strong> — OpenFGA returns <code>true</code> or <code>false</code>. OpenLeash returns <code>ALLOW</code> / <code>DENY</code> / <code>REQUIRE_APPROVAL</code> / <code>REQUIRE_STEP_UP</code> / <code>REQUIRE_DEPOSIT</code> plus a cryptographic proof token.</li>
+          <li><strong>Verification model</strong> — OpenFGA decisions are consumed by the calling service. OpenLeash proof tokens can be verified offline by any third party with the public key.</li>
+          <li><strong>Human approval</strong> — OpenFGA has no approval workflow. OpenLeash has a built-in state machine for owner-driven approvals.</li>
+          <li><strong>Best fit</strong> — OpenFGA: SaaS sharing semantics, multi-tenant access, document/project hierarchies. OpenLeash: AI agent governance, spending controls, action-level approvals, counterparty trust.</li>
+          <li><strong>Stewardship</strong> — OpenFGA is CNCF Incubating, originally from Auth0/Okta. OpenLeash is a single-vendor open-source project (Apache-2.0) focused on AI agent authorization.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>Learn More</h2>
+        <p>
+          See how OpenLeash compares to other authorization tools:
+          <a href="/concepts/openleash-vs-opa">OpenLeash vs OPA</a> covers the general-purpose
+          policy engine, and <a href="/concepts/openleash-vs-cedar">OpenLeash vs Cedar</a> covers
+          AWS's embedded policy language. For foundational concepts, read about
+          <a href="/concepts/ai-agent-authorization">AI agent authorization</a>,
+          <a href="/concepts/ai-agent-guardrails">AI agent guardrails</a>,
+          <a href="/concepts/human-in-the-loop-ai">human-in-the-loop controls</a>, and
+          <a href="/concepts/paseto-tokens">PASETO proof tokens</a>. Or dive into the
+          <a href="/docs">documentation</a> to start implementing.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section pre {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    overflow-x: auto;
+    max-width: 680px;
+    margin-bottom: 16px;
+  }
+
+  .content-section pre code {
+    background: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    padding: 0;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>

@@ -1,0 +1,300 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="OpenLeash vs OPA for AI Agent Authorization — OpenLeash"
+  description="Compare Open Policy Agent (OPA) with OpenLeash for AI agent authorization. OPA is a general-purpose policy engine; OpenLeash is opinionated for autonomous agents — with built-in identity, approval workflows, and proof tokens."
+  ogImage="/og/openleash-vs-opa.png"
+  canonicalPath="/concepts/openleash-vs-opa"
+  keywords="OPA vs OpenLeash, Open Policy Agent AI agents, Rego policies AI, OPA agent authorization, policy engine for autonomous agents, OPA limitations agents"
+  datePublished="2026-05-05"
+  dateModified="2026-05-05"
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'OpenLeash vs OPA for AI Agent Authorization',
+    description: 'Compare Open Policy Agent (OPA) with OpenLeash for AI agent authorization. OPA is a general-purpose policy engine; OpenLeash is opinionated for autonomous agents — with built-in identity, approval workflows, and proof tokens.',
+    datePublished: '2026-05-05',
+    dateModified: '2026-05-05',
+    author: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai' },
+    publisher: { '@type': 'Organization', name: 'OpenLeash', url: 'https://openleash.ai', logo: { '@type': 'ImageObject', url: 'https://openleash.ai/brand/openleash-mark.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://openleash.ai/concepts/openleash-vs-opa' },
+    image: 'https://openleash.ai/og.png',
+  }]}
+>
+  <Nav />
+
+  <main class="container">
+    <header class="page-header fade-in">
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Concepts', href: '/concepts/ai-agent-authorization' },
+        { label: 'OpenLeash vs OPA', href: '/concepts/openleash-vs-opa' },
+      ]} />
+      <h1 class="page-title">OpenLeash vs OPA for AI Agent Authorization</h1>
+      <p class="page-desc">
+        OPA is the de facto general-purpose policy engine. OpenLeash is opinionated for AI agents — with built-in identity, approval workflows, and cryptographic proof tokens. They solve overlapping but different problems, and many teams will run both.
+      </p>
+    </header>
+
+    <article class="content fade-in fade-in-d1">
+      <section class="content-section">
+        <h2>What OPA Is</h2>
+        <p>
+          <a href="https://www.openpolicyagent.org" target="_blank" rel="noopener noreferrer">Open Policy Agent (OPA)</a>
+          is a general-purpose policy engine, originally created at Styra and graduated from the
+          CNCF. It evaluates policies written in <em>Rego</em> — a declarative, datalog-derived
+          language — against structured JSON input, and returns a policy decision as output.
+          OPA is stateless: you give it inputs, it gives you a decision, and it doesn't remember
+          anything between calls unless you wire that up yourself.
+        </p>
+        <p>
+          OPA is widely used for Kubernetes admission control (via Gatekeeper), Envoy external
+          authorization, microservice authorization, CI/CD policy checks, and Terraform validation
+          (via Conftest). It runs as a sidecar, an embedded library, or an HTTP API server. It is
+          Apache-2.0, written in Go, and has broad ecosystem support.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>What OPA Gives You — and What It Doesn't</h2>
+        <p>
+          OPA's strength is its <em>generality</em>. Rego can express almost any policy logic over
+          almost any structured input. Out of the box, OPA gives you:
+        </p>
+        <ul>
+          <li>The decision engine itself (a CLI, an HTTP API, or an embeddable library)</li>
+          <li>Bundle distribution — pull policies and data from a remote store</li>
+          <li>Partial evaluation, decision logs, and a REPL for testing</li>
+          <li>A rich ecosystem of integrations (Gatekeeper, Conftest, Regal, Envoy, Terraform)</li>
+        </ul>
+        <p>
+          What OPA <em>doesn't</em> include — and was never intended to — is everything around the
+          decision: identity for the requesting agent, request signing and replay protection,
+          a state machine for human approvals, cryptographic proof tokens that downstream parties
+          can verify offline, an audit trail tied to specific actions, or any AI-agent-specific
+          abstractions. OPA evaluates policies; you build the rest.
+        </p>
+        <p>
+          For most of OPA's traditional use cases — Kubernetes admission, Envoy authz, infrastructure
+          validation — that's fine. The pieces around the decision are already provided by the host
+          system. For autonomous AI agents, those pieces don't exist yet, and you're on the hook
+          for them.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>What OpenLeash Adds for AI Agents</h2>
+        <p>
+          OpenLeash is designed specifically for AI agents acting on a person's or organization's
+          behalf. It bundles the decision engine with the surrounding pieces an autonomous agent
+          actually needs:
+        </p>
+        <ul>
+          <li><strong>Agent identity</strong> — agents register with Ed25519 keypairs and sign every authorization request. OpenLeash verifies the signature, the timestamp, and a single-use nonce before evaluating any policy.</li>
+          <li><strong>Approval workflow</strong> — when a policy returns <code>REQUIRE_APPROVAL</code>, OpenLeash creates a pending approval request that an owner can review in a portal and approve or deny. Approval tokens are single-use, action-scoped, and time-limited.</li>
+          <li><strong>Cryptographic proof tokens</strong> — every approved action returns a PASETO v4.public token (Ed25519-signed) that any counterparty can verify offline with the public key. The token binds the decision to the specific action — same input hash, same agent, same policy — so it can't be reused for a different action.</li>
+          <li><strong>Append-only audit log</strong> — every authorization attempt, approval, and policy change is recorded in a JSONL audit log, scoped per user / organization / agent.</li>
+          <li><strong>Policy drafts</strong> — agents can propose new policies for owner review when they hit an action type the existing rules don't cover. Owners approve, modify, or reject.</li>
+          <li><strong>Opinionated YAML</strong> — policies are YAML, schema-validated, and intentionally less powerful than Rego. The expression language is constrained on purpose: easier to review, easier to write for non-developers (compliance, finance, ops), harder to misuse.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>The Policy Language Tradeoff</h2>
+        <p>
+          Rego is more expressive than OpenLeash's YAML. It supports iteration, partial evaluation,
+          recursion, and arbitrary computation over hierarchical data. For complex domains —
+          Kubernetes object validation, multi-step admission rules, attribute joins across data
+          sources — that power is the right call.
+        </p>
+        <p>
+          For AI agent governance, the typical policy logic is narrow: limit cost per action, limit
+          cumulative spend per window, restrict counterparty domains by trust level, require
+          approval above a threshold, deny certain action types entirely. OpenLeash YAML covers
+          these directly with constraints (<code>cost &lt;= 100</code>) and obligations
+          (<code>HUMAN_APPROVAL</code>, <code>STEP_UP_AUTH</code>, <code>DEPOSIT</code>) that an
+          owner can read without learning a new language.
+        </p>
+        <p>
+          The tradeoff is real. If you need policy logic that YAML can't express, OpenLeash is a
+          worse fit than OPA. If your agent-governance policies fit cleanly into the constraint /
+          obligation model — and most do — the YAML simplicity is a feature, not a limitation:
+          your compliance officer can review an OpenLeash policy without learning Rego.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>When to Use Which</h2>
+        <p>
+          <strong>Use OPA when</strong> you need a general-purpose policy engine — Kubernetes
+          admission, Envoy authz, microservice authorization, infrastructure validation. When your
+          policies need the full power of Rego. When your team already has Rego expertise and
+          existing policy bundles. When the system around the decision (identity, audit, enforcement)
+          is provided by the host platform.
+        </p>
+        <p>
+          <strong>Use OpenLeash when</strong> you're building or operating AI agents that take
+          side-effectful actions — purchases, bookings, API calls, message sending, government
+          submissions. When you need agent identity, request signing, human-in-the-loop approvals,
+          and cryptographic proof tokens out of the box. When your policy authors include compliance
+          or operations people, not just engineers.
+        </p>
+        <p>
+          <strong>Use both when</strong> agents are one part of a larger system. OPA can govern
+          your Kubernetes infrastructure and your Envoy mesh. OpenLeash can govern what your AI
+          agents are allowed to do inside it. They operate at different layers and don't
+          conflict.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Could You Build OpenLeash on Top of OPA?</h2>
+        <p>
+          In principle, yes. You could write Rego policies for agent actions and run OPA as a
+          sidecar. To match OpenLeash, you would also need to build:
+        </p>
+        <ul>
+          <li>An agent registration system with keypair generation and Ed25519 verification</li>
+          <li>A request signing scheme with timestamp + nonce + body-hash binding</li>
+          <li>An approval-request state machine with single-use, action-scoped tokens</li>
+          <li>A PASETO (or equivalent) proof token issuer with a key rotation strategy</li>
+          <li>An offline verification path so counterparties don't need to call your server</li>
+          <li>An audit log with per-actor scoping and tamper-evident structure</li>
+          <li>A web GUI for policy authoring, agent management, and approval review</li>
+        </ul>
+        <p>
+          That's months of work, and once it's built, you own a fork of an authorization product
+          that already exists. OpenLeash is what that fork looks like, hardened, with three SDKs
+          and an audit trail. Choosing OPA-plus-bespoke-glue makes sense if you have unusual
+          requirements that OpenLeash doesn't cover; otherwise the cost is harder to justify.
+        </p>
+      </section>
+
+      <section class="content-section">
+        <h2>Key Differences Summary</h2>
+        <ul>
+          <li><strong>Scope</strong> — OPA is a general-purpose policy engine. OpenLeash is purpose-built for AI agent governance.</li>
+          <li><strong>Policy language</strong> — Rego (powerful, programming-language-like) versus YAML (constrained, declarative, schema-validated).</li>
+          <li><strong>Identity model</strong> — OPA has none built in. OpenLeash registers agents with Ed25519 keypairs and verifies every request signature.</li>
+          <li><strong>Decision output</strong> — OPA returns a decision. OpenLeash returns a decision <em>plus</em> a cryptographic proof token bound to the specific action.</li>
+          <li><strong>Verification model</strong> — OPA decisions are consumed by the calling service. OpenLeash proof tokens can be verified offline by any third party with the public key.</li>
+          <li><strong>Human approval</strong> — OPA has no approval workflow. OpenLeash has a built-in state machine for owner-driven approvals.</li>
+          <li><strong>Audit</strong> — OPA has decision logs (an export); audit trail design is your responsibility. OpenLeash ships an append-only audit log scoped per user, organization, and agent.</li>
+          <li><strong>Stewardship</strong> — OPA is CNCF graduated, broad community. OpenLeash is a single-vendor open-source project (Apache-2.0) focused on AI agent authorization.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2>Learn More</h2>
+        <p>
+          See how OpenLeash compares to other authorization models and tools:
+          <a href="/concepts/openleash-vs-cedar">OpenLeash vs Cedar</a> covers the AWS-stewarded
+          policy language, and <a href="/concepts/openleash-vs-openfga">OpenLeash vs OpenFGA</a>
+          contrasts attribute-based decisions with relationship-based authorization.
+          For foundational concepts, read about
+          <a href="/concepts/ai-agent-authorization">AI agent authorization</a>,
+          <a href="/concepts/ai-agent-guardrails">AI agent guardrails</a>,
+          <a href="/concepts/human-in-the-loop-ai">human-in-the-loop controls</a>, and
+          <a href="/concepts/paseto-tokens">PASETO proof tokens</a>. Or dive into the
+          <a href="/docs">documentation</a> to start implementing.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .page-desc {
+    max-width: 680px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .content-section {
+    margin-bottom: 36px;
+  }
+
+  .content-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+  }
+
+  .content-section ul,
+  .content-section ol {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    max-width: 680px;
+    padding-left: 24px;
+  }
+
+  .content-section li {
+    margin-bottom: 6px;
+  }
+
+  .content-section em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .content-section a {
+    color: var(--green-bright);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .content-section a:hover {
+    color: var(--amber-bright);
+  }
+
+  .content-section code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--green-bright);
+    background: rgba(52, 211, 153, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .content-section strong {
+    color: var(--text-primary);
+  }
+</style>
